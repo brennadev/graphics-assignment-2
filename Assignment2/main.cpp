@@ -10,16 +10,7 @@
 #include <fstream>
 #include <string>
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
 using namespace std;
-
-
-
-const int DEFAULT_WIDTH = 640;
-const int DEFAULT_HEIGHT = 480;
-
-const string DEFAULT_OUTPUT_FILE = "raytraced.bmp";
 
 int main(int argc, const char * argv[]) {
     
