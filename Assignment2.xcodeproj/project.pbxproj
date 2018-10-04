@@ -30,6 +30,7 @@
 		65099F052166530500F2BA05 /* Image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		65099F062166531000F2BA05 /* Image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Image.cpp; sourceTree = "<group>"; };
 		65099F0821667A6500F2BA05 /* CustomTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomTypes.h; sourceTree = "<group>"; };
+		65099F0921667D1400F2BA05 /* DefaultValues.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultValues.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,7 +47,6 @@
 		65099EF0216644B700F2BA05 = {
 			isa = PBXGroup;
 			children = (
-				65099F0821667A6500F2BA05 /* CustomTypes.h */,
 				65099EFB216644B700F2BA05 /* Assignment2 */,
 				65099EFA216644B700F2BA05 /* Products */,
 			);
@@ -63,6 +63,8 @@
 		65099EFB216644B700F2BA05 /* Assignment2 */ = {
 			isa = PBXGroup;
 			children = (
+				65099F0921667D1400F2BA05 /* DefaultValues.h */,
+				65099F0821667A6500F2BA05 /* CustomTypes.h */,
 				65099EFC216644B700F2BA05 /* main.cpp */,
 				65099F052166530500F2BA05 /* Image.h */,
 				65099F062166531000F2BA05 /* Image.cpp */,

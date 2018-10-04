@@ -22,11 +22,6 @@ using namespace std;
 
 
 
-const int DEFAULT_WIDTH = 640;
-const int DEFAULT_HEIGHT = 480;
-
-const string DEFAULT_OUTPUT_FILE = "raytraced.bmp";
-
 
 
 class Image {
