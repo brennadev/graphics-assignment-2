@@ -11,20 +11,12 @@
 
 
 //#include <string>
-// TODO: not sure if these will be needed or not
-//#include <SDL2/SDL.h>
-//#include <SDL2/SDL_opengl.h>
 
-//#define STB_IMAGE_WRITE_IMPLEMENTATION
+
 #include "stb_image_write.h"
-//#include "CustomTypes.h"
 #include "DefaultValues.h"
 #include <vector>
 using namespace std;
-
-
-
-
 
 
 class Image {
@@ -48,6 +40,18 @@ private:
     
 public:
     void writeImageToFile();
+    Image();
+    Image(Camera camera,
+          int width,
+          int height,
+          string outputFileName,
+          vector<Sphere> spheres,
+          Color background,
+          vector<DirectionalLight> directionalLights,
+          vector<PointLight> pointLights,
+          vector<SpotLight> spotLights,
+          vector<Color> ambientLights,
+          int maxDepth);
     
 };
 

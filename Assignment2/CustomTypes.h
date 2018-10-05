@@ -25,6 +25,12 @@ struct Vector3 {
     float z;
 };
 
+
+struct Ray {
+    Vector3 origin;
+    Vector3 direction;
+};
+
 /*istream &operator>>(istream &input, Vector3 &value) {
     input >> value.x >> value.y >> value.z;
     return input;
@@ -51,17 +57,18 @@ struct Camera {
 };
 
 
-struct Sphere {
-    Vector3 center;
-    float radius;
-};
-
-
 struct Material {
     Color ambient;
     Color diffuse;
     Color specular;
     float phongCosinePower;
+};
+
+
+struct Sphere {
+    Vector3 center;
+    float radius;
+    Material material;
 };
 
 

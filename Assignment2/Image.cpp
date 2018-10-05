@@ -13,7 +13,7 @@ void Image::writeImageToFile() {
     
     int onePast = strlen(outputNameAsCString);
     
-    switch (onePast - 1) {
+    switch (outputNameAsCString[onePast - 1]) {
         case 'g':
             const int secondToLastLocation = outputFileName.length() - 2;
             if (outputNameAsCString[onePast - 2] == 'p' || outputNameAsCString[onePast - 2] == 'e') {
@@ -39,4 +39,8 @@ void Image::writeImageToFile() {
             stbi_write_bmp(outputNameAsCString, width, height, 4, data);
             break;
     }*/
+}
+
+Image::Image() {
+    
 }

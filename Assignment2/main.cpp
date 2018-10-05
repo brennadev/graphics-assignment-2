@@ -18,7 +18,8 @@ int main(int argc, const char * argv[]) {
     
     // TODO: make sure to use actual constructor - probably would initialize it after all of the file is read
     /// The image used throughout the program
-    Image image;
+    // I assign the default constructor here to make sure the linker doesn't get confused on that
+    Image image = Image();
     
     
     // make sure we have the correct number of arguments before anything is done
@@ -50,6 +51,11 @@ int main(int argc, const char * argv[]) {
     vector<Sphere> spheres;
     Color background = DEFAULT_BACKGROUND_COLOR;
     Color ambientLight = DEFAULT_AMBIENT_LIGHT;
+    vector<DirectionalLight> directionalLights;
+    vector<PointLight> pointLights;
+    vector<SpotLight> spotLights;
+    vector<Color> ambientLights;
+    int maxDepth = DEFAULT_MAX_DEPTH;
     
     
     
@@ -77,20 +83,43 @@ int main(int argc, const char * argv[]) {
         } else if (command == "material") {
             
         } else if (command == "directional_light") {
+            DirectionalLight newLight;
+            
+            sceneInputFile >> newLight.color.red >> newLight.color.green >> newLight.color.blue >> newLight.direction.x >> newLight.direction.y >> newLight.direction.z;
+            directionalLights.push_back(newLight);
             
         } else if (command == "point_light") {
+            PointLight newLight;
+            
+            sceneInputFile >> newLight.color.red >> newLight.color.green >> newLight.color.blue >> newLight.location.x >> newLight.location.y >> newLight.location.z;
+            
+            pointLights.push_back(newLight);
             
         } else if (command == "spot_light") {
+            SpotLight newLight;
+            
+            sceneInputFile >> newLight.color.red >> newLight.color.green >> newLight.color.blue >> newLight.location.x >> newLight.location.y >> newLight.location.z >> newLight.direction.x >> newLight.direction.y >> newLight.direction.z >> newLight.angle1 >> newLight.angle2;
+            
+            spotLights.push_back(newLight);
             
         } else if (command == "ambient_light") {
             //sceneInputFile >> ambientLight;
             
+            Color newLight;
+            
+            sceneInputFile >> newLight.red >> newLight.green >> newLight.blue;
+            
+            ambientLights.push_back(newLight);
+            
         } else if (command == "max_depth") {
-            
+            sceneInputFile >> maxDepth;
         } else {
-            
+            cout << "Command not recognized" << endl;
         }
     }
+    
+    // this will be initialized with default values if they haven't been set in the
+    image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, maxDepth);
     
     
     return 0;
