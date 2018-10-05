@@ -9,6 +9,9 @@
 #ifndef CustomTypes_h
 #define CustomTypes_h
 
+//#include <iostream>
+using namespace std;
+
 struct Vector2 {
     float x;
     float y;
@@ -22,6 +25,11 @@ struct Vector3 {
     float z;
 };
 
+/*istream &operator>>(istream &input, Vector3 &value) {
+    input >> value.x >> value.y >> value.z;
+    return input;
+}*/
+
 
 /// RGB-based color - all stored as floats from 0 to 1 to prevent math errors
 struct Color {
@@ -29,6 +37,10 @@ struct Color {
     float green;
     float blue;
 };
+
+/*istream &operator>>(istream &input, Color &value) {
+    return input >> value.red >> value.green >> value.blue;
+}*/
 
 
 struct Camera {
@@ -39,7 +51,7 @@ struct Camera {
 };
 
 
-typedef struct Sphere {
+struct Sphere {
     Vector3 center;
     float radius;
 };

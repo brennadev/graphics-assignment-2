@@ -10,13 +10,15 @@
 #define Image_h
 
 
-#include <string>
+//#include <string>
 // TODO: not sure if these will be needed or not
 //#include <SDL2/SDL.h>
 //#include <SDL2/SDL_opengl.h>
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
+//#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
+//#include "CustomTypes.h"
+#include "DefaultValues.h"
 using namespace std;
 
 
@@ -30,10 +32,12 @@ private:
     string outputFileName;
     int width;
     int height;
+    Color **data;   // dynamically allocated memory
     
-    void writeImageToFile();
+    
     
 public:
+    void writeImageToFile();
     
 };
 
