@@ -58,13 +58,17 @@ int main(int argc, const char * argv[]) {
         if (command[0] == '#') {
             getline(sceneInputFile, forGetLine);
         } else if (command == "camera") {
-            sceneInputFile >> camera.position.x >> camera.position.y >> camera.position.z >> camera.viewingDirection.x >> camera.viewingDirection.y >> camera.viewingDirection.z >> camera.up.x >> camera.up.y >> camera.up.z >> camera.halfAngle;
+            sceneInputFile >> camera.position.x >> camera.position.y >> camera.position.z >>
+                              camera.viewingDirection.x >> camera.viewingDirection.y >> camera.viewingDirection.z >>
+                              camera.up.x >> camera.up.y >> camera.up.z >>
+                              camera.halfAngle;
             
         } else if (command == "film_resolution") {
             
             sceneInputFile >> width >> height;
             
         } else if (command == "output_image") {
+            sceneInputFile >> outputFileName;
             
         } else if (command == "sphere") {
             

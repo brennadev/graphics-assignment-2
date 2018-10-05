@@ -19,6 +19,7 @@
 #include "stb_image_write.h"
 //#include "CustomTypes.h"
 #include "DefaultValues.h"
+#include <vector>
 using namespace std;
 
 
@@ -33,7 +34,16 @@ private:
     int width;
     int height;
     Color **data;   // dynamically allocated memory
+    Camera camera;
+    vector<Sphere> spheres;
     
+    // there could be multiple lights of the same light type in the scene
+    vector<DirectionalLight> directionalLights;
+    vector<PointLight> pointLights;
+    vector<SpotLight> spotLights;
+    vector<Color> ambientLights;
+    
+    int maxDepth;
     
     
 public:
