@@ -8,39 +8,66 @@
 
 #include "Image.h"
 
-void Image::writeImageToFile() {
-    /*const char *outputNameAsCString = outputFileName.c_str();
-    
-    int onePast = strlen(outputNameAsCString);
-    
-    switch (outputNameAsCString[onePast - 1]) {
-        case 'g':
-            const int secondToLastLocation = outputFileName.length() - 2;
-            if (outputNameAsCString[onePast - 2] == 'p' || outputNameAsCString[onePast - 2] == 'e') {
-                // jpeg
-                stbi_write_jpg(outputNameAsCString, width, height, 4, data, 95);
-            } else {
-                // png
-                stbi_write_png(outputNameAsCString, width, height, 4, data, width * 4);
-            }
-            break;
-            
-        case 'a':
-            // tga
-            stbi_write_tga(outputNameAsCString, width, height, 4, data);
-            break;
-            
-        case 'p':
-            // bmp
-            stbi_write_bmp(outputNameAsCString, width, height, 4, data);
-            break;
-        default:
-            // bmp
-            stbi_write_bmp(outputNameAsCString, width, height, 4, data);
-            break;
-    }*/
-}
+
 
 Image::Image() {
     
+}
+
+
+Image::Image(Camera camera,
+      int width,
+      int height,
+      string outputFileName,
+      vector<Sphere> spheres,
+      Color background,
+      vector<DirectionalLight> directionalLights,
+      vector<PointLight> pointLights,
+      vector<SpotLight> spotLights,
+      vector<Color> ambientLights,
+      int maxDepth) {
+    
+    data_ = new Color[width * height];
+    
+    // set all points in the image to the background color
+    for (int i = 0; i < width * height; i++) {
+        data_[i] = background;
+    }
+}
+
+Image::~Image() {
+    delete [] data_;
+}
+
+void Image::writeImageToFile() {
+    /*const char *outputNameAsCString = outputFileName.c_str();
+     
+     int onePast = strlen(outputNameAsCString);
+     
+     switch (outputNameAsCString[onePast - 1]) {
+     case 'g':
+     const int secondToLastLocation = outputFileName.length() - 2;
+     if (outputNameAsCString[onePast - 2] == 'p' || outputNameAsCString[onePast - 2] == 'e') {
+     // jpeg
+     stbi_write_jpg(outputNameAsCString, width, height, 4, data, 95);
+     } else {
+     // png
+     stbi_write_png(outputNameAsCString, width, height, 4, data, width * 4);
+     }
+     break;
+     
+     case 'a':
+     // tga
+     stbi_write_tga(outputNameAsCString, width, height, 4, data);
+     break;
+     
+     case 'p':
+     // bmp
+     stbi_write_bmp(outputNameAsCString, width, height, 4, data);
+     break;
+     default:
+     // bmp
+     stbi_write_bmp(outputNameAsCString, width, height, 4, data);
+     break;
+     }*/
 }

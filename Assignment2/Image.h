@@ -23,19 +23,19 @@ class Image {
 private:
     
     string outputFileName;
-    int width;
-    int height;
-    Color **data;   // dynamically allocated memory
-    Camera camera;
-    vector<Sphere> spheres;
+    int width_;
+    int height_;
+    Color *data_;   // stored in one dimension since we don't know how much storage we'll need until initialization
+    Camera camera_;
+    vector<Sphere> spheres_;
     
     // there could be multiple lights of the same light type in the scene
-    vector<DirectionalLight> directionalLights;
-    vector<PointLight> pointLights;
-    vector<SpotLight> spotLights;
-    vector<Color> ambientLights;
+    vector<DirectionalLight> directionalLights_;
+    vector<PointLight> pointLights_;
+    vector<SpotLight> spotLights_;
+    vector<Color> ambientLights_;
     
-    int maxDepth;
+    int maxDepth_;
     
     
 public:
@@ -52,6 +52,8 @@ public:
           vector<SpotLight> spotLights,
           vector<Color> ambientLights,
           int maxDepth);
+    
+    ~Image();
     
 };
 
