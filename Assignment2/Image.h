@@ -13,7 +13,7 @@
 //#include <string>
 
 
-#include "stb_image_write.h"
+
 #include "DefaultValues.h"
 #include <vector>
 using namespace std;
@@ -22,10 +22,12 @@ using namespace std;
 class Image {
 private:
     
-    string outputFileName;
+    string outputFileName_;
     int width_;
     int height_;
-    Color *data_;   // stored in one dimension since we don't know how much storage we'll need until initialization
+    //Color *data_;   // stored in one dimension since we don't know how much storage we'll need until initialization
+    
+    vector<Color> data_;
     Camera camera_;
     vector<Sphere> spheres_;
     

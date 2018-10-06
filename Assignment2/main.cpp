@@ -9,17 +9,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "Image.h"
 #include <vector>
-//#include "DefaultValues.h"
+#include "Image.h"
 using namespace std;
 
 int main(int argc, const char * argv[]) {
-    
-    // TODO: make sure to use actual constructor - probably would initialize it after all of the file is read
     /// The image used throughout the program
-    // I assign the default constructor here to make sure the linker doesn't get confused on that
-    Image image = Image();
+    Image image;
     
     
     // make sure we have the correct number of arguments before anything is done
@@ -28,6 +24,8 @@ int main(int argc, const char * argv[]) {
         exit(1);
     }
     
+    
+    // open the file
     ifstream sceneInputFile(argv[1]);
 
     if (sceneInputFile.fail()) {
@@ -37,11 +35,8 @@ int main(int argc, const char * argv[]) {
     
     
     // begin reading file
-    string command;
-    string forGetLine;
-    
-    // TODO: need to figure out if everything should be stored in one initialization or if it should be in a bunch of setters (if doing one initialization, then the parameters not specified will need to automatically pull from the default values in DefaultValues.h)
-    
+    string command;     // temporarily store the command read
+    string forGetLine;  // when getline is needed to get the data out
     
     // these values will eventually be assigned to an Image constructor - they are set to default values unless the loop below finds a different value in the input file
     Camera camera = DEFAULT_CAMERA;
@@ -121,6 +116,7 @@ int main(int argc, const char * argv[]) {
     // this will be initialized with default values if they haven't been set in the
     image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, maxDepth);
     
+    image.writeImageToFile();
     
     return 0;
 }
