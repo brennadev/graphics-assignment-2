@@ -13,6 +13,7 @@
 
 #include <string>
 #include "CustomTypes.h"
+using namespace std;
 
 const int DEFAULT_WIDTH = 640;
 const int DEFAULT_HEIGHT = 480;

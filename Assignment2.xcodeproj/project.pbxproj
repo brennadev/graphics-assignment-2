@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		65099EFD216644B700F2BA05 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65099EFC216644B700F2BA05 /* main.cpp */; };
 		65099F072166531000F2BA05 /* Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65099F062166531000F2BA05 /* Image.cpp */; };
+		653540FB216AA19F000C0948 /* CustomTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 653540FA216AA19F000C0948 /* CustomTypes.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +32,7 @@
 		65099F062166531000F2BA05 /* Image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Image.cpp; sourceTree = "<group>"; };
 		65099F0821667A6500F2BA05 /* CustomTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomTypes.h; sourceTree = "<group>"; };
 		65099F0921667D1400F2BA05 /* DefaultValues.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultValues.h; sourceTree = "<group>"; };
+		653540FA216AA19F000C0948 /* CustomTypes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CustomTypes.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 			children = (
 				65099F0921667D1400F2BA05 /* DefaultValues.h */,
 				65099F0821667A6500F2BA05 /* CustomTypes.h */,
+				653540FA216AA19F000C0948 /* CustomTypes.cpp */,
 				65099EFC216644B700F2BA05 /* main.cpp */,
 				65099F052166530500F2BA05 /* Image.h */,
 				65099F062166531000F2BA05 /* Image.cpp */,
@@ -130,6 +133,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65099EFD216644B700F2BA05 /* main.cpp in Sources */,
+				653540FB216AA19F000C0948 /* CustomTypes.cpp in Sources */,
 				65099F072166531000F2BA05 /* Image.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

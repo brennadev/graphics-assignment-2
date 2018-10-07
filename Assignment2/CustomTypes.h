@@ -10,7 +10,7 @@
 #define CustomTypes_h
 
 //#include <iostream>
-using namespace std;
+
 
 struct Vector2 {
     float x;
@@ -24,6 +24,12 @@ struct Vector3 {
     float y;
     float z;
 };
+
+Vector3 operator+(const Vector3 &leftVector, const Vector3 &rightVector);
+
+Vector3 operator*(const float &constant, const Vector3 &vector);
+
+
 
 
 struct Ray {

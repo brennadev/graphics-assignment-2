@@ -9,11 +9,6 @@
 #ifndef Image_h
 #define Image_h
 
-
-//#include <string>
-
-
-
 #include "DefaultValues.h"
 #include <vector>
 using namespace std;
@@ -25,8 +20,6 @@ private:
     string outputFileName_;
     int width_;
     int height_;
-    //Color *data_;   // stored in one dimension since we don't know how much storage we'll need until initialization
-    
     vector<Color> data_;
     Camera camera_;
     vector<Sphere> spheres_;
@@ -41,7 +34,7 @@ private:
     
     
 public:
-    void writeImageToFile();
+    
     Image();
     Image(Camera camera,
           int width,
@@ -54,8 +47,14 @@ public:
           vector<SpotLight> spotLights,
           vector<Color> ambientLights,
           int maxDepth);
-    
     ~Image();
+    
+    Ray generateRay(int xPosition, int yPosition);
+    
+    /// Final output of the image to an image file
+    void writeImageToFile();
+    
+    
     
 };
 
