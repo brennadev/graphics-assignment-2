@@ -119,11 +119,6 @@ float Image::findIntersection(Ray ray, Sphere sphere) {
             return -1;
         }
     }
-    
-    // what about positive discriminants as there's 2 return values - are both needed? If so, then an array or vector of Vector3s must be returned
-    
-    // TODO: eventually get return value changed to correct value
-    //return 0;
 }
 
 
