@@ -30,8 +30,10 @@ Vector3 operator+(const Vector3 &leftVector, const Vector3 &rightVector);
 Vector3 operator-(const Vector3 &leftVector, const Vector3 &rightVector);
 Vector3 operator*(const float &constant, const Vector3 &vector);
 Vector3 operator/(const Vector3 &vector, const float &constant);
+float dot(const Vector3 &firstVector, const Vector3 &secondVector);
 Vector3 cross(const Vector3 &firstVector, const Vector3 &secondVector);
-
+float length(const Vector3 &vector);
+Vector3 normalize(const Vector3 &vector);
 
 
 struct Ray {
@@ -61,6 +63,7 @@ struct Camera {
     Vector3 position;
     Vector3 viewingDirection;
     Vector3 up;
+    Vector3 right;
     float halfAngle;
 };
 

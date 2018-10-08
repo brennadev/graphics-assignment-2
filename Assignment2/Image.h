@@ -51,6 +51,11 @@ public:
     
     Ray generateRay(int xPosition, int yPosition);
     
+    /// Intersection between ray and sphere
+    /// Precondition: make sure ray's direction vector is normalized
+    /// Returns: Location of intersection if one exists; else returns -1 to indicate no intersection exists
+    float findIntersection(Ray ray, Sphere sphere);
+    
     /// Final output of the image to an image file
     void writeImageToFile();
     
