@@ -20,6 +20,7 @@ private:
     string outputFileName_;
     int width_;
     int height_;
+    /// Image data - stored row first
     vector<Color> data_;
     Camera camera_;
     vector<Sphere> spheres_;
@@ -32,6 +33,16 @@ private:
     
     int maxDepth_;
     
+    
+    Ray generateRay(int xPosition, int yPosition);
+    
+    /// Intersection between ray and sphere
+    /// Precondition: make sure ray's direction vector is normalized
+    /// Returns: Location of intersection if one exists; else returns -1 to indicate no intersection exists
+    float findIntersection(Ray ray, Sphere sphere);
+    
+    /// Final output of the image to an image file
+    void writeImageToFile();
     
 public:
     
@@ -49,16 +60,8 @@ public:
           int maxDepth);
     ~Image();
     
-    Ray generateRay(int xPosition, int yPosition);
-    
-    /// Intersection between ray and sphere
-    /// Precondition: make sure ray's direction vector is normalized
-    /// Returns: Location of intersection if one exists; else returns -1 to indicate no intersection exists
-    float findIntersection(Ray ray, Sphere sphere);
-    
-    /// Final output of the image to an image file
-    void writeImageToFile();
-    
+    /// Does all the work of the actual ray tracing and outputs it to an image file
+    void performRayTrace();
     
     
 };

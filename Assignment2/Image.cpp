@@ -122,6 +122,21 @@ float Image::findIntersection(Ray ray, Sphere sphere) {
 }
 
 
+
+
+void Image::performRayTrace() {
+    // go through each pixel
+    for (int i = 0; i < width_ * height_; i++) {
+        Ray ray = generateRay(i % width_, i / width_);
+        float t = findIntersection(ray, spheres_.at(0));
+        
+        if (t > 0) {
+            // TODO: shading
+        }
+        // do nothing if not hit since it's already on the background color
+    }
+}
+
 void Image::writeImageToFile() {
     const char *outputNameAsCString = outputFileName_.c_str();
     
