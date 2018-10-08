@@ -25,10 +25,12 @@ struct Vector3 {
     float z;
 };
 
+// 3d vector math
 Vector3 operator+(const Vector3 &leftVector, const Vector3 &rightVector);
-
+Vector3 operator-(const Vector3 &leftVector, const Vector3 &rightVector);
 Vector3 operator*(const float &constant, const Vector3 &vector);
-
+Vector3 operator/(const Vector3 &vector, const float &constant);
+Vector3 cross(const Vector3 &firstVector, const Vector3 &secondVector);
 
 
 
