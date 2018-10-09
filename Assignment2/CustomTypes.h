@@ -104,6 +104,4 @@ struct SpotLight {
 };
 
 
-
-
 #endif /* CustomTypes_h */

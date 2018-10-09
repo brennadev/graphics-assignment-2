@@ -72,15 +72,12 @@ Image::~Image() {
 }
 
 
-// TODO: make sure direction vector is normalized when returned
 Ray Image::generateRay(int xPosition, int yPosition) {
     float u = width_ / 2 * -1 + width_ * xPosition / width_;
     float v = height_ / 2 * -1 + height_ * yPosition / height_;
     
-    
-    
-    // TODO: eventually get return value changed to correct value
-    return {camera_.position, {0, 0, 0}};
+    return {camera_.position,
+            normalize(camera_.viewingDirection + u * camera_.right + v * cross(camera_.right, camera_.viewingDirection))};
 }
 
 

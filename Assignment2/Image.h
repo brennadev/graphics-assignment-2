@@ -31,9 +31,10 @@ private:
     vector<SpotLight> spotLights_;
     vector<Color> ambientLights_;
     
+    /// Maximum number of times rays bounce back and forth
     int maxDepth_;
     
-    
+    /// Create the ray that goes to a given pixel in the raster image
     Ray generateRay(int xPosition, int yPosition);
     
     /// Intersection between ray and sphere
@@ -41,6 +42,7 @@ private:
     /// Returns: Location of intersection if one exists; else returns -1 to indicate no intersection exists
     float findIntersection(Ray ray, Sphere sphere);
     
+    /// Calculate the color for a given pixel in the raster image
     Color getColor(Vector3 location);
     
     
@@ -48,6 +50,8 @@ private:
 public:
     
     Image();
+    
+    /// Will initialize all attributes to specified values - made to be called in main when taking in input from a file
     Image(Camera camera,
           int width,
           int height,
