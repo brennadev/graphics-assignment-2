@@ -9,7 +9,7 @@
 #include "Image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
-
+#include <iostream>
 
 Image::Image() {
     
@@ -50,7 +50,7 @@ Image::Image(Camera camera,
     
     
     // TODO: test code to remove later (everything to end of constructor)
-    data_.at(12).red = 1.0;
+    /*data_.at(12).red = 1.0;
     data_.at(13).red = 1.0;
     data_.at(14).red = 1.0;
     data_.at(15).red = 1.0;
@@ -63,7 +63,7 @@ Image::Image(Camera camera,
     data_.at(12).green = 1.0;
     data_.at(12).blue = 1.0;
     data_.at(652).green = 1.0;
-    data_.at(652).blue = 1.0;
+    data_.at(652).blue = 1.0;*/
 }
 
 // TODO: remove later if there's no implementation
@@ -73,8 +73,12 @@ Image::~Image() {
 
 
 Ray Image::generateRay(int xPosition, int yPosition) {
-    float u = width_ / 2 * -1 + width_ * xPosition / width_;
-    float v = height_ / 2 * -1 + height_ * yPosition / height_;
+    float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
+    float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
+    std::cout << "u: " << u << std::endl;
+    std::cout << "v: " << v << std::endl;
+    std::cout << "right: " << camera_.right.x << " " << camera_.right.y << " " << camera_.right.z << endl;
+    std::cout << "v vector: " << cross(camera_.right, camera_.viewingDirection).x << " " << cross(camera_.right, camera_.viewingDirection).y << " " << cross(camera_.right, camera_.viewingDirection).z << std::endl;
     
     return {camera_.position,
             normalize(camera_.viewingDirection + u * camera_.right + v * cross(camera_.right, camera_.viewingDirection))};
@@ -130,12 +134,16 @@ void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-        float t = findIntersection(ray, spheres_.at(0));
+        //std::cout << "ray origin: " << ray.origin.x << " " << ray.origin.y << " " << ray.origin.z << std::endl;
+        std::cout << "ray direction at (" << i % width_ << ", " << i / width_ << "): " << ray.direction.x << " " << ray.direction.y << " " << ray.direction.z << std::endl;
+        
+        std::cout << "ray origin: " << ray.origin.x << " " << ray.origin.y << " " << ray.origin.z << std::endl;
+        /*float t = findIntersection(ray, spheres_.at(0));
         
         if (t > 0) {
             // TODO: shading - call getColor
             
-        }
+        }*/
         // do nothing if not hit since it's already on the background color
     }
 }

@@ -11,6 +11,7 @@
 #include "CustomTypes.h"
 #include <cmath>
 
+// vector operations
 Vector3 operator+(const Vector3 &leftVector, const Vector3 &rightVector) {
     return {leftVector.x + rightVector.x, leftVector.y + rightVector.y, leftVector.z + rightVector.z};
 }
@@ -44,4 +45,23 @@ float length(const Vector3 &vector) {
 
 Vector3 normalize(const Vector3 &vector) {
     return vector / length(vector);
+}
+
+
+// color operations
+float clamp(const float &value) {
+    if (value < 0) {
+        return 0;
+    } else if (value > 1) {
+        return 1;
+    } else {
+        return value;
+    }
+}
+
+
+Color operator*(const Color &firstColor, const Color &secondColor) {
+    return {clamp(firstColor.red * secondColor.red),
+            clamp(firstColor.green * secondColor.green),
+            clamp(firstColor.blue * secondColor.blue)};
 }

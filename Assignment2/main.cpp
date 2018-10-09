@@ -124,6 +124,7 @@ int main(int argc, const char * argv[]) {
     // this will be initialized with default values if they haven't been set in the
     image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, maxDepth);
     
+    image.performRayTrace();
     image.writeImageToFile();
     
     return 0;
