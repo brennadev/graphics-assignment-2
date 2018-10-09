@@ -121,7 +121,12 @@ float Image::findIntersection(Ray ray, Sphere sphere) {
     }
 }
 
-
+Color Image::getColor(Vector3 location) {
+    
+    
+    
+    return {0, 0, 0};
+}
 
 
 void Image::performRayTrace() {
@@ -131,7 +136,8 @@ void Image::performRayTrace() {
         float t = findIntersection(ray, spheres_.at(0));
         
         if (t > 0) {
-            // TODO: shading
+            // TODO: shading - call getColor
+            
         }
         // do nothing if not hit since it's already on the background color
     }

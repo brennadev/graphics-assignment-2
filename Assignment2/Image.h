@@ -41,8 +41,9 @@ private:
     /// Returns: Location of intersection if one exists; else returns -1 to indicate no intersection exists
     float findIntersection(Ray ray, Sphere sphere);
     
-    /// Final output of the image to an image file
-    void writeImageToFile();
+    Color getColor(Vector3 location);
+    
+    
     
 public:
     
@@ -63,7 +64,9 @@ public:
     /// Does all the work of the actual ray tracing and outputs it to an image file
     void performRayTrace();
     
-    
+    // TODO: eventually make this private (as it'll get called by performRayTrace)
+    /// Final output of the image to an image file
+    void writeImageToFile();
 };
 
 

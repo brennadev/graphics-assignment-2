@@ -51,7 +51,8 @@ int main(int argc, const char * argv[]) {
     vector<SpotLight> spotLights;
     vector<Color> ambientLights;
     int maxDepth = DEFAULT_MAX_DEPTH;
-    
+    // material is a state - the same value will get used until the input file reading hits a line that changes the material values, thereby changing the values in this variable
+    Material currentMaterial = DEFAULT_MATERIAL;
     
     
     while (sceneInputFile >> command) {
@@ -65,17 +66,24 @@ int main(int argc, const char * argv[]) {
                               camera.halfAngle;
             
         } else if (command == "film_resolution") {
-            
             sceneInputFile >> width >> height;
             
         } else if (command == "output_image") {
             sceneInputFile >> outputFileName;
             
         } else if (command == "sphere") {
+            Vector3 center;
+            float radius;
+            sceneInputFile >> center.x >> center.y >> center.z >> radius;
+            
+            spheres.push_back({center, radius, currentMaterial});
             
         } else if (command == "background") {
+            sceneInputFile >> background.red >> background.green >> background.blue;
             
         } else if (command == "material") {
+            // we just need to store the current material somewhere so it's ready for use when the next sphere is read in
+            sceneInputFile >> currentMaterial.ambient.red >> currentMaterial.ambient.green >> currentMaterial.ambient.blue >> currentMaterial.diffuse.red >> currentMaterial.diffuse.green >> currentMaterial.diffuse.blue >> currentMaterial.specular.red >> currentMaterial.specular.green >> currentMaterial.specular.blue >> currentMaterial.phongCosinePower;
             
         } else if (command == "directional_light") {
             DirectionalLight newLight;
