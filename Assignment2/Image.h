@@ -20,11 +20,13 @@ private:
     string outputFileName_;
     int width_;
     int height_;
+    
     /// Image data - stored row first
     vector<Color> data_;
     Camera camera_;
     vector<Sphere> spheres_;
     
+    #pragma mark Lights
     // there could be multiple lights of the same light type in the scene
     vector<DirectionalLight> directionalLights_;
     vector<PointLight> pointLights_;
@@ -45,7 +47,8 @@ private:
     /// Calculate the color for a given pixel in the raster image
     Color getColor(Vector3 location);
     
-    
+    /// Diffuse color for a point light
+    Color calculateDiffuse(Sphere sphere, Ray ray, Vector3 lightPosition, Color lightIntensity);
     
 public:
     

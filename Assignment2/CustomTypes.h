@@ -40,6 +40,7 @@ Vector3 normalize(const Vector3 &vector);
 struct Ray {
     Vector3 origin;
     Vector3 direction;
+    Vector3 normal;
 };
 
 /*istream &operator>>(istream &input, Vector3 &value) {
@@ -61,6 +62,10 @@ float clamp(const float &value);
 
 /// Multiply 2 colors together, component-by-component. Values below 0 or above 1 are clamped appropriately.
 Color operator*(const Color &firstColor, const Color &secondColor);
+
+Color operator*(const Color &color, const float &constant);
+
+Color operator+(const Color &firstColor, const Color &secondColor);
 
 /*istream &operator>>(istream &input, Color &value) {
     return input >> value.red >> value.green >> value.blue;

@@ -10,6 +10,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 #include <iostream>
+#include <cstdlib>
 
 Image::Image() {
     
@@ -122,8 +123,15 @@ float Image::findIntersection(Ray ray, Sphere sphere) {
     }
 }
 
+
+
+Color calculateDiffuse(Sphere sphere, Ray ray, Vector3 lightPosition, Color lightIntensity) {
+    return sphere.material.diffuse * lightIntensity * max((float)0.0, dot(ray.normal, lightPosition));
+}
+
+
 Color Image::getColor(Vector3 location) {
-    
+    // TODO: finish this (or remove if not needed)
     
     
     return {0, 0, 0};
