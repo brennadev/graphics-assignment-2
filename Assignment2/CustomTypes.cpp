@@ -11,7 +11,7 @@
 #include "CustomTypes.h"
 #include <cmath>
 
-// vector operations
+#pragma mark - Vector Operations
 Vector3 operator+(const Vector3 &leftVector, const Vector3 &rightVector) {
     return {leftVector.x + rightVector.x, leftVector.y + rightVector.y, leftVector.z + rightVector.z};
 }
@@ -48,7 +48,7 @@ Vector3 normalize(const Vector3 &vector) {
 }
 
 
-// color operations
+#pragma mark - Color Operations
 float clamp(const float &value) {
     if (value < 0) {
         return 0;

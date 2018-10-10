@@ -20,12 +20,13 @@ const int DEFAULT_HEIGHT = 480;
 
 const string DEFAULT_OUTPUT_FILE = "raytraced.bmp";
 
-/// Note: right vector isn't set - will be set in `Image` when `Image` instance is created
-const Camera DEFAULT_CAMERA = {{0, 0, 0}, {0, 0, 1}, {0, 1, 0}, {0, 0, 0}, 45};
+/// Note: right vector and v vector aren't set - will be set in `Image` when `Image` instance is created
+const Camera DEFAULT_CAMERA = {{0, 0, 0}, {0, 0, 1}, {0, 1, 0}, {0, 0, 0}, {0, 0, 0}, 45};
 
 const Color DEFAULT_BACKGROUND_COLOR = {0, 0, 0};
 const Material DEFAULT_MATERIAL = {{0, 0, 0}, {1, 1, 1}, {0, 0, 0}, 5};
 const Color DEFAULT_AMBIENT_LIGHT = {0, 0, 0};
+
 const int DEFAULT_MAX_DEPTH = 5;
 
-#endif /* DefaultValues_h */
+#endif

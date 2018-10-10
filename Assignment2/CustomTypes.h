@@ -6,12 +6,17 @@
 //  Copyright © 2018 Brenna Olson. All rights reserved.
 //
 
+// Many types used throughout the ray tracer program
+
+
 #ifndef CustomTypes_h
 #define CustomTypes_h
 
+// TODO: remove iostream-related overloads and this if not used
 //#include <iostream>
 
 # pragma mark - Vectors and Vector Operations
+// TODO: remove if not used
 struct Vector2 {
     float x;
     float y;
@@ -34,9 +39,6 @@ float dot(const Vector3 &firstVector, const Vector3 &secondVector);
 Vector3 cross(const Vector3 &firstVector, const Vector3 &secondVector);
 float length(const Vector3 &vector);
 Vector3 normalize(const Vector3 &vector);
-
-
-
 
 
 /*istream &operator>>(istream &input, Vector3 &value) {

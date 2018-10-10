@@ -6,6 +6,8 @@
 //  Copyright © 2018 Brenna Olson. All rights reserved.
 //
 
+// In addition to being the starting point for the program, main also handles the input file reading
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -45,7 +47,6 @@ int main(int argc, const char * argv[]) {
     string outputFileName = DEFAULT_OUTPUT_FILE;
     vector<Sphere> spheres;
     Color background = DEFAULT_BACKGROUND_COLOR;
-    Color ambientLight = DEFAULT_AMBIENT_LIGHT;
     vector<DirectionalLight> directionalLights;
     vector<PointLight> pointLights;
     vector<SpotLight> spotLights;
@@ -93,23 +94,19 @@ int main(int argc, const char * argv[]) {
             
         } else if (command == "point_light") {
             PointLight newLight;
-            
             sceneInputFile >> newLight.color.red >> newLight.color.green >> newLight.color.blue >> newLight.location.x >> newLight.location.y >> newLight.location.z;
             
             pointLights.push_back(newLight);
             
         } else if (command == "spot_light") {
             SpotLight newLight;
-            
             sceneInputFile >> newLight.color.red >> newLight.color.green >> newLight.color.blue >> newLight.location.x >> newLight.location.y >> newLight.location.z >> newLight.direction.x >> newLight.direction.y >> newLight.direction.z >> newLight.angle1 >> newLight.angle2;
             
             spotLights.push_back(newLight);
             
         } else if (command == "ambient_light") {
-            //sceneInputFile >> ambientLight;
             
             Color newLight;
-            
             sceneInputFile >> newLight.red >> newLight.green >> newLight.blue;
             
             ambientLights.push_back(newLight);
@@ -125,6 +122,7 @@ int main(int argc, const char * argv[]) {
     image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, maxDepth);
     
     image.performRayTrace();
+    // TODO: remove call below once integrated into performRayTrace
     image.writeImageToFile();
     
     return 0;

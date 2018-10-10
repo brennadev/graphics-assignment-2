@@ -13,7 +13,6 @@
 #include <vector>
 using namespace std;
 
-
 class Image {
 private:
     
@@ -57,7 +56,7 @@ private:
     Color calculatePhong(Ray ray, Sphere sphere);
     
 public:
-    
+    /// Initializes all attributes to default values. See DefaultValues.h for more details on what the default values are.
     Image();
     
     /// Will initialize all attributes to specified values - made to be called in main when taking in input from a file
@@ -72,6 +71,8 @@ public:
           vector<SpotLight> spotLights,
           vector<Color> ambientLights,
           int maxDepth);
+    
+    // TODO: remove if no dynamic memory
     ~Image();
     
     /// Does all the work of the actual ray tracing and outputs it to an image file
@@ -81,6 +82,5 @@ public:
     /// Final output of the image to an image file
     void writeImageToFile();
 };
-
 
 #endif
