@@ -77,15 +77,6 @@ Image::~Image() {
 Ray Image::generateRay(int xPosition, int yPosition) {
     float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
     float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
-    std::cout << "u: " << u << std::endl;
-    std::cout << "v: " << v << std::endl;
-    std::cout << "right: " << camera_.right.x << " " << camera_.right.y << " " << camera_.right.z << endl;
-    
-    // I think the v value is totally off
-    std::cout << "camera v: " << camera_.v.x << " " << camera_.v.y << " " << camera_.v.z << endl;
-    std::cout << "camera viewing direction: " << camera_.viewingDirection.x << " " << camera_.viewingDirection.y << " " << camera_.viewingDirection.z << std::endl;
-    //std::cout << "v vector: " << cross(camera_.right, camera_.viewingDirection).x << " " << cross(camera_.right, camera_.viewingDirection).y << " " << cross(camera_.right, camera_.viewingDirection).z << std::endl;
-    
     return {camera_.position,
             normalize(-1 * camera_.viewingDirection + u * camera_.right + v * camera_.v)};
 }
@@ -151,10 +142,7 @@ void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-        //std::cout << "ray origin: " << ray.origin.x << " " << ray.origin.y << " " << ray.origin.z << std::endl;
-        std::cout << "ray direction at (" << i % width_ << ", " << i / width_ << "): " << ray.direction.x << " " << ray.direction.y << " " << ray.direction.z << std::endl;
-        
-        std::cout << "ray origin: " << ray.origin.x << " " << ray.origin.y << " " << ray.origin.z << std::endl;
+
         /*float t = findIntersection(ray, spheres_.at(0));
         
         if (t > 0) {
