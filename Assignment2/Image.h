@@ -21,10 +21,14 @@ private:
     int width_;
     int height_;
     
+    /// Maximum number of times rays bounce back and forth
+    int maxDepth_;
+    
     /// Image data - stored row first
     vector<Color> data_;
     Camera camera_;
     vector<Sphere> spheres_;
+    
     
     #pragma mark - Lights
     // there could be multiple lights of the same light type in the scene
@@ -33,8 +37,7 @@ private:
     vector<SpotLight> spotLights_;
     vector<Color> ambientLights_;
     
-    /// Maximum number of times rays bounce back and forth
-    int maxDepth_;
+    
     
     /// Create the ray that goes to a given pixel in the raster image
     Ray generateRay(int xPosition, int yPosition);
@@ -44,6 +47,7 @@ private:
     /// Returns: Location of intersection if one exists; else returns -1 to indicate no intersection exists
     float findIntersection(Ray ray, Sphere sphere);
     
+    # pragma mark - Color Generation
     /// Calculate the color for a given pixel in the raster image
     Color getColor(Vector3 location);
     
@@ -79,4 +83,4 @@ public:
 };
 
 
-#endif /* Image_h */
+#endif
