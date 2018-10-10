@@ -26,7 +26,7 @@ private:
     Camera camera_;
     vector<Sphere> spheres_;
     
-    #pragma mark Lights
+    #pragma mark - Lights
     // there could be multiple lights of the same light type in the scene
     vector<DirectionalLight> directionalLights_;
     vector<PointLight> pointLights_;
@@ -48,7 +48,9 @@ private:
     Color getColor(Vector3 location);
     
     /// Diffuse color for a point light
-    Color calculateDiffuse(Sphere sphere, Ray ray, Vector3 lightPosition, Color lightIntensity);
+    Color calculateDiffuse(Sphere sphere, Ray ray, PointLight light);
+    
+    Color calculatePhong(Ray ray, Sphere sphere);
     
 public:
     

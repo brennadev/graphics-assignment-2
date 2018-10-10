@@ -11,7 +11,7 @@
 
 //#include <iostream>
 
-
+# pragma mark - Vectors and Vector Operations
 struct Vector2 {
     float x;
     float y;
@@ -37,11 +37,7 @@ Vector3 normalize(const Vector3 &vector);
 
 
 
-struct Ray {
-    Vector3 origin;
-    Vector3 direction;
-    Vector3 normal;
-};
+
 
 /*istream &operator>>(istream &input, Vector3 &value) {
     input >> value.x >> value.y >> value.z;
@@ -49,6 +45,7 @@ struct Ray {
 }*/
 
 
+# pragma mark - Color and Color Operations
 /// RGB-based color - all stored as floats from 0 to 1 to prevent math errors
 struct Color {
     float red;
@@ -72,11 +69,24 @@ Color operator+(const Color &firstColor, const Color &secondColor);
 }*/
 
 
+# pragma mark - Non-Light Objects
+struct Ray {
+    Vector3 origin;
+    Vector3 direction;
+    Vector3 normal;
+};
+
+
 struct Camera {
+    // input-provided values
     Vector3 position;
     Vector3 viewingDirection;
     Vector3 up;
+    
+    // calculated values
     Vector3 right;
+    Vector3 v;
+    
     float halfAngle;
 };
 
@@ -96,6 +106,7 @@ struct Sphere {
 };
 
 
+# pragma mark - Lights
 struct DirectionalLight {
     Color color;
     Vector3 direction;

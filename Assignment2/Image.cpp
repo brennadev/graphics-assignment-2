@@ -40,8 +40,9 @@ Image::Image(Camera camera,
     spotLights_ = spotLights;
     ambientLights_ = ambientLights;
     
-    // calculate the camera's right vector as that isn't provided in the input
-    camera_.right = cross(camera_.viewingDirection, camera_.up);
+    // calculate the camera's right vector as that isn't provided in the input (using a right-handed coordinate system)
+    camera_.right = cross(camera_.up, camera_.viewingDirection);
+    camera_.v = cross(camera_.viewingDirection, camera_.right);
     
     // set all points in the image to the background color
     for (int i = 0; i < width * height; i++) {
@@ -79,10 +80,14 @@ Ray Image::generateRay(int xPosition, int yPosition) {
     std::cout << "u: " << u << std::endl;
     std::cout << "v: " << v << std::endl;
     std::cout << "right: " << camera_.right.x << " " << camera_.right.y << " " << camera_.right.z << endl;
-    std::cout << "v vector: " << cross(camera_.right, camera_.viewingDirection).x << " " << cross(camera_.right, camera_.viewingDirection).y << " " << cross(camera_.right, camera_.viewingDirection).z << std::endl;
+    
+    // I think the v value is totally off
+    std::cout << "camera v: " << camera_.v.x << " " << camera_.v.y << " " << camera_.v.z << endl;
+    std::cout << "camera viewing direction: " << camera_.viewingDirection.x << " " << camera_.viewingDirection.y << " " << camera_.viewingDirection.z << std::endl;
+    //std::cout << "v vector: " << cross(camera_.right, camera_.viewingDirection).x << " " << cross(camera_.right, camera_.viewingDirection).y << " " << cross(camera_.right, camera_.viewingDirection).z << std::endl;
     
     return {camera_.position,
-            normalize(camera_.viewingDirection + u * camera_.right + v * cross(camera_.right, camera_.viewingDirection))};
+            normalize(-1 * camera_.viewingDirection + u * camera_.right + v * camera_.v)};
 }
 
 
@@ -124,17 +129,21 @@ float Image::findIntersection(Ray ray, Sphere sphere) {
 }
 
 
-
-Color calculateDiffuse(Sphere sphere, Ray ray, Vector3 lightPosition, Color lightIntensity) {
-    return sphere.material.diffuse * lightIntensity * max((float)0.0, dot(ray.normal, lightPosition));
+Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
+    return sphere.material.diffuse * light.color * max((float)0.0, dot(ray.normal, light.location));
 }
 
+
+Color Image::calculatePhong(Ray ray, Sphere sphere) {
+    return {0, 0, 0};
+}
 
 Color Image::getColor(Vector3 location) {
     // TODO: finish this (or remove if not needed)
     
     
-    return {0, 0, 0};
+    //return calculateDiffuse(<#Sphere sphere#>, <#Ray ray#>, <#PointLight light#>) + calculatePhong(<#Ray ray#>, <#Sphere sphere#>);
+        return {0, 0, 0};
 }
 
 
@@ -154,6 +163,8 @@ void Image::performRayTrace() {
         }*/
         // do nothing if not hit since it's already on the background color
     }
+    
+    // TODO: writeImageToFile call
 }
 
 void Image::writeImageToFile() {
