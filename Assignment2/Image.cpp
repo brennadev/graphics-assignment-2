@@ -12,6 +12,7 @@
 #include <iostream>
 #include <cstdlib>
 
+
 Image::Image() {
     
 }
@@ -52,7 +53,7 @@ Image::Image(Camera camera,
     
     
     // TODO: test code to remove later (everything to end of constructor)
-    /*data_.at(12).red = 1.0;
+    data_.at(12).red = 1.0;
     data_.at(13).red = 1.0;
     data_.at(14).red = 1.0;
     data_.at(15).red = 1.0;
@@ -65,7 +66,7 @@ Image::Image(Camera camera,
     data_.at(12).green = 1.0;
     data_.at(12).blue = 1.0;
     data_.at(652).green = 1.0;
-    data_.at(652).blue = 1.0;*/
+    data_.at(652).blue = 1.0;
 }
 
 // TODO: remove later if there's no implementation
@@ -77,12 +78,13 @@ Image::~Image() {
 Ray Image::generateRay(int xPosition, int yPosition) {
     float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
     float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
+    
     return {camera_.position,
-            normalize(-1 * camera_.viewingDirection + u * camera_.right + v * camera_.v)};
+        normalize(-1 * camera_.viewingDirection + u * camera_.right + v * camera_.v), {0,0,0}};
 }
 
-
-float Image::findIntersection(Ray ray, Sphere sphere) {
+// TODO: set ray's normal
+float Image::findIntersection(Ray &ray, Sphere sphere) {
     // use the discriminant to determine if there's an intersection
     float discriminant = pow(dot(ray.direction, camera_.position - sphere.center), 2) - (dot(camera_.position - sphere.center, camera_.position - sphere.center) - pow(sphere.radius, 2));
     
@@ -146,7 +148,7 @@ void Image::performRayTrace() {
         /*float t = findIntersection(ray, spheres_.at(0));
         
         if (t > 0) {
-            // TODO: shading - call getColor
+            // TODO: shading - call getColor and set the corresponding pixel in the image to the color
             
         }*/
         // do nothing if not hit since it's already on the background color
@@ -155,8 +157,11 @@ void Image::performRayTrace() {
     // TODO: writeImageToFile call
 }
 
+
+// TODO: multiple spheres
+
 void Image::writeImageToFile() {
-    const char *outputNameAsCString = outputFileName_.c_str();
+    /*const char *outputNameAsCString = outputFileName_.c_str();
     
     int onePast = strlen(outputNameAsCString);
     
@@ -184,5 +189,9 @@ void Image::writeImageToFile() {
             // bmp
             stbi_write_bmp(outputNameAsCString, width_, height_, 3, data_.data());
             break;
-    }
+    }*/
+    
+    
+    
+    
 }
