@@ -72,9 +72,6 @@ public:
           vector<Color> ambientLights,
           int maxDepth);
     
-    // TODO: remove if no dynamic memory
-    ~Image();
-    
     /// Does all the work of the actual ray tracing and outputs it to an image file
     void performRayTrace();
     

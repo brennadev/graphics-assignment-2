@@ -98,6 +98,8 @@ struct Material {
     Color diffuse;
     Color specular;
     float phongCosinePower;
+    Color transmissive;
+    float indexOfRefraction;
 };
 
 

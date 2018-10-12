@@ -46,33 +46,15 @@ Image::Image(Camera camera,
     camera_.right = cross(camera_.up, camera_.viewingDirection);
     camera_.v = cross(camera_.viewingDirection, camera_.right);
     
+    // normalize to ensure math works right
+    normalize(camera_.up);
+    normalize(camera_.viewingDirection);
+    normalize(camera_.right);
+    
     // set all points in the image to the background color
     for (int i = 0; i < width * height; i++) {
         data_.push_back(background);
     }
-    
-    
-    
-    // TODO: test code to remove later (everything to end of constructor)
-    data_.at(12).red = 1.0;
-    data_.at(13).red = 1.0;
-    data_.at(14).red = 1.0;
-    data_.at(15).red = 1.0;
-    data_.at(16).red = 1.0;
-    data_.at(652).red = 1.0;
-    data_.at(653).red = 1.0;
-    data_.at(654).red = 1.0;
-    data_.at(655).red = 1.0;
-    data_.at(656).red = 1.0;
-    data_.at(12).green = 1.0;
-    data_.at(12).blue = 1.0;
-    data_.at(652).green = 1.0;
-    data_.at(652).blue = 1.0;
-}
-
-// TODO: remove later if there's no implementation
-Image::~Image() {
-    
 }
 
 
@@ -87,10 +69,14 @@ Ray Image::generateRay(int xPosition, int yPosition) {
 // TODO: set ray's normal
 float Image::findIntersection(Ray &ray, Sphere sphere) {
     // use the discriminant to determine if there's an intersection
-    float discriminant = pow(dot(ray.direction, camera_.position - sphere.center), 2) - (dot(camera_.position - sphere.center, camera_.position - sphere.center) - pow(sphere.radius, 2));
+    float discriminant = pow(dot(ray.direction, camera_.position - sphere.center), 2) - dot(ray.direction, ray.direction) *
+        (dot(camera_.position - sphere.center, camera_.position - sphere.center) - pow(sphere.radius, 2));
+    //cout << "discriminant: " << discriminant << endl;
+    //cout << "sphere radius power: " << pow(sphere.radius, 2) << endl;
     
     // when there's no intersection
     if (discriminant < 0) {
+        //cout << "discriminant < 0" << endl;
         return -1;
         
     // when there's an intersection
@@ -99,6 +85,9 @@ float Image::findIntersection(Ray &ray, Sphere sphere) {
         
         float firstT = dot(-1 * ray.direction, camera_.position - sphere.center) + sqrt(discriminant);
         float secondT = dot(-1 * ray.direction, camera_.position - sphere.center) - sqrt(discriminant);
+        
+        cout << "firstT: " << firstT << endl;
+        cout << "secondT: " << secondT << endl;
         
         // the first and possibly the second t values are positive
         if (firstT > 0) {
@@ -140,21 +129,24 @@ Color Image::getColor(Vector3 location) {
     
     
     //return calculateDiffuse(<#Sphere sphere#>, <#Ray ray#>, <#PointLight light#>) + calculatePhong(<#Ray ray#>, <#Sphere sphere#>);
-        return {0, 0, 0};
+        return {1, 1, 1};
 }
 
 
 void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
+        //cout << "i: " << i << endl;
         Ray ray = generateRay(i % width_, i / width_);
-
-        /*float t = findIntersection(ray, spheres_.at(0));
+        
+        float t = findIntersection(ray, spheres_.at(0));
         
         if (t > 0) {
+            //cout << "t > 0" << endl;
             // TODO: shading - call getColor and set the corresponding pixel in the image to the color
+            data_.at(i) = getColor(ray.origin + t * ray.direction);
             
-        }*/
+        }
         // do nothing if not hit since it's already on the background color
     }
     
@@ -165,36 +157,6 @@ void Image::performRayTrace() {
 // TODO: multiple spheres
 
 void Image::writeImageToFile() {
-    /*const char *outputNameAsCString = outputFileName_.c_str();
-    
-    int onePast = strlen(outputNameAsCString);
-    
-    switch (outputNameAsCString[onePast - 1]) {
-        case 'g':
-            if (outputNameAsCString[onePast - 2] == 'p' || outputNameAsCString[onePast - 2] == 'e') {
-                // jpeg
-                stbi_write_jpg(outputNameAsCString, width_, height_, 3, data_.data(), 95);
-            } else {
-                // png
-                stbi_write_png(outputNameAsCString, width_, height_, 3, data_.data(), width_ * 3);
-            }
-            break;
-            
-        case 'a':
-            // tga
-            stbi_write_tga(outputNameAsCString, width_, height_, 3, data_.data());
-            break;
-            
-        case 'p':
-            // bmp
-            stbi_write_bmp(outputNameAsCString, width_, height_, 3, data_.data());
-            break;
-        default:
-            // bmp
-            stbi_write_bmp(outputNameAsCString, width_, height_, 3, data_.data());
-            break;
-    }*/
-    
     ofstream outputfile(outputFileName_);
     
     // file heading
@@ -205,7 +167,9 @@ void Image::writeImageToFile() {
     // actual pixels
     for (int i = 0; i < width_ * height_; i++) {
         // the actual pixel
-        outputfile << static_cast<int>(data_.at(i).red * 255) << " " << static_cast<int>(data_.at(i).green * 255) << " " << static_cast<int>(data_.at(i).blue * 255) << " ";
+        outputfile << static_cast<int>(data_.at(i).red * 255) << " "
+                   << static_cast<int>(data_.at(i).green * 255) << " "
+                   << static_cast<int>(data_.at(i).blue * 255) << " ";
         
         // if we're at the end of a line in the image, we need to start a new line
         if (i % width_ == width_ - 1) {

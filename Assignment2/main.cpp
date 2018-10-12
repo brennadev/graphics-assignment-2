@@ -84,7 +84,8 @@ int main(int argc, const char * argv[]) {
             
         } else if (command == "material") {
             // we just need to store the current material somewhere so it's ready for use when the next sphere is read in
-            sceneInputFile >> currentMaterial.ambient.red >> currentMaterial.ambient.green >> currentMaterial.ambient.blue >> currentMaterial.diffuse.red >> currentMaterial.diffuse.green >> currentMaterial.diffuse.blue >> currentMaterial.specular.red >> currentMaterial.specular.green >> currentMaterial.specular.blue >> currentMaterial.phongCosinePower;
+            // TODO: material needs to be fixed to somehow take in or ignore the values not needed for assignment 2 (as that's how it's specified in the files)
+            sceneInputFile >> currentMaterial.ambient.red >> currentMaterial.ambient.green >> currentMaterial.ambient.blue >> currentMaterial.diffuse.red >> currentMaterial.diffuse.green >> currentMaterial.diffuse.blue >> currentMaterial.specular.red >> currentMaterial.specular.green >> currentMaterial.specular.blue >> currentMaterial.phongCosinePower >> currentMaterial.transmissive.red >> currentMaterial.transmissive.green >> currentMaterial.transmissive.blue >> currentMaterial.indexOfRefraction;
             
         } else if (command == "directional_light") {
             DirectionalLight newLight;
