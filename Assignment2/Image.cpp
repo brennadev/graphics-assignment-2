@@ -10,6 +10,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 
 
@@ -127,7 +128,10 @@ Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
 }
 
 
-Color Image::calculatePhong(Ray ray, Sphere sphere) {
+Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambientLight) {
+    
+    // where does the R in specular come from (that goes in the dot product)?
+    //return sphere.material.ambient * ambientLight + sphere.material.diffuse * light.color * max((float)0.0, dot(ray.normal, light.location)) + sphere.material.specular * dot(camera_.viewingDirection, );
     return {0, 0, 0};
 }
 
@@ -191,7 +195,21 @@ void Image::writeImageToFile() {
             break;
     }*/
     
+    ofstream outputfile(outputFileName_);
     
+    // file heading
+    outputfile << "P3\n";
+    outputfile << width_ << " " << height_ << endl;
+    outputfile << "255\n";
     
-    
+    // actual pixels
+    for (int i = 0; i < width_ * height_; i++) {
+        // the actual pixel
+        outputfile << static_cast<int>(data_.at(i).red * 255) << " " << static_cast<int>(data_.at(i).green * 255) << " " << static_cast<int>(data_.at(i).blue * 255) << " ";
+        
+        // if we're at the end of a line in the image, we need to start a new line
+        if (i % width_ == width_ - 1) {
+            outputfile << endl;
+        }
+    }
 }

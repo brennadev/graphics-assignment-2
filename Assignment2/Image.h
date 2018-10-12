@@ -53,7 +53,7 @@ private:
     /// Diffuse color for a point light
     Color calculateDiffuse(Sphere sphere, Ray ray, PointLight light);
     
-    Color calculatePhong(Ray ray, Sphere sphere);
+    Color calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambientLight);
     
 public:
     /// Initializes all attributes to default values. See DefaultValues.h for more details on what the default values are.
