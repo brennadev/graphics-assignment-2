@@ -24,6 +24,10 @@ Vector3 operator*(const float &constant, const Vector3 &vector) {
     return {constant * vector.x, constant * vector.y, constant * vector.z};
 }
 
+Vector3 operator*(const Vector3 &vector, const float &constant) {
+    return {constant * vector.x, constant * vector.y, constant * vector.z};
+}
+
 Vector3 operator/(const Vector3 &vector, const float &constant) {
     return {vector.x / constant, vector.y / constant, vector.z / constant};
 }

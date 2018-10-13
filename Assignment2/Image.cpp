@@ -68,6 +68,8 @@ Ray Image::generateRay(int xPosition, int yPosition) {
 
 // TODO: set ray's normal
 float Image::findIntersection(Ray &ray, Sphere sphere) {
+    cout << "ray direction: " << ray.direction.x << " " << ray.direction.y << " " << ray.direction.z << endl;
+    cout << "ray length: " << length(ray.direction) << endl;
     // use the discriminant to determine if there's an intersection
     float discriminant = pow(dot(ray.direction, camera_.position - sphere.center), 2) - dot(ray.direction, ray.direction) *
         (dot(camera_.position - sphere.center, camera_.position - sphere.center) - pow(sphere.radius, 2));
@@ -119,11 +121,14 @@ Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
 
 Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambientLight) {
     
+    // TODO: when I start taking advantage of multiple lights, just sum the diffuse and specular and just pull directly from the attributes rather than having the light types as params (there will only be one ambient light)
+    
     // where does the R in specular come from (that goes in the dot product)?
     //return sphere.material.ambient * ambientLight + sphere.material.diffuse * light.color * max((float)0.0, dot(ray.normal, light.location)) + sphere.material.specular * dot(camera_.viewingDirection, );
     return {0, 0, 0};
 }
 
+// I don't think this is needed as the diffuse is already accounted for in Phong - therefore, the calculateDiffuse method won't be needed once I get the Phong lighting working
 Color Image::getColor(Vector3 location) {
     // TODO: finish this (or remove if not needed)
     
@@ -150,7 +155,7 @@ void Image::performRayTrace() {
         // do nothing if not hit since it's already on the background color
     }
     
-    // TODO: writeImageToFile call
+    // TODO: writeImageToFile call (and then remove the separate call that's in main)
 }
 
 

@@ -34,6 +34,7 @@ struct Vector3 {
 Vector3 operator+(const Vector3 &leftVector, const Vector3 &rightVector);
 Vector3 operator-(const Vector3 &leftVector, const Vector3 &rightVector);
 Vector3 operator*(const float &constant, const Vector3 &vector);
+Vector3 operator*(const Vector3 &vector, const float &constant);
 Vector3 operator/(const Vector3 &vector, const float &constant);
 float dot(const Vector3 &firstVector, const Vector3 &secondVector);
 Vector3 cross(const Vector3 &firstVector, const Vector3 &secondVector);
@@ -76,6 +77,7 @@ struct Ray {
     Vector3 origin;
     Vector3 direction;
     Vector3 normal;
+    Vector3 intersection;
 };
 
 
