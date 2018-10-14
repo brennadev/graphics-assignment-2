@@ -68,7 +68,7 @@ Ray Image::generateRay(const int &xPosition, const int &yPosition) {
 
 
 // TODO: set ray's normal
-float Image::findIntersection(Ray &ray, const Sphere &sphere) {
+void Image::findIntersection(Ray &ray, const Sphere &sphere) {
     cout << "ray direction: " << ray.direction.x << " " << ray.direction.y << " " << ray.direction.z << endl;
     cout << "ray length: " << length(ray.direction) << endl;
     // use the discriminant to determine if there's an intersection
@@ -81,7 +81,7 @@ float Image::findIntersection(Ray &ray, const Sphere &sphere) {
     if (discriminant < 0) {
         //cout << "discriminant < 0" << endl;
         ray.intersection.hasIntersection = false;
-        return -1;
+        //return -1;
         
     // when there's an intersection
     } else {
@@ -100,24 +100,24 @@ float Image::findIntersection(Ray &ray, const Sphere &sphere) {
             if (secondT > 0) {
                 ray.intersection.location = ray.origin + min(firstT, secondT) * ray.direction;
                 
-                return min(firstT, secondT);
+                //return min(firstT, secondT);
             
             // only the first t value is positive
             } else {
                 ray.intersection.location = ray.origin + firstT * ray.direction;
-                return firstT;
+                //return firstT;
             }
             
         // only the second t value is positive
         } else if (secondT > 0) {
             ray.intersection.location = ray.origin + secondT * ray.direction;
             ray.intersection.hasIntersection = true;
-            return secondT;
+            //return secondT;
             
         // no intersection in front of the camera as both t values are negative
         } else {
             ray.intersection.hasIntersection = false;
-            return -1;
+            //return -1;
         }
     }
 }
@@ -153,12 +153,12 @@ void Image::performRayTrace() {
         //cout << "i: " << i << endl;
         Ray ray = generateRay(i % width_, i / width_);
         
-        float t = findIntersection(ray, spheres_.at(0));
+        findIntersection(ray, spheres_.at(0));
         
-        if (t > 0) {
+        if (ray.intersection.hasIntersection) {
             //cout << "t > 0" << endl;
             // TODO: shading - call getColor and set the corresponding pixel in the image to the color
-            data_.at(i) = getColor(ray.origin + t * ray.direction);
+            data_.at(i) = getColor(ray.intersection.location);
             
         }
         // do nothing if not hit since it's already on the background color

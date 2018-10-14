@@ -44,7 +44,7 @@ private:
     /// Intersection between ray and sphere
     /// Precondition: make sure ray's direction vector is normalized
     /// Returns: Location of intersection if one exists; else returns -1 to indicate no intersection exists
-    float findIntersection(Ray &ray, const Sphere &sphere);
+    void findIntersection(Ray &ray, const Sphere &sphere);
     
     # pragma mark - Color Generation
     /// Calculate the color for a given pixel in the raster image
