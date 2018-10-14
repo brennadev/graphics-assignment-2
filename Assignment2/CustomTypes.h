@@ -73,11 +73,19 @@ Color operator+(const Color &firstColor, const Color &secondColor);
 
 
 # pragma mark - Non-Light Objects
+struct Intersection {
+    bool hasIntersection;
+    /// Where the intersection occurs if there is one (check hasIntersection first)
+    Vector3 location;
+    /// Normal at the location of intersection (only valid if hasIntersection is true)
+    Vector3 normal;
+};
+
+
 struct Ray {
     Vector3 origin;
     Vector3 direction;
-    Vector3 normal;
-    Vector3 intersection;
+    Intersection intersection;
 };
 
 

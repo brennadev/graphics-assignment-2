@@ -39,16 +39,16 @@ private:
     
     
     /// Create the ray that goes to a given pixel in the raster image
-    Ray generateRay(int xPosition, int yPosition);
+    Ray generateRay(const int &xPosition, const int &yPosition);
     
     /// Intersection between ray and sphere
     /// Precondition: make sure ray's direction vector is normalized
     /// Returns: Location of intersection if one exists; else returns -1 to indicate no intersection exists
-    float findIntersection(Ray &ray, Sphere sphere);
+    float findIntersection(Ray &ray, const Sphere &sphere);
     
     # pragma mark - Color Generation
     /// Calculate the color for a given pixel in the raster image
-    Color getColor(Vector3 location);
+    Color getColor(const Vector3 &location);
     
     /// Diffuse color for a point light
     Color calculateDiffuse(Sphere sphere, Ray ray, PointLight light);

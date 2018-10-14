@@ -58,16 +58,17 @@ Image::Image(Camera camera,
 }
 
 
-Ray Image::generateRay(int xPosition, int yPosition) {
+Ray Image::generateRay(const int &xPosition, const int &yPosition) {
     float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
     float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
     
     return {camera_.position,
-        normalize(-1 * camera_.viewingDirection + u * camera_.right + v * camera_.v), {0,0,0}};
+        normalize(-1 * camera_.viewingDirection + u * camera_.right + v * camera_.v), {false, {0,0,0}, {0,0,0}}};
 }
 
+
 // TODO: set ray's normal
-float Image::findIntersection(Ray &ray, Sphere sphere) {
+float Image::findIntersection(Ray &ray, const Sphere &sphere) {
     cout << "ray direction: " << ray.direction.x << " " << ray.direction.y << " " << ray.direction.z << endl;
     cout << "ray length: " << length(ray.direction) << endl;
     // use the discriminant to determine if there's an intersection
@@ -79,6 +80,7 @@ float Image::findIntersection(Ray &ray, Sphere sphere) {
     // when there's no intersection
     if (discriminant < 0) {
         //cout << "discriminant < 0" << endl;
+        ray.intersection.hasIntersection = false;
         return -1;
         
     // when there's an intersection
@@ -93,21 +95,28 @@ float Image::findIntersection(Ray &ray, Sphere sphere) {
         
         // the first and possibly the second t values are positive
         if (firstT > 0) {
+            ray.intersection.hasIntersection = true;
             // both the first and second t values are positive
             if (secondT > 0) {
+                ray.intersection.location = ray.origin + min(firstT, secondT) * ray.direction;
+                
                 return min(firstT, secondT);
             
             // only the first t value is positive
             } else {
+                ray.intersection.location = ray.origin + firstT * ray.direction;
                 return firstT;
             }
             
         // only the second t value is positive
         } else if (secondT > 0) {
+            ray.intersection.location = ray.origin + secondT * ray.direction;
+            ray.intersection.hasIntersection = true;
             return secondT;
             
         // no intersection in front of the camera as both t values are negative
         } else {
+            ray.intersection.hasIntersection = false;
             return -1;
         }
     }
@@ -115,7 +124,7 @@ float Image::findIntersection(Ray &ray, Sphere sphere) {
 
 
 Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
-    return sphere.material.diffuse * light.color * max((float)0.0, dot(ray.normal, light.location));
+    return sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, light.location));
 }
 
 
@@ -129,7 +138,7 @@ Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambi
 }
 
 // I don't think this is needed as the diffuse is already accounted for in Phong - therefore, the calculateDiffuse method won't be needed once I get the Phong lighting working
-Color Image::getColor(Vector3 location) {
+Color Image::getColor(const Vector3 &location) {
     // TODO: finish this (or remove if not needed)
     
     
