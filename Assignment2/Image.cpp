@@ -81,7 +81,6 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
     if (discriminant < 0) {
         //cout << "discriminant < 0" << endl;
         ray.intersection.hasIntersection = false;
-        //return -1;
         
     // when there's an intersection
     } else {
@@ -99,25 +98,22 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
             // both the first and second t values are positive
             if (secondT > 0) {
                 ray.intersection.location = ray.origin + min(firstT, secondT) * ray.direction;
-                
-                //return min(firstT, secondT);
             
             // only the first t value is positive
             } else {
                 ray.intersection.location = ray.origin + firstT * ray.direction;
-                //return firstT;
             }
             
+            ray.intersection.normal = normalize(ray.intersection.location - sphere.center);
         // only the second t value is positive
         } else if (secondT > 0) {
             ray.intersection.location = ray.origin + secondT * ray.direction;
             ray.intersection.hasIntersection = true;
             //return secondT;
-            
+            ray.intersection.normal = normalize(ray.intersection.location - sphere.center);
         // no intersection in front of the camera as both t values are negative
         } else {
             ray.intersection.hasIntersection = false;
-            //return -1;
         }
     }
 }
