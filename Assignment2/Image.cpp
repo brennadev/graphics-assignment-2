@@ -128,9 +128,9 @@ Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambi
     
     // TODO: when I start taking advantage of multiple lights, just sum the diffuse and specular and just pull directly from the attributes rather than having the light types as params (there will only be one ambient light)
     
-    // where does the R in specular come from (that goes in the dot product)?
-    //return sphere.material.ambient * ambientLight + sphere.material.diffuse * light.color * max((float)0.0, dot(ray.normal, light.location)) + sphere.material.specular * dot(camera_.viewingDirection, );
-    return {0, 0, 0};
+    return sphere.material.ambient * ambientLight
+         + sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, light.location))
+         + sphere.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), sphere.material.phongCosinePower) * light.color;
 }
 
 // I don't think this is needed as the diffuse is already accounted for in Phong - therefore, the calculateDiffuse method won't be needed once I get the Phong lighting working
@@ -154,7 +154,8 @@ void Image::performRayTrace() {
         if (ray.intersection.hasIntersection) {
             //cout << "t > 0" << endl;
             // TODO: shading - call getColor and set the corresponding pixel in the image to the color
-            data_.at(i) = getColor(ray.intersection.location);
+            //data_.at(i) = getColor(ray.intersection.location);
+            // TODO: this needs to be changed to initially call calculateDiffuse and later to call calculatePhong
             
         }
         // do nothing if not hit since it's already on the background color
