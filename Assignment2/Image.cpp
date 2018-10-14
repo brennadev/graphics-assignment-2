@@ -15,7 +15,22 @@
 
 
 Image::Image() {
+    camera_ = DEFAULT_CAMERA;
+    width_ = DEFAULT_WIDTH;
+    height_ = DEFAULT_HEIGHT;
+    outputFileName_ = DEFAULT_OUTPUT_FILE;
+    spheres_ = vector<Sphere>();
+    directionalLights_ = vector<DirectionalLight>();
+    pointLights_ = vector<PointLight>();
+    spotLights_ = vector<SpotLight>();
+    ambientLights_ = vector<Color>();
     
+    setUpCameraValues();
+    
+    // set all points in the image to the background color
+    for (int i = 0; i < width_ * height_; i++) {
+        data_.push_back(DEFAULT_BACKGROUND_COLOR);
+    }
 }
 
 
@@ -42,14 +57,7 @@ Image::Image(Camera camera,
     spotLights_ = spotLights;
     ambientLights_ = ambientLights;
     
-    // calculate the camera's right vector as that isn't provided in the input (using a right-handed coordinate system)
-    camera_.right = cross(camera_.up, camera_.viewingDirection);
-    camera_.v = cross(camera_.viewingDirection, camera_.right);
-    
-    // normalize to ensure math works right
-    normalize(camera_.up);
-    normalize(camera_.viewingDirection);
-    normalize(camera_.right);
+    setUpCameraValues();
     
     // set all points in the image to the background color
     for (int i = 0; i < width * height; i++) {
@@ -58,19 +66,32 @@ Image::Image(Camera camera,
 }
 
 
-Ray Image::generateRay(const int &xPosition, const int &yPosition) {
-    float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
-    float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
+void Image::setUpCameraValues() {
+    // calculate the camera's right vector as that isn't provided in the input (using a right-handed coordinate system)
+    camera_.right = cross(camera_.up, camera_.viewingDirection);
+    camera_.v = cross(camera_.viewingDirection, camera_.right);
     
-    return {camera_.position,
-        normalize(-1 * camera_.viewingDirection + u * camera_.right + v * camera_.v), {false, {0,0,0}, {0,0,0}}};
+    // normalize to ensure math works right
+    normalize(camera_.up);
+    normalize(camera_.viewingDirection);
+    normalize(camera_.right);
 }
 
 
-// TODO: set ray's normal
+Ray Image::generateRay(const int &xPosition, const int &yPosition) {
+    float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
+    float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
+    float imagePlaneDistance = height_ / 2.0 / tan(camera_.halfAngle * (M_PI * 180.0f));
+    cout << "imagePlaneDistance: " << imagePlaneDistance << endl;
+    
+    return {camera_.position,
+        normalize(-1 * imagePlaneDistance * camera_.viewingDirection + u * camera_.right + v * camera_.v), {false, {0,0,0}, {0,0,0}}};
+}
+
+
 void Image::findIntersection(Ray &ray, const Sphere &sphere) {
-    cout << "ray direction: " << ray.direction.x << " " << ray.direction.y << " " << ray.direction.z << endl;
-    cout << "ray length: " << length(ray.direction) << endl;
+    //cout << "ray direction: " << ray.direction.x << " " << ray.direction.y << " " << ray.direction.z << endl;
+    //cout << "ray length: " << length(ray.direction) << endl;
     // use the discriminant to determine if there's an intersection
     float discriminant = pow(dot(ray.direction, camera_.position - sphere.center), 2) - dot(ray.direction, ray.direction) *
         (dot(camera_.position - sphere.center, camera_.position - sphere.center) - pow(sphere.radius, 2));
@@ -85,12 +106,11 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
     // when there's an intersection
     } else {
         // want min of t > 0
-        
         float firstT = dot(-1 * ray.direction, camera_.position - sphere.center) + sqrt(discriminant);
         float secondT = dot(-1 * ray.direction, camera_.position - sphere.center) - sqrt(discriminant);
         
-        cout << "firstT: " << firstT << endl;
-        cout << "secondT: " << secondT << endl;
+        //cout << "firstT: " << firstT << endl;
+        //cout << "secondT: " << secondT << endl;
         
         // the first and possibly the second t values are positive
         if (firstT > 0) {
@@ -109,7 +129,6 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
         } else if (secondT > 0) {
             ray.intersection.location = ray.origin + secondT * ray.direction;
             ray.intersection.hasIntersection = true;
-            //return secondT;
             ray.intersection.normal = normalize(ray.intersection.location - sphere.center);
         // no intersection in front of the camera as both t values are negative
         } else {
@@ -133,15 +152,6 @@ Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambi
          + sphere.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), sphere.material.phongCosinePower) * light.color;
 }
 
-// I don't think this is needed as the diffuse is already accounted for in Phong - therefore, the calculateDiffuse method won't be needed once I get the Phong lighting working
-Color Image::getColor(const Vector3 &location) {
-    // TODO: finish this (or remove if not needed)
-    
-    
-    //return calculateDiffuse(<#Sphere sphere#>, <#Ray ray#>, <#PointLight light#>) + calculatePhong(<#Ray ray#>, <#Sphere sphere#>);
-        return {1, 1, 1};
-}
-
 
 void Image::performRayTrace() {
     // go through each pixel
@@ -153,15 +163,16 @@ void Image::performRayTrace() {
         
         if (ray.intersection.hasIntersection) {
             //cout << "t > 0" << endl;
-            // TODO: shading - call getColor and set the corresponding pixel in the image to the color
-            //data_.at(i) = getColor(ray.intersection.location);
-            // TODO: this needs to be changed to initially call calculateDiffuse and later to call calculatePhong
+            data_.at(i) = {1, 1, 1};
+            
+            //data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
+            // TODO: uncomment this and remove line above once I know diffuse works
+            //data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
             
         }
         // do nothing if not hit since it's already on the background color
     }
-    
-    // TODO: writeImageToFile call (and then remove the separate call that's in main)
+    writeImageToFile();
 }
 
 

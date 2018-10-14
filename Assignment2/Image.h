@@ -15,7 +15,6 @@ using namespace std;
 
 class Image {
 private:
-    
     string outputFileName_;
     int width_;
     int height_;
@@ -37,7 +36,12 @@ private:
     vector<Color> ambientLights_;
     
     
+    # pragma mark - Setup
+    /// Camera vector setup used in constructors
+    void setUpCameraValues();
     
+    
+    # pragma mark - Ray Generation
     /// Create the ray that goes to a given pixel in the raster image
     Ray generateRay(const int &xPosition, const int &yPosition);
     
@@ -54,6 +58,9 @@ private:
     Color calculateDiffuse(Sphere sphere, Ray ray, PointLight light);
     
     Color calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambientLight);
+    
+    /// Final output of the image to an image file
+    void writeImageToFile();
     
 public:
     /// Initializes all attributes to default values. See DefaultValues.h for more details on what the default values are.
@@ -74,10 +81,6 @@ public:
     
     /// Does all the work of the actual ray tracing and outputs it to an image file
     void performRayTrace();
-    
-    // TODO: eventually make this private (as it'll get called by performRayTrace)
-    /// Final output of the image to an image file
-    void writeImageToFile();
 };
 
 #endif

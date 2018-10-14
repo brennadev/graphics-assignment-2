@@ -124,7 +124,7 @@ int main(int argc, const char * argv[]) {
     
     image.performRayTrace();
     // TODO: remove call below once integrated into performRayTrace
-    image.writeImageToFile();
+    //image.writeImageToFile();
     
     return 0;
 }
