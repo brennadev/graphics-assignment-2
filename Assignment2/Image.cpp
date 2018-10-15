@@ -153,7 +153,7 @@ Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambi
     // TODO: when I start taking advantage of multiple lights, just sum the diffuse and specular and just pull directly from the attributes rather than having the light types as params (there will only be one ambient light)
     
     return sphere.material.ambient * ambientLight
-         + sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, light.location))
+         + sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, normalize(light.location - ray.intersection.location)))
          + sphere.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), sphere.material.phongCosinePower) * light.color;
 }
 
@@ -168,9 +168,9 @@ void Image::performRayTrace() {
             //cout << "t > 0" << endl;
             //data_.at(i) = {1, 1, 1};
             //data_.at(i) = spheres_.at(0).material.diffuse;
-            data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
+            //data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
             // TODO: uncomment this and remove line above once I know diffuse works
-            //data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
+            data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
             
         }
         // do nothing if not hit since it's already on the background color
