@@ -152,9 +152,11 @@ Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambi
     
     // TODO: when I start taking advantage of multiple lights, just sum the diffuse and specular and just pull directly from the attributes rather than having the light types as params (there will only be one ambient light)
     
-    return sphere.material.ambient * ambientLight
-         + sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, normalize(light.location - ray.intersection.location)))
-         + sphere.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), sphere.material.phongCosinePower) * light.color;
+    float attenuation = 1.0 / pow(length(light.location - ray.intersection.location), 2);
+    
+    return sphere.material.ambient * ambientLight * attenuation
+         + sphere.material.diffuse * light.color * attenuation * max((float)0.0, dot(ray.intersection.normal, normalize(light.location - ray.intersection.location)))
+         + sphere.material.specular * attenuation * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), sphere.material.phongCosinePower) * light.color;
 }
 
 
