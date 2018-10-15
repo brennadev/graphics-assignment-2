@@ -114,7 +114,7 @@ void Image::findIntersection(Ray &ray) {
             
             // the first and possibly the second t values are positive
             if (firstT > 0) {
-                ray.intersection.hasIntersection = true;
+                //ray.intersection.hasIntersection = true;
                 
                 // both the first and second t values are positive
                 if (secondT > 0) {
@@ -130,11 +130,13 @@ void Image::findIntersection(Ray &ray) {
                 
             // t is 0
             } else {
-                
+                ray.intersection.hasIntersection = false;
+                continue;
             }
             
             // once we know what t is, we can compare and change t and the intersection's value if necessary (when t < 0, no value has been set for it yet)
             if (t < 0 || potentialNewT < t) {
+                ray.intersection.hasIntersection = true;
                 t = potentialNewT;
                 ray.intersection.location = ray.origin + t * ray.direction;
                 ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
@@ -202,6 +204,19 @@ Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
 }
 
 
+Color Image::calculatePhong(Ray ray) {
+    
+    Color totalDiffuseSpecular = {0, 0, 0};
+    
+    for (int i = 0; i < pointLights_.size(); i++) {
+        float attenuation = 1.0 / pow(length(pointLights_.at(i).location - ray.intersection.location), 2);
+        totalDiffuseSpecular += ray.intersection.material.diffuse * pointLights_.at(i).color * attenuation * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
+        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * attenuation * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * pointLights_.at(i).color;
+    }
+    return ray.intersection.material.ambient * ambientLights_.at(0) + totalDiffuseSpecular;
+}
+
+
 Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambientLight) {
     
     // TODO: when I start taking advantage of multiple lights, just sum the diffuse and specular and just pull directly from the attributes rather than having the light types as params (there will only be one ambient light)
@@ -223,15 +238,16 @@ void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-        findIntersection(ray, spheres_.at(0));
-        
+        //findIntersection(ray, spheres_.at(0));
+        findIntersection(ray);
         if (ray.intersection.hasIntersection) {
             //cout << "t > 0" << endl;
-            data_.at(i) = {1, 1, 1};
+            //data_.at(i) = {1, 1, 1};
             //data_.at(i) = spheres_.at(0).material.diffuse;
             //data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
             // TODO: uncomment this and remove line above once I know diffuse works
             //data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
+            data_.at(i) = calculatePhong(ray);
             
         }
         // do nothing if not hit since it's already on the background color

@@ -64,6 +64,9 @@ private:
     
     Color calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambientLight);
     
+    
+    Color calculatePhong(Ray ray);
+    
     /// Final output of the image to an image file
     void writeImageToFile();
     

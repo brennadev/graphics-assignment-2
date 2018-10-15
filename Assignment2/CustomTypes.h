@@ -66,6 +66,7 @@ Color operator*(const Color &firstColor, const Color &secondColor);
 Color operator*(const Color &color, const float &constant);
 
 Color operator+(const Color &firstColor, const Color &secondColor);
+Color operator+=(const Color &firstColor, const Color &secondColor);
 
 /*istream &operator>>(istream &input, Color &value) {
     return input >> value.red >> value.green >> value.blue;

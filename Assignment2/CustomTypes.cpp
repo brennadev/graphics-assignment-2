@@ -82,3 +82,7 @@ Color operator+(const Color &firstColor, const Color &secondColor) {
             clamp(firstColor.green + secondColor.green),
             clamp(firstColor.blue + secondColor.blue)};
 }
+
+Color operator+=(const Color &firstColor, const Color &secondColor) {
+    return firstColor + secondColor;
+}
