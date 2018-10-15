@@ -123,8 +123,6 @@ int main(int argc, const char * argv[]) {
     image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, maxDepth);
     
     image.performRayTrace();
-    // TODO: remove call below once integrated into performRayTrace
-    //image.writeImageToFile();
     
     return 0;
 }

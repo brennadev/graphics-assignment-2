@@ -70,6 +70,7 @@ void Image::setUpCameraValues() {
     // calculate the camera's right vector as that isn't provided in the input (using a right-handed coordinate system)
     camera_.right = cross(camera_.up, camera_.viewingDirection);
     camera_.v = cross(camera_.viewingDirection, camera_.right);
+    camera_.up = camera_.v;     // make sure all camera vectors are orthogonal to each other
     
     // normalize to ensure math works right
     normalize(camera_.up);
@@ -81,8 +82,8 @@ void Image::setUpCameraValues() {
 Ray Image::generateRay(const int &xPosition, const int &yPosition) {
     float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
     float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
-    float imagePlaneDistance = height_ / 2.0 / tan(camera_.halfAngle * (M_PI * 180.0f));
-    cout << "imagePlaneDistance: " << imagePlaneDistance << endl;
+    float imagePlaneDistance = height_ / 2.0 / tan(camera_.halfAngle * (M_PI / 180.0f));
+    //cout << "imagePlaneDistance: " << imagePlaneDistance << endl;
     
     return {camera_.position,
         normalize(-1 * imagePlaneDistance * camera_.viewingDirection + u * camera_.right + v * camera_.v), {false, {0,0,0}, {0,0,0}}};
@@ -139,6 +140,10 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
 
 
 Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
+    Color firstPart = sphere.material.diffuse * light.color;
+    cout << "diffuse first part: " << firstPart.red << " " << firstPart.green << " " << firstPart.blue << endl;
+    cout << "diffuse coefficient: " << sphere.material.diffuse.red << " " << sphere.material.diffuse.green << " " << sphere.material.diffuse.blue << endl;
+    cout << "light color: " << light.color.red << " " << light.color.green << " " << light.color.blue << endl;
     return sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, light.location));
 }
 
@@ -156,18 +161,16 @@ Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambi
 void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
-        //cout << "i: " << i << endl;
         Ray ray = generateRay(i % width_, i / width_);
-        
         findIntersection(ray, spheres_.at(0));
         
         if (ray.intersection.hasIntersection) {
             //cout << "t > 0" << endl;
-            data_.at(i) = {1, 1, 1};
-            
+            //data_.at(i) = {1, 1, 1};
+            //data_.at(i) = spheres_.at(0).material.diffuse;
             //data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
             // TODO: uncomment this and remove line above once I know diffuse works
-            //data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
+            data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
             
         }
         // do nothing if not hit since it's already on the background color
