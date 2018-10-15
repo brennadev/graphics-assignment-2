@@ -141,10 +141,10 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
 
 Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
     Color firstPart = sphere.material.diffuse * light.color;
-    cout << "diffuse first part: " << firstPart.red << " " << firstPart.green << " " << firstPart.blue << endl;
-    cout << "diffuse coefficient: " << sphere.material.diffuse.red << " " << sphere.material.diffuse.green << " " << sphere.material.diffuse.blue << endl;
-    cout << "light color: " << light.color.red << " " << light.color.green << " " << light.color.blue << endl;
-    return sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, light.location));
+    //cout << "diffuse first part: " << firstPart.red << " " << firstPart.green << " " << firstPart.blue << endl;
+    //cout << "diffuse coefficient: " << sphere.material.diffuse.red << " " << sphere.material.diffuse.green << " " << sphere.material.diffuse.blue << endl;
+    //cout << "light color: " << light.color.red << " " << light.color.green << " " << light.color.blue << endl;
+    return sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, normalize(light.location - ray.intersection.location)));
 }
 
 
@@ -168,9 +168,9 @@ void Image::performRayTrace() {
             //cout << "t > 0" << endl;
             //data_.at(i) = {1, 1, 1};
             //data_.at(i) = spheres_.at(0).material.diffuse;
-            //data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
+            data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
             // TODO: uncomment this and remove line above once I know diffuse works
-            data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
+            //data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
             
         }
         // do nothing if not hit since it's already on the background color
