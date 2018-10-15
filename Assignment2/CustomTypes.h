@@ -73,12 +73,24 @@ Color operator+(const Color &firstColor, const Color &secondColor);
 
 
 # pragma mark - Non-Light Objects
+struct Material {
+    Color ambient;
+    Color diffuse;
+    Color specular;
+    float phongCosinePower;
+    Color transmissive;
+    float indexOfRefraction;
+};
+
+
 struct Intersection {
     bool hasIntersection;
     /// Where the intersection occurs if there is one (check hasIntersection first)
     Vector3 location;
     /// Normal at the location of intersection (only valid if hasIntersection is true)
     Vector3 normal;
+    /// Material of the object at the intersection (only valid if hasIntersection is true)
+    Material material;
 };
 
 
@@ -100,16 +112,6 @@ struct Camera {
     Vector3 v;
     
     float halfAngle;
-};
-
-
-struct Material {
-    Color ambient;
-    Color diffuse;
-    Color specular;
-    float phongCosinePower;
-    Color transmissive;
-    float indexOfRefraction;
 };
 
 

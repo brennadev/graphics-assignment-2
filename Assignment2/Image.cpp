@@ -76,20 +76,64 @@ void Image::setUpCameraValues() {
     normalize(camera_.up);
     normalize(camera_.viewingDirection);
     normalize(camera_.right);
+    
+    imagePlaneDistance = height_ / 2.0 / tan(camera_.halfAngle * (M_PI / 180.0f));
 }
 
 
 Ray Image::generateRay(const int &xPosition, const int &yPosition) {
     float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
     float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
-    float imagePlaneDistance = height_ / 2.0 / tan(camera_.halfAngle * (M_PI / 180.0f));
-    //cout << "imagePlaneDistance: " << imagePlaneDistance << endl;
+    //float imagePlaneDistance = height_ / 2.0 / tan(camera_.halfAngle * (M_PI / 180.0f));
     
     return {camera_.position,
-        normalize(-1 * imagePlaneDistance * camera_.viewingDirection + u * camera_.right + v * camera_.v), {false, {0,0,0}, {0,0,0}}};
+        normalize(-1 * imagePlaneDistance * camera_.viewingDirection + u * camera_.right + v * camera_.v), {false, {0,0,0}, {0,0,0}, DEFAULT_MATERIAL}};
 }
 
 
+
+void Image::findIntersection(Ray &ray) {
+    float t = -1;
+    
+    for (int i = 0; i < spheres_.size(); i++) {
+        // use the discriminant to determine if there's an intersection
+        float discriminant = pow(dot(ray.direction, camera_.position - spheres_.at(i).center), 2) - dot(ray.direction, ray.direction) *
+        (dot(camera_.position - spheres_.at(i).center, camera_.position - spheres_.at(i).center) - pow(spheres_.at(i).radius, 2));
+        
+        // no intersection occurs with current sphere
+        if (discriminant < 0) {
+            ray.intersection.hasIntersection = false;
+            
+        // intersection occurs with current sphere
+        } else {
+            // want min of t > 0
+            float firstT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) + sqrt(discriminant);
+            float secondT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) - sqrt(discriminant);
+            float potentialNewT;
+            
+            // the first and possibly the second t values are positive
+            if (firstT > 0) {
+                ray.intersection.hasIntersection = true;
+                
+                // both the first and second t values are positive
+                if (secondT > 0) {
+                    potentialNewT = max(firstT, secondT);
+                    
+                // only the first t value is positive
+                } else {
+                    potentialNewT = firstT;
+                }
+            // only the second t value is positive
+            } else if (secondT > 0) {
+                potentialNewT = secondT;
+            } else {
+                
+            }
+        }
+    }
+}
+
+// TODO: to handle multiple spheres, this will just find the smallest t > 0 by iterating through all spheres (thus the sphere parameter will no longer be needed
 void Image::findIntersection(Ray &ray, const Sphere &sphere) {
     //cout << "ray direction: " << ray.direction.x << " " << ray.direction.y << " " << ray.direction.z << endl;
     //cout << "ray length: " << length(ray.direction) << endl;
@@ -140,7 +184,6 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
 
 
 Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
-    Color firstPart = sphere.material.diffuse * light.color;
     //cout << "diffuse first part: " << firstPart.red << " " << firstPart.green << " " << firstPart.blue << endl;
     //cout << "diffuse coefficient: " << sphere.material.diffuse.red << " " << sphere.material.diffuse.green << " " << sphere.material.diffuse.blue << endl;
     //cout << "light color: " << light.color.red << " " << light.color.green << " " << light.color.blue << endl;
