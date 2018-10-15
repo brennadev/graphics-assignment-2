@@ -64,6 +64,7 @@ float clamp(const float &value);
 Color operator*(const Color &firstColor, const Color &secondColor);
 
 Color operator*(const Color &color, const float &constant);
+Color operator*(const float &constant, const Color &color);
 
 Color operator+(const Color &firstColor, const Color &secondColor);
 Color operator+=(const Color &firstColor, const Color &secondColor);

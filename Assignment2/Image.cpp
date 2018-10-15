@@ -101,8 +101,8 @@ void Image::findIntersection(Ray &ray) {
         
         // no intersection occurs with current sphere
         if (discriminant < 0) {
-            ray.intersection.hasIntersection = false;
-            
+            //ray.intersection.hasIntersection = false;
+           // cout << "discriminant < 0" << endl;
         // intersection occurs with current sphere
         } else {
             // want min of t > 0
@@ -119,29 +119,36 @@ void Image::findIntersection(Ray &ray) {
                 // both the first and second t values are positive
                 if (secondT > 0) {
                     potentialNewT = max(firstT, secondT);
+                    //cout << "both t values > 0" << endl;
                     
                 // only the first t value is positive
                 } else {
                     potentialNewT = firstT;
+                    //cout << "firstT > 0" << endl;
                 }
             // only the second t value is positive
             } else if (secondT > 0) {
                 potentialNewT = secondT;
+                //cout << "secondT > 0" << endl;
                 
             // t is 0
             } else {
-                ray.intersection.hasIntersection = false;
+                //cout << "t == 0" << endl;
+                //ray.intersection.hasIntersection = false;
                 continue;
             }
             
             // once we know what t is, we can compare and change t and the intersection's value if necessary (when t < 0, no value has been set for it yet)
             if (t < 0 || potentialNewT < t) {
+                //cout << "editing t value" << endl;
                 ray.intersection.hasIntersection = true;
                 t = potentialNewT;
                 ray.intersection.location = ray.origin + t * ray.direction;
                 ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                 ray.intersection.material = spheres_.at(i).material;
             }
+            
+            cout << endl;
         }
     }
 }
@@ -176,10 +183,12 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
             // both the first and second t values are positive
             if (secondT > 0) {
                 ray.intersection.location = ray.origin + min(firstT, secondT) * ray.direction;
+                ray.intersection.material = sphere.material;
             
             // only the first t value is positive
             } else {
                 ray.intersection.location = ray.origin + firstT * ray.direction;
+                ray.intersection.material = sphere.material;
             }
             
             ray.intersection.normal = normalize(ray.intersection.location - sphere.center);
@@ -188,6 +197,7 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
             ray.intersection.location = ray.origin + secondT * ray.direction;
             ray.intersection.hasIntersection = true;
             ray.intersection.normal = normalize(ray.intersection.location - sphere.center);
+            ray.intersection.material = sphere.material;
         // no intersection in front of the camera as both t values are negative
         } else {
             ray.intersection.hasIntersection = false;
@@ -210,9 +220,10 @@ Color Image::calculatePhong(Ray ray) {
     
     for (int i = 0; i < pointLights_.size(); i++) {
         float attenuation = 1.0 / pow(length(pointLights_.at(i).location - ray.intersection.location), 2);
-        totalDiffuseSpecular += ray.intersection.material.diffuse * pointLights_.at(i).color * attenuation * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
-        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * attenuation * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * pointLights_.at(i).color;
+        totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * pointLights_.at(i).color /** attenuation*/ * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
+        + /*attenuation **/ ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * pointLights_.at(i).color;
     }
+    
     return ray.intersection.material.ambient * ambientLights_.at(0) + totalDiffuseSpecular;
 }
 
@@ -225,7 +236,7 @@ Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambi
     
     // first thing is the one with attenuation; second is the one without; of course, eventually, the one without attenuation must be removed
     
-    /*return sphere.material.ambient * ambientLight * attenuation
+    /*return sphere.material.ambient * ambientLight
          + sphere.material.diffuse * light.color * attenuation * max((float)0.0, dot(ray.intersection.normal, normalize(light.location - ray.intersection.location)))
          + sphere.material.specular * attenuation * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), sphere.material.phongCosinePower) * light.color;*/
     return sphere.material.ambient * ambientLight
@@ -238,16 +249,20 @@ void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-        //findIntersection(ray, spheres_.at(0));
-        findIntersection(ray);
+        findIntersection(ray, spheres_.at(0));
+        //findIntersection(ray);
         if (ray.intersection.hasIntersection) {
-            //cout << "t > 0" << endl;
+            
+            
+           // cout << "t > 0" << endl;
             //data_.at(i) = {1, 1, 1};
             //data_.at(i) = spheres_.at(0).material.diffuse;
             //data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
             // TODO: uncomment this and remove line above once I know diffuse works
-            //data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
-            data_.at(i) = calculatePhong(ray);
+            data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
+            //data_.at(i) = calculatePhong(ray);
+            
+            //cout << "test" <<endl;
             
         }
         // do nothing if not hit since it's already on the background color

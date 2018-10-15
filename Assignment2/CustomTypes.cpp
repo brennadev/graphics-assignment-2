@@ -77,6 +77,10 @@ Color operator*(const Color &color, const float &constant) {
             clamp(color.blue * constant)};
 }
 
+Color operator*(const float &constant, const Color &color) {
+    return color * constant;
+}
+
 Color operator+(const Color &firstColor, const Color &secondColor) {
     return {clamp(firstColor.red + secondColor.red),
             clamp(firstColor.green + secondColor.green),
