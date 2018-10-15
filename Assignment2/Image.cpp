@@ -230,28 +230,16 @@ Color Image::calculatePhong(Ray ray) {
     
     for (int i = 0; i < pointLights_.size(); i++) {
         float attenuation = 1.0 / pow(length(pointLights_.at(i).location - ray.intersection.location), 2);
-        totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * pointLights_.at(i).color /** attenuation*/ * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
-        + /*attenuation **/ ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * pointLights_.at(i).color;
+        
+        /*totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * (pointLights_.at(i).color * attenuation) * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
+        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * (pointLights_.at(i).color * attenuation);*/
+        
+        
+        totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * pointLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
+        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * pointLights_.at(i).color;
     }
     
     return ray.intersection.material.ambient * ambientLights_.at(0) + totalDiffuseSpecular;
-}
-
-
-Color Image::calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambientLight) {
-    
-    // TODO: when I start taking advantage of multiple lights, just sum the diffuse and specular and just pull directly from the attributes rather than having the light types as params (there will only be one ambient light)
-    
-    float attenuation = 1.0 / pow(length(light.location - ray.intersection.location), 2);
-    
-    // first thing is the one with attenuation; second is the one without; of course, eventually, the one without attenuation must be removed
-    
-    /*return sphere.material.ambient * ambientLight
-         + sphere.material.diffuse * light.color * attenuation * max((float)0.0, dot(ray.intersection.normal, normalize(light.location - ray.intersection.location)))
-         + sphere.material.specular * attenuation * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), sphere.material.phongCosinePower) * light.color;*/
-    return sphere.material.ambient * ambientLight
-    + sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, light.location))
-    + sphere.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), sphere.material.phongCosinePower) * light.color;
 }
 
 
@@ -268,8 +256,6 @@ void Image::performRayTrace() {
             //data_.at(i) = {1, 1, 1};
             //data_.at(i) = spheres_.at(0).material.diffuse;
             //data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
-            // TODO: uncomment this and remove line above once I know diffuse works
-            //data_.at(i) = calculatePhong(ray, spheres_.at(0), pointLights_.at(0), ambientLights_.at(0));
             data_.at(i) = calculatePhong(ray);
         }
         // do nothing if not hit since it's already on the background color
@@ -277,8 +263,6 @@ void Image::performRayTrace() {
     writeImageToFile();
 }
 
-
-// TODO: multiple spheres
 
 void Image::writeImageToFile() {
     ofstream outputfile(outputFileName_);
