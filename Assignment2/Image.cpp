@@ -100,8 +100,6 @@ void Image::findIntersection(Ray &ray) {
         
         // no intersection occurs with current sphere
         if (discriminant < 0) {
-            //ray.intersection.hasIntersection = false;
-           // cout << "discriminant < 0" << endl;
         // intersection occurs with current sphere
         } else {
             // want min of t > 0
@@ -113,8 +111,6 @@ void Image::findIntersection(Ray &ray) {
             
             // the first and possibly the second t values are positive
             if (firstT > 0) {
-                //ray.intersection.hasIntersection = true;
-                
                 // both the first and second t values are positive
                 if (secondT > 0) {
                     potentialNewT = max(firstT, secondT);
@@ -124,7 +120,6 @@ void Image::findIntersection(Ray &ray) {
                     ray.intersection.location = ray.origin + t * ray.direction;
                     ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                     ray.intersection.material = spheres_.at(i).material;
-                    //cout << "both t values > 0" << endl;
                     
                 // only the first t value is positive
                 } else {
@@ -134,7 +129,6 @@ void Image::findIntersection(Ray &ray) {
                     ray.intersection.location = ray.origin + t * ray.direction;
                     ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                     ray.intersection.material = spheres_.at(i).material;
-                    //cout << "firstT > 0" << endl;
                 }
             // only the second t value is positive
             } else if (secondT > 0) {
@@ -144,32 +138,17 @@ void Image::findIntersection(Ray &ray) {
                 ray.intersection.location = ray.origin + t * ray.direction;
                 ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                 ray.intersection.material = spheres_.at(i).material;
-                //cout << "secondT > 0" << endl;
                 
             // t is 0
             } else {
-                //cout << "t == 0" << endl;
-                //ray.intersection.hasIntersection = false;
                 continue;
             }
-            
-            // once we know what t is, we can compare and change t and the intersection's value if necessary (when t < 0, no value has been set for it yet)
-            /*if ((t < 0 || potentialNewT < t) && potentialNewT > 0) {
-                //cout << "editing t value" << endl;
-                ray.intersection.hasIntersection = true;
-                t = potentialNewT;
-                ray.intersection.location = ray.origin + t * ray.direction;
-                ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
-                ray.intersection.material = spheres_.at(i).material;
-            }*/
-            
-            cout << endl;
         }
     }
 }
 
 
-void Image::findIntersection(Ray &ray, const Sphere &sphere) {
+/*void Image::findIntersection(Ray &ray, const Sphere &sphere) {
     // use the discriminant to determine if there's an intersection
     float discriminant = pow(dot(ray.direction, camera_.position - sphere.center), 2) - dot(ray.direction, ray.direction) *
         (dot(camera_.position - sphere.center, camera_.position - sphere.center) - pow(sphere.radius, 2));
@@ -183,9 +162,6 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
         // want min of t > 0
         float firstT = dot(-1 * imagePlaneDistance * ray.direction, camera_.position - sphere.center) + sqrt(discriminant);
         float secondT = dot(-1 * imagePlaneDistance * ray.direction, camera_.position - sphere.center) - sqrt(discriminant);
-        
-        //cout << "firstT: " << firstT << endl;
-        //cout << "secondT: " << secondT << endl;
         
         // the first and possibly the second t values are positive
         if (firstT > 0) {
@@ -213,13 +189,10 @@ void Image::findIntersection(Ray &ray, const Sphere &sphere) {
             ray.intersection.hasIntersection = false;
         }
     }
-}
+}*/
 
 
 Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
-    //cout << "diffuse first part: " << firstPart.red << " " << firstPart.green << " " << firstPart.blue << endl;
-    //cout << "diffuse coefficient: " << sphere.material.diffuse.red << " " << sphere.material.diffuse.green << " " << sphere.material.diffuse.blue << endl;
-    //cout << "light color: " << light.color.red << " " << light.color.green << " " << light.color.blue << endl;
     return sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, normalize(light.location - ray.intersection.location)));
 }
 
@@ -231,14 +204,16 @@ Color Image::calculatePhong(Ray ray) {
     for (int i = 0; i < pointLights_.size(); i++) {
         float attenuation = 1.0 / pow(length(pointLights_.at(i).location - ray.intersection.location), 2);
         
+        // comment/uncomment one line for the totalDiffuseSpecular assignment depending on what you want to do
+        
+        // calculation with attenuation (but causes non-ambient stuff to be really dim)
         /*totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * (pointLights_.at(i).color * attenuation) * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
         + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * (pointLights_.at(i).color * attenuation);*/
         
-        
+        // calculation without attenuation
         totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * pointLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
         + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * pointLights_.at(i).color;
     }
-    
     return ray.intersection.material.ambient * ambientLights_.at(0) + totalDiffuseSpecular;
 }
 
@@ -250,12 +225,10 @@ void Image::performRayTrace() {
         //findIntersection(ray, spheres_.at(0));
         findIntersection(ray);
         if (ray.intersection.hasIntersection) {
-            
-            
-           // cout << "t > 0" << endl;
-            //data_.at(i) = {1, 1, 1};
-            //data_.at(i) = spheres_.at(0).material.diffuse;
+            // below will just calculate the diffuse on a single sphere with a single light (will just take the first of each) - shows how the diffuse works
             //data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
+            
+            // the full Phong lighting
             data_.at(i) = calculatePhong(ray);
         }
         // do nothing if not hit since it's already on the background color
