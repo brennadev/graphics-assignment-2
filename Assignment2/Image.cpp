@@ -148,50 +148,6 @@ void Image::findIntersection(Ray &ray) {
 }
 
 
-/*void Image::findIntersection(Ray &ray, const Sphere &sphere) {
-    // use the discriminant to determine if there's an intersection
-    float discriminant = pow(dot(ray.direction, camera_.position - sphere.center), 2) - dot(ray.direction, ray.direction) *
-        (dot(camera_.position - sphere.center, camera_.position - sphere.center) - pow(sphere.radius, 2));
-
-    // when there's no intersection
-    if (discriminant < 0) {
-        ray.intersection.hasIntersection = false;
-        
-    // when there's an intersection
-    } else {
-        // want min of t > 0
-        float firstT = dot(-1 * imagePlaneDistance * ray.direction, camera_.position - sphere.center) + sqrt(discriminant);
-        float secondT = dot(-1 * imagePlaneDistance * ray.direction, camera_.position - sphere.center) - sqrt(discriminant);
-        
-        // the first and possibly the second t values are positive
-        if (firstT > 0) {
-            ray.intersection.hasIntersection = true;
-            // both the first and second t values are positive
-            if (secondT > 0) {
-                ray.intersection.location = ray.origin + min(firstT, secondT) * ray.direction;
-                ray.intersection.material = sphere.material;
-            
-            // only the first t value is positive
-            } else {
-                ray.intersection.location = ray.origin + firstT * ray.direction;
-                ray.intersection.material = sphere.material;
-            }
-            
-            ray.intersection.normal = normalize(ray.intersection.location - sphere.center);
-        // only the second t value is positive
-        } else if (secondT > 0) {
-            ray.intersection.location = ray.origin + secondT * ray.direction;
-            ray.intersection.hasIntersection = true;
-            ray.intersection.normal = normalize(ray.intersection.location - sphere.center);
-            ray.intersection.material = sphere.material;
-        // no intersection in front of the camera as both t values are negative
-        } else {
-            ray.intersection.hasIntersection = false;
-        }
-    }
-}*/
-
-
 Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
     return sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, normalize(light.location - ray.intersection.location)));
 }

@@ -49,10 +49,6 @@ private:
     
     /// Intersection between ray and sphere
     /// Precondition: make sure ray's direction vector is normalized
-    /// Returns: Location of intersection if one exists; else returns -1 to indicate no intersection exists
-    //void findIntersection(Ray &ray, const Sphere &sphere);
-    
-    // TODO: the intersection method below is the one to keep; remove the one above once the new one works
     void findIntersection(Ray &ray);
     
     # pragma mark - Color Generation
