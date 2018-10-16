@@ -1,9 +1,0 @@
-# A single sphere in the middle of the canvas
-film_resolution 800 250
-material 0.5 0.5 0.5 0 0.8 1 1 1 1 30 0 0 0 1
-sphere -1 5 -10 4
-output_image basicSphere.ppm
-point_light 1 1 1 0 5 0
-#point_light 1 1 1 0 -5 0
-#background 1 1 1
-ambient_light 0.25 0.25 0.25

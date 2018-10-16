@@ -1,11 +1,12 @@
-# A single sphere in the middle of the canvas
+# Two spheres partially on top of each other
 film_resolution 800 250
+output_image basicSphere.ppm
 material 0.5 0.5 0.5 0 0.8 1 1 1 1 30 0 0 0 1
 sphere -1 5 -10 4
+
 material 0.5 0.5 0.5 1 0 0 1 1 1 30 0 0 0 1
-sphere 5 -1 -5 2
-output_image basicSphere.ppm
+sphere 1 3 -5 6
+
 point_light 1 1 1 0 5 0
-#point_light 1 1 1 0 -5 0
-#background 1 1 1
+
 ambient_light 0.5 0.5 0.5

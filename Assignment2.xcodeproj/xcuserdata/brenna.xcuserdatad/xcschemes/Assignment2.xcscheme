@@ -64,7 +64,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "twoSpheresMultipleLightsNotOpposite.scn"
+            argument = "spheres1.scn"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

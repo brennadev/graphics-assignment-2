@@ -1,12 +1,13 @@
-# A single sphere in the middle of the canvas
+# Two spheres spaced out from each other
 film_resolution 800 250
+output_image twoSpheres.ppm
 
 material 0.5 0.5 0.5 0 0.8 1 1 1 1 30 0 0 0 1
 sphere -1 5 -10 4
+
 material 0.5 0.5 0.5 1 0 0 1 1 1 30 0 0 0 1
 sphere 5 -1 -5 2
-output_image basicSphere.ppm
+
 point_light 1 1 1 0 5 0
-point_light 1 1 1 0 -5 0
 
 ambient_light 0.5 0.5 0.5
