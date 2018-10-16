@@ -1,0 +1,3 @@
+# relies entirely on defaults and just creates a black image
+output_image output.png
+film_resolution 3 3

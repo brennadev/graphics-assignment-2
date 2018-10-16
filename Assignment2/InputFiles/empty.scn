@@ -1,0 +1,2 @@
+# relies entirely on defaults and just creates a black image
+output_image output.ppm
