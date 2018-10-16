@@ -100,6 +100,7 @@ void Image::findIntersection(Ray &ray) {
         
         // no intersection occurs with current sphere
         if (discriminant < 0) {
+            // I originally had some stuff in here, but I don't want to remove this if statement so close to the due date so I don't accidentally break something last-minute
         // intersection occurs with current sphere
         } else {
             // want min of t > 0
@@ -178,8 +179,8 @@ void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-        //findIntersection(ray, spheres_.at(0));
         findIntersection(ray);
+        
         if (ray.intersection.hasIntersection) {
             // below will just calculate the diffuse on a single sphere with a single light (will just take the first of each) - shows how the diffuse works
             //data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));

@@ -12,9 +12,6 @@
 #ifndef CustomTypes_h
 #define CustomTypes_h
 
-// TODO: remove iostream-related overloads and this if not used
-//#include <iostream>
-
 # pragma mark - Vectors and Vector Operations
 // TODO: remove if not used
 struct Vector2 {
@@ -42,12 +39,6 @@ float length(const Vector3 &vector);
 Vector3 normalize(const Vector3 &vector);
 
 
-/*istream &operator>>(istream &input, Vector3 &value) {
-    input >> value.x >> value.y >> value.z;
-    return input;
-}*/
-
-
 # pragma mark - Color and Color Operations
 /// RGB-based color - all stored as floats from 0 to 1 to prevent math errors
 struct Color {
@@ -68,10 +59,6 @@ Color operator*(const float &constant, const Color &color);
 
 Color operator+(const Color &firstColor, const Color &secondColor);
 Color operator+=(const Color &firstColor, const Color &secondColor);
-
-/*istream &operator>>(istream &input, Color &value) {
-    return input >> value.red >> value.green >> value.blue;
-}*/
 
 
 # pragma mark - Non-Light Objects
