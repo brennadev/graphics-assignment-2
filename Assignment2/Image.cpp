@@ -164,12 +164,12 @@ Color Image::calculatePhong(Ray ray) {
         // comment/uncomment one line for the totalDiffuseSpecular assignment depending on what you want to do
         
         // calculation with attenuation (but causes non-ambient stuff to be really dim)
-        totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * (pointLights_.at(i).color * attenuation) * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
-        /*+ ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * (pointLights_.at(i).color * attenuation)*/;
+        /*totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * (pointLights_.at(i).color * attenuation) * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
+        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * (pointLights_.at(i).color * attenuation);*/
         
         // calculation without attenuation
-        /*totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * pointLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
-        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * pointLights_.at(i).color;*/
+        totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * pointLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
+        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * pointLights_.at(i).color;
     }
     return ray.intersection.material.ambient * ambientLights_.at(0) + totalDiffuseSpecular;
 }
