@@ -82,11 +82,14 @@ void Image::setUpCameraValues() {
 
 
 Ray Image::generateRay(const int &xPosition, const int &yPosition) {
-    float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
-    float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
+    //float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
+    //float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
+    
+    float u = (float)width_ / 2.0 - width_ * (xPosition / (float)width_);
+    float v = (float)height_ / 2.0 - height_ * (yPosition / (float)height_);
     
     return {camera_.position,
-        normalize(-1 * imagePlaneDistance * camera_.viewingDirection + u * camera_.right + v * camera_.v), {false, {0,0,0}, {0,0,0}, DEFAULT_MATERIAL}};
+        normalize(-1 * imagePlaneDistance * camera_.viewingDirection + u * camera_.right + v * camera_.up), {false, {0,0,0}, {0,0,0}, DEFAULT_MATERIAL}};
 }
 
 
