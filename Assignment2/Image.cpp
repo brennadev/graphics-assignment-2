@@ -25,7 +25,11 @@ Image::Image() {
     spotLights_ = vector<SpotLight>();
     ambientLights_ = vector<Color>();
     
+    
+    
     setUpCameraValues();
+    
+    
     
     // set all points in the image to the background color
     for (int i = 0; i < width_ * height_; i++) {
@@ -68,7 +72,15 @@ Image::Image(Camera camera,
 
 void Image::setUpCameraValues() {
     // calculate the camera's right vector as that isn't provided in the input (using a right-handed coordinate system)
-    camera_.right = cross(camera_.up, camera_.viewingDirection);
+    
+    // trying to switch the cross product order to see what difference it makes
+    
+    // old
+    //camera_.right = cross(camera_.up, camera_.viewingDirection);
+    
+    // new
+    camera_.right = cross(camera_.viewingDirection, camera_.up);
+    
     camera_.v = cross(camera_.viewingDirection, camera_.right);
     camera_.up = camera_.v;     // make sure all camera vectors are orthogonal to each other
     
@@ -78,6 +90,12 @@ void Image::setUpCameraValues() {
     normalize(camera_.right);
     
     imagePlaneDistance = height_ / 2.0 / tan(camera_.halfAngle * (M_PI / 180.0f));
+    
+    cout << "camera forward: " << camera_.viewingDirection.x << " " << camera_.viewingDirection.y << " " << camera_.viewingDirection.z << endl;
+    cout << "camera eye: " << camera_.position.x << " " << camera_.position.y << " " << camera_.position.z << endl;
+    cout << "camera v: " << camera_.v.x << " " << camera_.v.y << " " << camera_.v.z << endl;
+    cout << "camera up: " << camera_.up.x << " " << camera_.up.y << " " << camera_.up.z << endl;
+    cout << "camera right: " << camera_.right.x << " " << camera_.right.y << " " << camera_.right.z << endl;
 }
 
 
@@ -86,7 +104,7 @@ Ray Image::generateRay(const int &xPosition, const int &yPosition) {
     float v = (float)height_ / 2.0 - height_ * (yPosition / (float)height_);
     
     return {camera_.position,
-        normalize(-1 * imagePlaneDistance * camera_.viewingDirection + u * camera_.right + v * camera_.up), {false, {0,0,0}, {0,0,0}, DEFAULT_MATERIAL}};
+        normalize(/*-1 **/ imagePlaneDistance * camera_.viewingDirection + u * camera_.right + v * camera_.up), {false, {0,0,0}, {0,0,0}, DEFAULT_MATERIAL}};
 }
 
 

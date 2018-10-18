@@ -64,7 +64,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "InputFilesToUse/twoSpheres.scn"
+            argument = "InputFilesToUse/spheres1.scn"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

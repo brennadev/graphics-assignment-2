@@ -6,19 +6,19 @@ output_image spheres1.ppm
 material .75 .75 .75 .75 .75 .75 .3 .3 .3 32 .2 .2 .2 1.5
 sphere 0 -50 0 50
 
-#red sphere
+#red shpere
 material 1 0 0 1 0 0 .3 .3 .3 32 .2 .2 .2 1.5
 sphere -3 1 0 .75
 
-#green sphere
+#green shpere
 material 0 .7 0 0 .7 0 0 0 0 16 .9 .9 .9 1.1
 sphere 0 1.25 0 1
 
-#blue sphere
+#blue shpere
 material 0 0 1 0 0 1 0 0 0 16 0 0 0 1.0
 sphere 3 1.5 0 1.25
 
-#white overhead light
+#white overhad light
 point_light 10 10 10 0 5 0
 ambient_light .25 .25 .25
 background .05 .05 .05
