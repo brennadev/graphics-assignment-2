@@ -133,4 +133,17 @@ struct SpotLight {
 };
 
 
+# pragma mark - Triangles
+
+struct TriangleVertex {
+    Vector3 location;
+    Vector3 normal;
+};
+
+struct Triangle {
+    TriangleVertex vertex1;
+    TriangleVertex vertex2;
+    TriangleVertex vertex3;
+};
+
 #endif /* CustomTypes_h */

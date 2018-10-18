@@ -56,6 +56,28 @@ int main(int argc, const char * argv[]) {
     Material currentMaterial = DEFAULT_MATERIAL;
     
     
+    
+    // triangle-related values
+    /// total possible vertices; -1 indicates a value hasn't been set
+    int maxVertices = -1;
+    
+    /// total possible normals; -1 indicates a value hasn't been set
+    int maxNormals = -1;
+    
+    /// All vertices taken as inputs; vector will be initialized to maxVertices once a value for maxVertices has been read in
+    vector<Vector3> vertices;
+    // All normals taken as inputs; vector will be initialized to maxNormals once a value for maxNormals has been read in
+    vector<Vector3> normals;
+    vector<Triangle> triangles = vector<Triangle>();
+    
+    
+    // only used for appending to vectors (thus why they aren't initialized to anything
+    Vector3 currentVertex;
+    Vector3 currentNormal;
+    
+    
+    Triangle currentTriangle;
+    
     while (sceneInputFile >> command) {
         // ignore comments
         if (command[0] == '#') {
@@ -114,10 +136,34 @@ int main(int argc, const char * argv[]) {
             
         } else if (command == "max_depth") {
             sceneInputFile >> maxDepth;
+            
+        } else if (command == "max_vertices") {
+            sceneInputFile >> maxVertices;
+            vertices = vector<Vector3>(maxVertices);
+            
+        } else if (command == "max_normals") {
+            sceneInputFile >> maxNormals;
+            normals = vector<Vector3>(maxNormals);
+            
+        } else if (command == "vertex") {
+            sceneInputFile >> currentVertex.x >> currentVertex.y >> currentVertex.z;
+            vertices.push_back(currentVertex);
+            
+        } else if (command == "normal") {
+            sceneInputFile >> currentNormal.x >> currentNormal.y >> currentNormal.z;
+            normals.push_back(currentNormal);
+            
+        } else if (command == "triangle") {
+            // TODO: fill in once I know if vertices/normals are all read in first
+            
+        } else if (command == "normal_triangle") {
+            // TODO: fill in once I know if vertices/normals are all read in first
         } else {
             cout << "Command not recognized" << endl;
         }
     }
+    
+    // TODO: make triangle stuff available to Image instance - not sure what all will be needed
     
     // this will be initialized with default values if they haven't been set in the
     image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, maxDepth);

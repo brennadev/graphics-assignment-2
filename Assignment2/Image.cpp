@@ -82,9 +82,6 @@ void Image::setUpCameraValues() {
 
 
 Ray Image::generateRay(const int &xPosition, const int &yPosition) {
-    //float u = static_cast<float>(width_) / 2 * -1 + width_ * xPosition / width_;
-    //float v = static_cast<float>(height_) / 2 * -1 + height_ * yPosition / height_;
-    
     float u = (float)width_ / 2.0 - width_ * (xPosition / (float)width_);
     float v = (float)height_ / 2.0 - height_ * (yPosition / (float)height_);
     
@@ -110,35 +107,29 @@ void Image::findIntersection(Ray &ray) {
             float firstT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) + sqrt(discriminant);
             float secondT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) - sqrt(discriminant);
             
-            // this keeps the smallest t > 0 so it can later be compared to the current value for t
-            float potentialNewT = -1;
             
             // the first and possibly the second t values are positive
             if (firstT > 0) {
                 // both the first and second t values are positive
                 if (secondT > 0) {
-                    potentialNewT = max(firstT, secondT);
-                    
                     ray.intersection.hasIntersection = true;
-                    t = potentialNewT;
+                    t = max(firstT, secondT);
                     ray.intersection.location = ray.origin + t * ray.direction;
                     ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                     ray.intersection.material = spheres_.at(i).material;
                     
                 // only the first t value is positive
                 } else {
-                    potentialNewT = firstT;
                     ray.intersection.hasIntersection = true;
-                    t = potentialNewT;
+                    t = firstT;
                     ray.intersection.location = ray.origin + t * ray.direction;
                     ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                     ray.intersection.material = spheres_.at(i).material;
                 }
             // only the second t value is positive
             } else if (secondT > 0) {
-                potentialNewT = secondT;
                 ray.intersection.hasIntersection = true;
-                t = potentialNewT;
+                t = secondT;
                 ray.intersection.location = ray.origin + t * ray.direction;
                 ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                 ray.intersection.material = spheres_.at(i).material;
@@ -167,12 +158,16 @@ Color Image::calculatePhong(Ray ray) {
         // comment/uncomment one line for the totalDiffuseSpecular assignment depending on what you want to do
         
         // calculation with attenuation (but causes non-ambient stuff to be really dim)
-        /*totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * (pointLights_.at(i).color * attenuation) * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
-        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * (pointLights_.at(i).color * attenuation);*/
+        totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * (pointLights_.at(i).color * attenuation) * max((float)0.0, dot(ray.intersection.normal, normalize(pointLights_.at(i).location - ray.intersection.location)))
+        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * (pointLights_.at(i).color * attenuation);
         
         // calculation without attenuation
-        totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * pointLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, pointLights_.at(i).location))
-        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * pointLights_.at(i).color;
+        /*totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * pointLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, normalize(pointLights_.at(i).location - ray.intersection.location)))
+        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * pointLights_.at(i).color;*/
+        
+        
+        // diffuse only - no attenuation
+        //totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * pointLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, normalize(pointLights_.at(i).location - ray.intersection.location)));
     }
     return ray.intersection.material.ambient * ambientLights_.at(0) + totalDiffuseSpecular;
 }
