@@ -73,7 +73,7 @@ Image::Image(Camera camera,
 void Image::setUpCameraValues() {
     // calculate the camera's right vector as that isn't provided in the input (using a right-handed coordinate system)
     
-    // trying to switch the cross product order to see what difference it makes
+    // trying to switch the cross product order to see what difference it makes on the camera right
     
     // old
     //camera_.right = cross(camera_.up, camera_.viewingDirection);
@@ -131,7 +131,7 @@ void Image::findIntersection(Ray &ray) {
                 // both the first and second t values are positive
                 if (secondT > 0) {
                     ray.intersection.hasIntersection = true;
-                    t = max(firstT, secondT);
+                    t = min(firstT, secondT);
                     ray.intersection.location = ray.origin + t * ray.direction;
                     ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                     ray.intersection.material = spheres_.at(i).material;
