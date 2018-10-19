@@ -24,6 +24,7 @@ Image::Image() {
     pointLights_ = vector<PointLight>();
     spotLights_ = vector<SpotLight>();
     ambientLights_ = vector<Color>();
+    triangles_ = vector<Triangle>();
     
     setUpCameraValues();
     
@@ -70,13 +71,6 @@ Image::Image(Camera camera,
 
 void Image::setUpCameraValues() {
     // calculate the camera's right vector as that isn't provided in the input (using a right-handed coordinate system)
-    
-    // trying to switch the cross product order to see what difference it makes on the camera right
-    
-    // old
-    //camera_.right = cross(camera_.up, camera_.viewingDirection);
-    
-    // new
     camera_.right = cross(camera_.viewingDirection, camera_.up);
     
     camera_.v = cross(camera_.viewingDirection, camera_.right);
@@ -88,12 +82,6 @@ void Image::setUpCameraValues() {
     normalize(camera_.right);
     
     imagePlaneDistance = height_ / 2.0 / tan(camera_.halfAngle * (M_PI / 180.0f));
-    
-    cout << "camera forward: " << camera_.viewingDirection.x << " " << camera_.viewingDirection.y << " " << camera_.viewingDirection.z << endl;
-    cout << "camera eye: " << camera_.position.x << " " << camera_.position.y << " " << camera_.position.z << endl;
-    cout << "camera v: " << camera_.v.x << " " << camera_.v.y << " " << camera_.v.z << endl;
-    cout << "camera up: " << camera_.up.x << " " << camera_.up.y << " " << camera_.up.z << endl;
-    cout << "camera right: " << camera_.right.x << " " << camera_.right.y << " " << camera_.right.z << endl;
 }
 
 
