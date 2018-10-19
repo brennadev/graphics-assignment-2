@@ -127,9 +127,6 @@ void Image::findIntersection(Ray &ray) {
             // want min of t > 0
             float firstT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) + sqrt(discriminant);
             float secondT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) - sqrt(discriminant);
-            //if (firstT < 0) firstT = 9e99;
-            //if (secondT < 0) secondT = 9e99;
-            //t = min(t, min(firstT, secondT));
             
             // the first and possibly the second t values are positive
             if (firstT > 0) {
@@ -140,12 +137,10 @@ void Image::findIntersection(Ray &ray) {
                     
                 // only the first t value is positive
                 } else {
-                    //ray.intersection.hasIntersection = true;
                     t = min(t, firstT);
                 }
             // only the second t value is positive
             } else if (secondT > 0) {
-                //ray.intersection.hasIntersection = true;
                 t = min(t, secondT);
                 
             // t is 0
@@ -181,20 +176,31 @@ Color Image::calculatePhong(Ray ray) {
         
         // rewrite in terms of single-letter vars like the slides
         
+        
+        // both
+        Vector3 N = ray.intersection.normal;
+        
+        // diffuse
+        Color kd = ray.intersection.material.diffuse;
+        Vector3 l = normalize(pointLights_.at(i).location - ray.intersection.location);
+        
+        // specular
         float n = ray.intersection.material.phongCosinePower;
         Color ks = ray.intersection.material.specular;
-        Vector3 N = ray.intersection.normal;
+        
         Vector3 d = ray.direction;
-        Color Il = pointLights_.at(i).color;
+        Color I = pointLights_.at(i).color;
         Vector3 V = camera_.viewingDirection;
         Vector3 r = 2 * dot(N, d * -1) * N + d;
         
         // the only thing I'm wondering about is if any direction vectors are flipped
         
         // calculation with attenuation (but causes non-ambient stuff to be really dim)
-        totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * (pointLights_.at(i).color * attenuation) * max((float)0.0, dot(ray.intersection.normal, normalize(pointLights_.at(i).location - ray.intersection.location)))
-        
-        + ks * pow(dot(V, r), n) * (Il * attenuation);
+        totalDiffuseSpecular = totalDiffuseSpecular
+        // diffuse
+        + kd * (I * attenuation) * max((float)0.0, dot(N, l))
+        // specular
+        + ks * pow(dot(V, r), n) * (I * attenuation);
     }
     
     
