@@ -25,11 +25,7 @@ Image::Image() {
     spotLights_ = vector<SpotLight>();
     ambientLights_ = vector<Color>();
     
-    
-    
     setUpCameraValues();
-    
-    
     
     // set all points in the image to the background color
     for (int i = 0; i < width_ * height_; i++) {
@@ -48,6 +44,7 @@ Image::Image(Camera camera,
       vector<PointLight> pointLights,
       vector<SpotLight> spotLights,
       vector<Color> ambientLights,
+      vector<Triangle> triangles,
       int maxDepth) {
     
     // set all values
@@ -60,6 +57,7 @@ Image::Image(Camera camera,
     pointLights_ = pointLights;
     spotLights_ = spotLights;
     ambientLights_ = ambientLights;
+    triangles_ = triangles;
     
     setUpCameraValues();
     

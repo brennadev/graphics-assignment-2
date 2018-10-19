@@ -76,13 +76,14 @@ int main(int argc, const char * argv[]) {
     Vector3 currentNormal;
     
     
+    // temp variables to hold triangle values inputted
     int currentTriangleVertex1;
     int currentTriangleVertex2;
     int currentTriangleVertex3;
     int currentTriangleNormal1;
     int currentTriangleNormal2;
     int currentTriangleNormal3;
-    Triangle currentTriangle;
+    
     
     while (sceneInputFile >> command) {
         // ignore comments
@@ -182,7 +183,7 @@ int main(int argc, const char * argv[]) {
     // TODO: make triangle stuff available to Image instance - not sure what all will be needed
     
     // this will be initialized with default values if they haven't been set in the
-    image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, maxDepth);
+    image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, triangles, maxDepth);
     
     image.performRayTrace();
     

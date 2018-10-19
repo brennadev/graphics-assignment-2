@@ -36,6 +36,7 @@ private:
     vector<PointLight> pointLights_;
     vector<SpotLight> spotLights_;
     vector<Color> ambientLights_;
+    vector<Triangle> triangles_;
     
     
     # pragma mark - Setup
@@ -81,6 +82,7 @@ public:
           vector<PointLight> pointLights,
           vector<SpotLight> spotLights,
           vector<Color> ambientLights,
+          vector<Triangle> triangles,
           int maxDepth);
     
     /// Does all the work of the actual ray tracing and outputs it to an image file

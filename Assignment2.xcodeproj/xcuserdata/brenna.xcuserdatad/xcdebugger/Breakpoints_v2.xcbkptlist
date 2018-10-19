@@ -15,7 +15,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "62"
             endingLineNumber = "62"
-            landmarkName = "Image::Image(Camera camera, int width, int height, string outputFileName, vector&lt;Sphere&gt; spheres, Color background, vector&lt;DirectionalLight&gt; directionalLights, vector&lt;PointLight&gt; pointLights, vector&lt;SpotLight&gt; spotLights, vector&lt;Color&gt; ambientLights, int maxDepth)"
+            landmarkName = "Image::Image(Camera camera, int width, int height, string outputFileName, vector&lt;Sphere&gt; spheres, Color background, vector&lt;DirectionalLight&gt; directionalLights, vector&lt;PointLight&gt; pointLights, vector&lt;SpotLight&gt; spotLights, vector&lt;Color&gt; ambientLights, vector&lt;Triangle&gt; triangles, int maxDepth)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -31,7 +31,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "63"
             endingLineNumber = "63"
-            landmarkName = "Image::Image(Camera camera, int width, int height, string outputFileName, vector&lt;Sphere&gt; spheres, Color background, vector&lt;DirectionalLight&gt; directionalLights, vector&lt;PointLight&gt; pointLights, vector&lt;SpotLight&gt; spotLights, vector&lt;Color&gt; ambientLights, int maxDepth)"
+            landmarkName = "Image::Image(Camera camera, int width, int height, string outputFileName, vector&lt;Sphere&gt; spheres, Color background, vector&lt;DirectionalLight&gt; directionalLights, vector&lt;PointLight&gt; pointLights, vector&lt;SpotLight&gt; spotLights, vector&lt;Color&gt; ambientLights, vector&lt;Triangle&gt; triangles, int maxDepth)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -95,7 +95,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "214"
             endingLineNumber = "214"
-            landmarkName = "Image::calculatePhong(Ray ray)"
+            landmarkName = "Image::performRayTrace()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -111,7 +111,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "215"
             endingLineNumber = "215"
-            landmarkName = "Image::calculatePhong(Ray ray)"
+            landmarkName = "Image::performRayTrace()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -127,7 +127,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "229"
             endingLineNumber = "229"
-            landmarkName = "Image::performRayTrace()"
+            landmarkName = "Image::writeImageToFile()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -143,7 +143,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "65"
             endingLineNumber = "65"
-            landmarkName = "Image::Image(Camera camera, int width, int height, string outputFileName, vector&lt;Sphere&gt; spheres, Color background, vector&lt;DirectionalLight&gt; directionalLights, vector&lt;PointLight&gt; pointLights, vector&lt;SpotLight&gt; spotLights, vector&lt;Color&gt; ambientLights, int maxDepth)"
+            landmarkName = "Image::Image(Camera camera, int width, int height, string outputFileName, vector&lt;Sphere&gt; spheres, Color background, vector&lt;DirectionalLight&gt; directionalLights, vector&lt;PointLight&gt; pointLights, vector&lt;SpotLight&gt; spotLights, vector&lt;Color&gt; ambientLights, vector&lt;Triangle&gt; triangles, int maxDepth)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
