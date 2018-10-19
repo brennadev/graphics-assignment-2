@@ -104,7 +104,7 @@ Ray Image::generateRay(const int &xPosition, const int &yPosition) {
     float v = (float)height_ / 2.0 - height_ * (yPosition / (float)height_);
     
     return {camera_.position,
-        normalize(/*-1 **/ imagePlaneDistance * camera_.viewingDirection + u * camera_.right + v * camera_.up), {false, {0,0,0}, {0,0,0}, DEFAULT_MATERIAL}};
+        normalize(imagePlaneDistance * camera_.viewingDirection + u * camera_.right - v * camera_.up), {false, {0,0,0}, {0,0,0}, DEFAULT_MATERIAL}};
 }
 
 
@@ -127,11 +127,17 @@ void Image::findIntersection(Ray &ray) {
             
             
             // the first and possibly the second t values are positive
-            if (firstT > 0) {
+            if (firstT > 0/* && firstT < t*/) {
                 // both the first and second t values are positive
                 if (secondT > 0) {
                     ray.intersection.hasIntersection = true;
-                    t = min(firstT, secondT);
+                    
+                    if (t < 0) {
+                        t = min(firstT, secondT);
+                    } else {
+                        t = min(min(firstT, secondT), t);
+                    }
+                    
                     ray.intersection.location = ray.origin + t * ray.direction;
                     ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                     ray.intersection.material = spheres_.at(i).material;
@@ -139,15 +145,26 @@ void Image::findIntersection(Ray &ray) {
                 // only the first t value is positive
                 } else {
                     ray.intersection.hasIntersection = true;
-                    t = firstT;
+                    if (t < 0) {
+                        t = firstT;
+                    } else {
+                        t = min(t, firstT);
+                    }
                     ray.intersection.location = ray.origin + t * ray.direction;
                     ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                     ray.intersection.material = spheres_.at(i).material;
                 }
             // only the second t value is positive
-            } else if (secondT > 0) {
+            } else if (secondT > 0/* && secondT < t*/) {
                 ray.intersection.hasIntersection = true;
-                t = secondT;
+                
+                if (t < 0) {
+                    t = secondT;
+                } else {
+                    t = min(t, secondT);
+                }
+                
+                
                 ray.intersection.location = ray.origin + t * ray.direction;
                 ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                 ray.intersection.material = spheres_.at(i).material;
@@ -170,6 +187,7 @@ Color Image::calculatePhong(Ray ray) {
     // as each light's diffuse and specular needs to be added together, accumulate a total
     Color totalDiffuseSpecular = {0, 0, 0};
     
+    // point lights
     for (int i = 0; i < pointLights_.size(); i++) {
         float attenuation = 1.0 / pow(length(pointLights_.at(i).location - ray.intersection.location), 2);
         
@@ -187,6 +205,15 @@ Color Image::calculatePhong(Ray ray) {
         // diffuse only - no attenuation
         //totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * pointLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, normalize(pointLights_.at(i).location - ray.intersection.location)));
     }
+    
+    
+    
+    // directional lights
+    /*for (int i = 0; i < directionalLights_.size(); i++) {
+        totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * directionalLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, normalize(directionalLights_.at(i).direction)))
+        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * directionalLights_.at(i).color;
+    }*/
+    
     return ray.intersection.material.ambient * ambientLights_.at(0) + totalDiffuseSpecular;
 }
 
