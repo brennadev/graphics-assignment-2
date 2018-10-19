@@ -127,6 +127,7 @@ void Image::findIntersection(Ray &ray) {
             // want min of t > 0
             float firstT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) + sqrt(discriminant);
             float secondT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) - sqrt(discriminant);
+            float oldT = t;
             
             // the first and possibly the second t values are positive
             if (firstT > 0) {
@@ -134,6 +135,8 @@ void Image::findIntersection(Ray &ray) {
                 if (secondT > 0) {
              
                     t = min(min(firstT, secondT), t);
+                    
+                    
                     
                 // only the first t value is positive
                 } else {
@@ -147,11 +150,12 @@ void Image::findIntersection(Ray &ray) {
             } else {
                 continue;
             }
-            
-            ray.intersection.hasIntersection = true;
-            ray.intersection.location = ray.origin + t * ray.direction;
-            ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
-            ray.intersection.material = spheres_.at(i).material;
+            if (t < oldT) {
+                ray.intersection.hasIntersection = true;
+                ray.intersection.location = ray.origin + t * ray.direction;
+                ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
+                ray.intersection.material = spheres_.at(i).material;
+            }
         }
     }
 }
