@@ -109,7 +109,7 @@ Ray Image::generateRay(const int &xPosition, const int &yPosition) {
 
 
 void Image::findIntersection(Ray &ray) {
-    float t = -1;
+    float t = 9e99;
     
     for (int i = 0; i < spheres_.size(); i++) {
         // use the discriminant to determine if there's an intersection
@@ -119,6 +119,7 @@ void Image::findIntersection(Ray &ray) {
         // no intersection occurs with current sphere
         if (discriminant < 0) {
             // I originally had some stuff in here, but I don't want to remove this if statement so close to the due date so I don't accidentally break something last-minute
+            continue;
         // intersection occurs with current sphere
         } else {
             // want min of t > 0
@@ -132,47 +133,44 @@ void Image::findIntersection(Ray &ray) {
                 if (secondT > 0) {
                     ray.intersection.hasIntersection = true;
                     
-                    if (t < 0) {
-                        t = min(firstT, secondT);
-                    } else {
-                        t = min(min(firstT, secondT), t);
-                    }
                     
-                    ray.intersection.location = ray.origin + t * ray.direction;
-                    ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
-                    ray.intersection.material = spheres_.at(i).material;
+                    t = min(min(firstT, secondT), t);
+                    
+                    
+                    //ray.intersection.location = ray.origin + t * ray.direction;
+                    //ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
+                    //ray.intersection.material = spheres_.at(i).material;
                     
                 // only the first t value is positive
                 } else {
                     ray.intersection.hasIntersection = true;
-                    if (t < 0) {
-                        t = firstT;
-                    } else {
-                        t = min(t, firstT);
-                    }
-                    ray.intersection.location = ray.origin + t * ray.direction;
-                    ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
-                    ray.intersection.material = spheres_.at(i).material;
+                    
+                    t = min(t, firstT);
+                    
+                    //ray.intersection.location = ray.origin + t * ray.direction;
+                    //ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
+                    //ray.intersection.material = spheres_.at(i).material;
                 }
             // only the second t value is positive
             } else if (secondT > 0/* && secondT < t*/) {
                 ray.intersection.hasIntersection = true;
                 
-                if (t < 0) {
-                    t = secondT;
-                } else {
-                    t = min(t, secondT);
-                }
+                
+                t = min(t, secondT);
                 
                 
-                ray.intersection.location = ray.origin + t * ray.direction;
-                ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
-                ray.intersection.material = spheres_.at(i).material;
+                //ray.intersection.location = ray.origin + t * ray.direction;
+                //ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
+                //ray.intersection.material = spheres_.at(i).material;
                 
             // t is 0
             } else {
                 continue;
             }
+            
+            ray.intersection.location = ray.origin + t * ray.direction;
+            ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
+            ray.intersection.material = spheres_.at(i).material;
         }
     }
 }
