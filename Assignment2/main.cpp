@@ -76,6 +76,12 @@ int main(int argc, const char * argv[]) {
     Vector3 currentNormal;
     
     
+    int currentTriangleVertex1;
+    int currentTriangleVertex2;
+    int currentTriangleVertex3;
+    int currentTriangleNormal1;
+    int currentTriangleNormal2;
+    int currentTriangleNormal3;
     Triangle currentTriangle;
     
     while (sceneInputFile >> command) {
@@ -155,9 +161,19 @@ int main(int argc, const char * argv[]) {
             
         } else if (command == "triangle") {
             // TODO: fill in once I know if vertices/normals are all read in first
+            sceneInputFile >> currentTriangleVertex1 >> currentTriangleVertex2 >> currentTriangleVertex3;
+            
+            triangles.push_back({{vertices.at(currentTriangleVertex1), {0, 0, 0}},
+                {vertices.at(currentTriangleVertex2), {0, 0, 0}},
+                {vertices.at(currentTriangleVertex3), {0, 0, 0}}});
             
         } else if (command == "normal_triangle") {
             // TODO: fill in once I know if vertices/normals are all read in first
+            sceneInputFile >> currentTriangleVertex1 >> currentTriangleVertex2 >> currentTriangleVertex3 >> currentTriangleNormal1 >> currentTriangleNormal2 >> currentTriangleNormal3;
+            
+            triangles.push_back({{vertices.at(currentTriangleVertex1), normals.at(currentTriangleNormal1)},
+                                 {vertices.at(currentTriangleVertex2), normals.at(currentTriangleNormal2)},
+                                 {vertices.at(currentTriangleVertex3), normals.at(currentTriangleNormal3)}});
         } else {
             cout << "Command not recognized" << endl;
         }
