@@ -190,9 +190,13 @@ Color Image::calculatePhong(Ray ray) {
         
         Vector3 d = ray.direction;
         Color I = pointLights_.at(i).color;
-        Vector3 V = camera_.viewingDirection;
-        Vector3 r = 2 * dot(N, d * -1) * N + d;
         
+        
+        Vector3 v = -1 * d;
+        // either v or l
+        
+        // reflected view vector
+        Vector3 r = 2 * dot(N, v) * N - v;
         // the only thing I'm wondering about is if any direction vectors are flipped
         
         // calculation with attenuation (but causes non-ambient stuff to be really dim)
@@ -200,7 +204,7 @@ Color Image::calculatePhong(Ray ray) {
         // diffuse
         + kd * (I * attenuation) * max((float)0.0, dot(N, l))
         // specular
-        + ks * pow(dot(V, r), n) * (I * attenuation);
+        + ks * pow(clamp(dot(l, r)), n) * (I * attenuation);
     }
     
     

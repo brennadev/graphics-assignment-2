@@ -37,7 +37,7 @@ float dot(const Vector3 &firstVector, const Vector3 &secondVector);
 Vector3 cross(const Vector3 &firstVector, const Vector3 &secondVector);
 float length(const Vector3 &vector);
 Vector3 normalize(const Vector3 &vector);
-
+float clamp(const float &value);
 
 # pragma mark - Color and Color Operations
 /// RGB-based color - all stored as floats from 0 to 1 to prevent math errors
