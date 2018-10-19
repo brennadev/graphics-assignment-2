@@ -109,7 +109,7 @@ Ray Image::generateRay(const int &xPosition, const int &yPosition) {
 
 
 void Image::findIntersection(Ray &ray) {
-    float t = 9e99;
+    float t = 9e99;    // set to some really big value so the first calculated t is always less
     
     for (int i = 0; i < spheres_.size(); i++) {
         // use the discriminant to determine if there's an intersection
@@ -118,15 +118,15 @@ void Image::findIntersection(Ray &ray) {
         
         // no intersection occurs with current sphere
         if (discriminant < 0) {
-            // I originally had some stuff in here, but I don't want to remove this if statement so close to the due date so I don't accidentally break something last-minute
             continue;
+            
         // intersection occurs with current sphere
         } else {
-            
-            
             // want min of t > 0
             float firstT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) + sqrt(discriminant);
             float secondT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) - sqrt(discriminant);
+            
+            // keep track so we know if the other values of the intersection need to be updated
             float oldT = t;
             
             // the first and possibly the second t values are positive
@@ -135,8 +135,6 @@ void Image::findIntersection(Ray &ray) {
                 if (secondT > 0) {
              
                     t = min(min(firstT, secondT), t);
-                    
-                    
                     
                 // only the first t value is positive
                 } else {
@@ -150,6 +148,7 @@ void Image::findIntersection(Ray &ray) {
             } else {
                 continue;
             }
+            // all the other values associated with the intersection need updating if t has changed
             if (t < oldT) {
                 ray.intersection.hasIntersection = true;
                 ray.intersection.location = ray.origin + t * ray.direction;
@@ -161,11 +160,6 @@ void Image::findIntersection(Ray &ray) {
 }
 
 
-Color Image::calculateDiffuse(Sphere sphere, Ray ray, PointLight light) {
-    return sphere.material.diffuse * light.color * max((float)0.0, dot(ray.intersection.normal, normalize(light.location - ray.intersection.location)));
-}
-
-
 Color Image::calculatePhong(Ray ray) {
     // as each light's diffuse and specular needs to be added together, accumulate a total
     Color totalDiffuseSpecular = {0, 0, 0};
@@ -173,13 +167,6 @@ Color Image::calculatePhong(Ray ray) {
     // point lights
     for (int i = 0; i < pointLights_.size(); i++) {
         float attenuation = 1.0 / pow(length(pointLights_.at(i).location - ray.intersection.location), 2);
-        
-        // comment/uncomment one line for the totalDiffuseSpecular assignment depending on what you want to do
-        
-        // separate out some of the values in the specular
-        
-        // rewrite in terms of single-letter vars like the slides
-        
         
         // both
         Vector3 N = ray.intersection.normal;
@@ -214,10 +201,10 @@ Color Image::calculatePhong(Ray ray) {
     
     
     // directional lights
-    /*for (int i = 0; i < directionalLights_.size(); i++) {
+    for (int i = 0; i < directionalLights_.size(); i++) {
         totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * directionalLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, normalize(directionalLights_.at(i).direction)))
         + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * directionalLights_.at(i).color;
-    }*/
+    }
     
     return ray.intersection.material.ambient * ambientLights_.at(0) + totalDiffuseSpecular;
 }
@@ -230,10 +217,6 @@ void Image::performRayTrace() {
         findIntersection(ray);
         
         if (ray.intersection.hasIntersection) {
-            // below will just calculate the diffuse on a single sphere with a single light (will just take the first of each) - shows how the diffuse works (NOTE: this doesn't appear to work now, but it worked in a previous iteration of my code - see earlier commits)
-            //data_.at(i) = calculateDiffuse(spheres_.at(0), ray, pointLights_.at(0));
-            
-            // the full Phong lighting
             data_.at(i) = calculatePhong(ray);
         }
         // do nothing if not hit since it's already on the background color

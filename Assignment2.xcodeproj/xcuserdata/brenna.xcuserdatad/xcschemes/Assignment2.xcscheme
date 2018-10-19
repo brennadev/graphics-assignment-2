@@ -64,7 +64,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "InputFilesToUse/spheres1.scn"
+            argument = "InputFilesToUse/ShadowTest.txt"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
