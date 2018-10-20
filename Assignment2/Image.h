@@ -62,6 +62,8 @@ private:
     Color specular(Ray ray, PointLight light);
     Color specular(Ray ray, DirectionalLight light);
     
+    Vector3 reflect(Ray ray);
+    
     Color calculatePhong(Ray ray);
     
     Color calculateLight(Ray ray);

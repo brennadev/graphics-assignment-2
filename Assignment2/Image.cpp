@@ -173,12 +173,34 @@ Color Image::diffuse(Ray ray, DirectionalLight light) {
 
 
 Color Image::specular(Ray ray, PointLight light) {
+    float n = ray.intersection.material.phongCosinePower;
+    Vector3 l = normalize(light.location - ray.intersection.location);
+    Vector3 r = reflect(ray);
+    Color ks = ray.intersection.material.specular;
+    Color I = light.color;
+    float attenuation = 1.0 / pow(length(light.location - ray.intersection.location), 2);
     
+    return ks * pow(clamp(dot(l, r)), n) * (I * attenuation);
 }
 
 
 Color Image::specular(Ray ray, DirectionalLight light) {
+    float n = ray.intersection.material.phongCosinePower;
+    Vector3 l = normalize(light.direction);
+    Vector3 r = reflect(ray);
+    Color ks = ray.intersection.material.specular;
+    Color I = light.color;
     
+    return ks * pow(clamp(dot(l, r)), n) * I;
+}
+
+
+Vector3 Image::reflect(Ray ray) {
+    Vector3 N = ray.intersection.normal;
+    Vector3 d = ray.direction;
+    Vector3 v = -1 * d;
+    
+    return 2 * dot(N, v) * N - v;
 }
 
 Color Image::calculatePhong(Ray ray) {
