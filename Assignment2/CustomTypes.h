@@ -11,6 +11,8 @@
 
 #ifndef CustomTypes_h
 #define CustomTypes_h
+#include <iostream>
+using namespace std;
 
 # pragma mark - Vectors and Vector Operations
 // TODO: remove if not used
@@ -145,5 +147,9 @@ struct Triangle {
     TriangleVertex vertex2;
     TriangleVertex vertex3;
 };
+
+
+# pragma mark - ostream overloads
+ostream &operator<<(ostream &output, Vector3 value);
 
 #endif /* CustomTypes_h */

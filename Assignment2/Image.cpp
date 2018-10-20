@@ -146,6 +146,41 @@ void Image::findIntersection(Ray &ray) {
 }
 
 
+Color Image::ambient(Color coefficient) {
+    return coefficient * ambientLights_.at(0);
+}
+
+
+Color Image::diffuse(Ray ray, PointLight light) {
+    Vector3 N = ray.intersection.normal;
+    Vector3 l = normalize(light.location - ray.intersection.location);
+    Color kd = ray.intersection.material.diffuse;
+    Color I = light.color;
+    float attenuation = 1.0 / pow(length(light.location - ray.intersection.location), 2);
+    
+    return kd * (I * attenuation) * max((float)0.0, dot(N, l));
+}
+
+
+Color Image::diffuse(Ray ray, DirectionalLight light) {
+    Vector3 N = ray.intersection.normal;
+    Vector3 l = normalize(light.direction);
+    Color kd = ray.intersection.material.diffuse;
+    Color I = light.color;
+    
+    return kd * I * max((float)0.0, dot(N, l));
+}
+
+
+Color Image::specular(Ray ray, PointLight light) {
+    
+}
+
+
+Color Image::specular(Ray ray, DirectionalLight light) {
+    
+}
+
 Color Image::calculatePhong(Ray ray) {
     // as each light's diffuse and specular needs to be added together, accumulate a total
     Color totalDiffuseSpecular = {0, 0, 0};
@@ -196,6 +231,15 @@ Color Image::calculatePhong(Ray ray) {
 }
 
 
+Color Image::evaluateRayTree(Ray ray) {
+    findIntersection(ray);
+    
+    
+    
+    
+    return BLACK_COLOR;
+}
+
 void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
@@ -203,7 +247,34 @@ void Image::performRayTrace() {
         findIntersection(ray);
         
         if (ray.intersection.hasIntersection) {
-            data_.at(i) = calculatePhong(ray);
+            
+            bool isInShadow = false;
+            
+            // check if a shadow is necessary
+            for (int i = 0; i < pointLights_.size() && !isInShadow; i++) {
+                Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
+                findIntersection(shadowRay);
+                //cout << "shadow ray intersection location: " << shadowRay.intersection.location << endl;
+                //cout << "shadow ray direction: " << shadowRay.direction << endl;
+                //cout << "shadow ray location: " << shadowRay.origin << endl;
+                //cout << "ray intersection location: " << ray.intersection.location << endl;
+                
+                
+                // shadow ray origin (location) looks correct
+                // this appears to always be returning false
+                if (shadowRay.intersection.hasIntersection) {
+                    isInShadow = true;
+                }
+            }
+            
+            // isInShadow is still always false
+            cout << "isInShadow: " << isInShadow << endl;
+            
+            if (isInShadow) {
+                data_.at(i) = BLACK_COLOR;
+            } else {
+                data_.at(i) = calculatePhong(ray);
+            }
         }
         // do nothing if not hit since it's already on the background color
     }

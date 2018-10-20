@@ -25,8 +25,12 @@ const Camera DEFAULT_CAMERA = {{0, 0, 0}, {0, 0, 1}, {0, 1, 0}, {0, 0, 0}, {0, 0
 
 const Color DEFAULT_BACKGROUND_COLOR = {0, 0, 0};
 const Material DEFAULT_MATERIAL = {{0, 0, 0}, {1, 1, 1}, {0, 0, 0}, 5, {0, 0, 0}, 1};
+/// Intersection where everything is 0/false and has the default material
+const Intersection DEFAULT_INTERSECTION = {false, {0,0,0}, {0,0,0}, DEFAULT_MATERIAL};
 const Color DEFAULT_AMBIENT_LIGHT = {0, 0, 0};
 
 const int DEFAULT_MAX_DEPTH = 5;
+
+const Color BLACK_COLOR = {0, 0, 0};
 
 #endif

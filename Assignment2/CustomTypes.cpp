@@ -90,3 +90,8 @@ Color operator+(const Color &firstColor, const Color &secondColor) {
 Color operator+=(const Color &firstColor, const Color &secondColor) {
     return firstColor + secondColor;
 }
+
+ostream &operator<<(ostream &output, Vector3 value) {
+    output << "(" << value.x << ", " << value.y << ", " << value.z << ")\n";
+    return output;
+}

@@ -56,13 +56,17 @@ private:
     /// Calculate the color for a given pixel in the raster image
     Color getColor(const Vector3 &location);
     
-    /// Diffuse color for a point light
-    Color calculateDiffuse(Sphere sphere, Ray ray, PointLight light);
-    
-    Color calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambientLight);
-    
+    Color ambient(Color coefficient);
+    Color diffuse(Ray ray, PointLight light);
+    Color diffuse(Ray ray, DirectionalLight light);
+    Color specular(Ray ray, PointLight light);
+    Color specular(Ray ray, DirectionalLight light);
     
     Color calculatePhong(Ray ray);
+    
+    Color calculateLight(Ray ray);
+    
+    Color evaluateRayTree(Ray ray);
     
     /// Final output of the image to an image file
     void writeImageToFile();
