@@ -19,6 +19,8 @@ private:
     int width_;
     int height_;
     
+    Color backgroundColor_;
+    
     /// Maximum number of times rays bounce back and forth
     int maxDepth_;
     

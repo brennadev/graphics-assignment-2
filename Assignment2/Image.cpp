@@ -18,6 +18,7 @@ Image::Image() {
     camera_ = DEFAULT_CAMERA;
     width_ = DEFAULT_WIDTH;
     height_ = DEFAULT_HEIGHT;
+    backgroundColor_ = DEFAULT_BACKGROUND_COLOR;
     outputFileName_ = DEFAULT_OUTPUT_FILE;
     spheres_ = vector<Sphere>();
     directionalLights_ = vector<DirectionalLight>();
@@ -29,9 +30,9 @@ Image::Image() {
     setUpCameraValues();
     
     // set all points in the image to the background color
-    for (int i = 0; i < width_ * height_; i++) {
+    /*for (int i = 0; i < width_ * height_; i++) {
         data_.push_back(DEFAULT_BACKGROUND_COLOR);
-    }
+    }*/
 }
 
 
@@ -52,6 +53,7 @@ Image::Image(Camera camera,
     camera_ = camera;
     width_ = width;
     height_ = height;
+    backgroundColor_ = background;
     outputFileName_ = outputFileName;
     spheres_ = spheres;
     directionalLights_ = directionalLights;
@@ -63,9 +65,9 @@ Image::Image(Camera camera,
     setUpCameraValues();
     
     // set all points in the image to the background color
-    for (int i = 0; i < width * height; i++) {
+    /*for (int i = 0; i < width * height; i++) {
         data_.push_back(background);
-    }
+    }*/
 }
 
 
@@ -146,6 +148,7 @@ void Image::findIntersection(Ray &ray) {
 }
 
 
+# pragma mark - Light Calculations
 Color Image::ambient(Color coefficient) {
     return coefficient * ambientLights_.at(0);
 }
@@ -203,6 +206,8 @@ Vector3 Image::reflect(Ray ray) {
     return 2 * dot(N, v) * N - v;
 }
 
+
+# pragma mark - Actual Calculation
 Color Image::calculatePhong(Ray ray) {
     // as each light's diffuse and specular needs to be added together, accumulate a total
     Color totalDiffuseSpecular = {0, 0, 0};
@@ -253,20 +258,50 @@ Color Image::calculatePhong(Ray ray) {
 }
 
 
+Color Image::calculateLight(Ray ray) {
+    Color total = BLACK_COLOR;
+    
+    for (int i = 0; i < pointLights_.size(); i++) {
+        //Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
+        //findIntersection(shadowRay);
+        
+        // TODO: remaining shadow code
+        
+        total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
+        
+    }
+    
+    Vector3 mirrorDirection = reflect(ray);
+    Ray mirrorRay = {ray.intersection.location, normalize(mirrorDirection), DEFAULT_INTERSECTION};
+    total = total + ray.intersection.material.transmissive * evaluateRayTree(mirrorRay);
+    
+    // TODO: refraction
+    
+    total = total + ambient(ray.intersection.material.ambient);
+    
+    return total;
+}
+
+
 Color Image::evaluateRayTree(Ray ray) {
     findIntersection(ray);
     
+    if (ray.intersection.hasIntersection) {
+        return calculateLight(ray);
+    }
     
-    
-    
-    return BLACK_COLOR;
+    return backgroundColor_;
 }
 
 void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-        findIntersection(ray);
+        
+        data_.push_back(evaluateRayTree(ray));
+        
+        
+        /*findIntersection(ray);
         
         if (ray.intersection.hasIntersection) {
             
@@ -297,7 +332,7 @@ void Image::performRayTrace() {
             } else {
                 data_.at(i) = calculatePhong(ray);
             }
-        }
+        }*/
         // do nothing if not hit since it's already on the background color
     }
     writeImageToFile();
