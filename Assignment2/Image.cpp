@@ -26,6 +26,7 @@ Image::Image() {
     spotLights_ = vector<SpotLight>();
     ambientLights_ = vector<Color>();
     triangles_ = vector<Triangle>();
+    maxDepth_ = DEFAULT_MAX_DEPTH;
     
     setUpCameraValues();
     
@@ -61,6 +62,7 @@ Image::Image(Camera camera,
     spotLights_ = spotLights;
     ambientLights_ = ambientLights;
     triangles_ = triangles;
+    maxDepth_ = maxDepth;
     
     setUpCameraValues();
     
@@ -104,7 +106,7 @@ void Image::findIntersection(Ray &ray) {
         float discriminant = pow(dot(ray.direction, camera_.position - spheres_.at(i).center), 2) - dot(ray.direction, ray.direction) *
         (dot(camera_.position - spheres_.at(i).center, camera_.position - spheres_.at(i).center) - pow(spheres_.at(i).radius, 2));
         
-        cout << "discriminant: " << discriminant << endl;
+        //cout << "discriminant: " << discriminant << endl;
         
         // no intersection occurs with current sphere
         if (discriminant < 0) {
@@ -276,7 +278,7 @@ Color Image::calculateLight(Ray ray, int index) {
         //cout << "ray direction: " << ray.direction << endl;
         //cout << "shadow ray intersection t: " << shadowRay.intersection.t << endl;
             //cout << "shadow ray intersection location: " << shadowRay.intersection.location << endl;
-            cout << "shadow ray direction: " << shadowRay.direction << endl;
+            //cout << "shadow ray direction: " << shadowRay.direction << endl;
             //cout << "shadow ray location: " << shadowRay.origin << endl;
             //cout << "ray intersection location: " << ray.intersection.location << endl;
             
@@ -287,9 +289,23 @@ Color Image::calculateLight(Ray ray, int index) {
                 isInShadow = true;
             }*/
         
-        if (!shadowRay.intersection.hasIntersection && shadowRay.intersection.t >= length(pointLights_.at(i).location - ray.intersection.location)) {
+        /*if (!shadowRay.intersection.hasIntersection && shadowRay.intersection.t >= length(pointLights_.at(i).location - ray.intersection.location)) {
+            
+            cout << "no intersection" << endl;*/
+           // total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
+            //cout << "not in shadow" << endl << endl;
+        /*} else {
+            cout << "is in intersection" << endl;
+        }*/
+        
+        cout << "t: " << shadowRay.intersection.t << endl;
+        
+        if (shadowRay.intersection.hasIntersection && shadowRay.intersection.t < length(pointLights_.at(i).location - ray.intersection.location)) {
+            //cout << "is in shadow" << endl;
+            continue;
+        } else {
             total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
-            cout << "not in shadow" << endl << endl;
+            //cout << "not in shadow" << endl;
         }
         
         
@@ -318,10 +334,10 @@ Color Image::calculateLight(Ray ray, int index) {
 Color Image::evaluateRayTree(Ray ray, int index) {
     findIntersection(ray);
     
-    if (ray.intersection.hasIntersection) {
+    // need to make sure infinite recursion is avoided by checking the depth
+    if (ray.intersection.hasIntersection && index < maxDepth_) {
         return calculateLight(ray, index);
     }
-    
     return backgroundColor_;
 }
 
@@ -329,7 +345,7 @@ void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-        cout << "i: " << i << endl;
+        //cout << "i: " << i << endl;
         
         // always start the recursion tree at 0
         data_.push_back(evaluateRayTree(ray, 0));
