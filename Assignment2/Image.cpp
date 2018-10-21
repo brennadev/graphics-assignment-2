@@ -263,7 +263,7 @@ Color Image::calculatePhong(Ray ray) {
 }
 
 
-Color Image::calculateLight(Ray ray) {
+Color Image::calculateLight(Ray ray, int index) {
     Color total = ambient(ray.intersection.material.ambient);
     
     for (int i = 0; i < pointLights_.size(); i++) {
@@ -306,7 +306,7 @@ Color Image::calculateLight(Ray ray) {
     
     Vector3 mirrorDirection = reflect(ray);
     Ray mirrorRay = {ray.intersection.location, normalize(mirrorDirection), DEFAULT_INTERSECTION};
-    total = total + ray.intersection.material.specular * evaluateRayTree(mirrorRay);
+    total = total + ray.intersection.material.specular * evaluateRayTree(mirrorRay, index + 1);
     
     // TODO: refraction
     
@@ -315,11 +315,11 @@ Color Image::calculateLight(Ray ray) {
 }
 
 
-Color Image::evaluateRayTree(Ray ray) {
+Color Image::evaluateRayTree(Ray ray, int index) {
     findIntersection(ray);
     
     if (ray.intersection.hasIntersection) {
-        return calculateLight(ray);
+        return calculateLight(ray, index);
     }
     
     return backgroundColor_;
@@ -330,7 +330,9 @@ void Image::performRayTrace() {
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
         cout << "i: " << i << endl;
-        data_.push_back(evaluateRayTree(ray));
+        
+        // always start the recursion tree at 0
+        data_.push_back(evaluateRayTree(ray, 0));
         
         
         /*findIntersection(ray);
