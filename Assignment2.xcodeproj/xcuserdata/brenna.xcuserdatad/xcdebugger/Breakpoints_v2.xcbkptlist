@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "561762217.150833"
+            timestampString = "561828566.4221441"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "297"
-            endingLineNumber = "297"
+            startingLineNumber = "329"
+            endingLineNumber = "329"
             landmarkName = "Image::performRayTrace()"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "561762217.1515681"
+            timestampString = "561828566.422664"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "214"
-            endingLineNumber = "214"
+            startingLineNumber = "219"
+            endingLineNumber = "219"
             landmarkName = "Image::calculatePhong(Ray ray)"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "561762217.152169"
+            timestampString = "561828566.423038"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "257"
-            endingLineNumber = "257"
+            startingLineNumber = "262"
+            endingLineNumber = "262"
             landmarkName = "Image::calculatePhong(Ray ray)"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "561762217.152723"
+            timestampString = "561828566.423396"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "258"
-            endingLineNumber = "258"
+            startingLineNumber = "263"
+            endingLineNumber = "263"
             landmarkName = "Image::calculatePhong(Ray ray)"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "561762217.153361"
+            timestampString = "561828566.423751"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "333"
-            endingLineNumber = "333"
+            startingLineNumber = "365"
+            endingLineNumber = "365"
             landmarkName = "Image::performRayTrace()"
             landmarkType = "7">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "561762217.154045"
+            timestampString = "561828566.424098"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "323"
-            endingLineNumber = "323"
+            startingLineNumber = "355"
+            endingLineNumber = "355"
             landmarkName = "Image::performRayTrace()"
             landmarkType = "7">
          </BreakpointContent>

@@ -104,6 +104,8 @@ void Image::findIntersection(Ray &ray) {
         float discriminant = pow(dot(ray.direction, camera_.position - spheres_.at(i).center), 2) - dot(ray.direction, ray.direction) *
         (dot(camera_.position - spheres_.at(i).center, camera_.position - spheres_.at(i).center) - pow(spheres_.at(i).radius, 2));
         
+        cout << "discriminant: " << discriminant << endl;
+        
         // no intersection occurs with current sphere
         if (discriminant < 0) {
             continue;
@@ -118,9 +120,9 @@ void Image::findIntersection(Ray &ray) {
             float oldT = t;
             
             // the first and possibly the second t values are positive
-            if (firstT > 0) {
+            if (firstT > 0.001) {
                 // both the first and second t values are positive
-                if (secondT > 0) {
+                if (secondT > 0.001) {
              
                     t = min(min(firstT, secondT), t);
                     
@@ -129,19 +131,22 @@ void Image::findIntersection(Ray &ray) {
                     t = min(t, firstT);
                 }
             // only the second t value is positive
-            } else if (secondT > 0) {
+            } else if (secondT > 0.001) {
                 t = min(t, secondT);
                 
             // t is 0
             } else {
                 continue;
             }
+            
+            //cout << "t in findIntersection: " << t << endl;
             // all the other values associated with the intersection need updating if t has changed
             if (t < oldT) {
                 ray.intersection.hasIntersection = true;
                 ray.intersection.location = ray.origin + t * ray.direction;
                 ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
                 ray.intersection.material = spheres_.at(i).material;
+                ray.intersection.t = t;
             }
         }
     }
@@ -259,25 +264,52 @@ Color Image::calculatePhong(Ray ray) {
 
 
 Color Image::calculateLight(Ray ray) {
-    Color total = BLACK_COLOR;
+    Color total = ambient(ray.intersection.material.ambient);
     
     for (int i = 0; i < pointLights_.size(); i++) {
-        //Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
-        //findIntersection(shadowRay);
+        Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
+        findIntersection(shadowRay);
         
         // TODO: remaining shadow code
         
-        total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
+        //cout << "hasIntersection: " << shadowRay.intersection.hasIntersection << endl;
+        //cout << "ray direction: " << ray.direction << endl;
+        //cout << "shadow ray intersection t: " << shadowRay.intersection.t << endl;
+            //cout << "shadow ray intersection location: " << shadowRay.intersection.location << endl;
+            cout << "shadow ray direction: " << shadowRay.direction << endl;
+            //cout << "shadow ray location: " << shadowRay.origin << endl;
+            //cout << "ray intersection location: " << ray.intersection.location << endl;
+            
+            
+            // shadow ray origin (location) looks correct
+            // this appears to always be returning false
+            /*if (shadowRay.intersection.hasIntersection) {
+                isInShadow = true;
+            }*/
+        
+        if (!shadowRay.intersection.hasIntersection && shadowRay.intersection.t >= length(pointLights_.at(i).location - ray.intersection.location)) {
+            total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
+            cout << "not in shadow" << endl << endl;
+        }
+        
+        
+       /* if (isInShadow) {
+            data_.at(i) = BLACK_COLOR;
+        } else {
+            data_.at(i) = calculatePhong(ray);
+        }
+        
+        
+        total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));*/
         
     }
     
     Vector3 mirrorDirection = reflect(ray);
     Ray mirrorRay = {ray.intersection.location, normalize(mirrorDirection), DEFAULT_INTERSECTION};
-    total = total + ray.intersection.material.transmissive * evaluateRayTree(mirrorRay);
+    total = total + ray.intersection.material.specular * evaluateRayTree(mirrorRay);
     
     // TODO: refraction
     
-    total = total + ambient(ray.intersection.material.ambient);
     
     return total;
 }
@@ -297,7 +329,7 @@ void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-        
+        cout << "i: " << i << endl;
         data_.push_back(evaluateRayTree(ray));
         
         

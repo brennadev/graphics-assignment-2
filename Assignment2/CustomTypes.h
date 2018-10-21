@@ -82,6 +82,7 @@ struct Intersection {
     Vector3 normal;
     /// Material of the object at the intersection (only valid if hasIntersection is true)
     Material material;
+    float t;
 };
 
 
