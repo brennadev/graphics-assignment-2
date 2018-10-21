@@ -24,6 +24,9 @@ private:
     /// Maximum number of times rays bounce back and forth
     int maxDepth_;
     
+    /// How many times the depth has happened
+    int currentDepth = 1;
+    
     /// Image data - stored row first
     vector<Color> data_;
     
@@ -66,6 +69,7 @@ private:
     
     Vector3 reflect(Ray ray);
     
+    // TODO: remove eventually
     Color calculatePhong(Ray ray);
     
     Color calculateLight(Ray ray);
