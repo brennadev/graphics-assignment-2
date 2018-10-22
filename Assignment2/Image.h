@@ -50,9 +50,18 @@ private:
     /// Create the ray that goes to a given pixel in the raster image
     Ray generateRay(const int &xPosition, const int &yPosition);
     
+    void findIntersectionAllObjects(Ray &ray);
+    
+    // TODO: get t in param
     /// Intersection between ray and sphere
     /// Precondition: make sure ray's direction vector is normalized
-    void findIntersection(Ray &ray);
+    void findSphereIntersection(Ray &ray);
+    
+    /// Intersection between ray and plane
+    void findPlaneIntersection(Ray &ray, Vector3 point, Vector3 normal);
+    
+    /// Intersection between ray and triangle
+    void findTriangleIntersection(Ray &ray, float t);
     
     bool triangleSameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b);
     bool pointInTriangle(Vector3 p, Triangle triangle);

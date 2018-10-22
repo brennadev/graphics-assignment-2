@@ -88,9 +88,27 @@ Ray Image::generateRay(const int &xPosition, const int &yPosition) {
         normalize(imagePlaneDistance * camera_.viewingDirection + u * camera_.right - v * camera_.up), {false, {0,0,0}, {0,0,0}, DEFAULT_MATERIAL}};
 }
 
+void Image::findIntersectionAllObjects(Ray &ray) {
+    // t value that's used across all intersection checks as there are different object types that must be checked differently
+    float t = 9e99;
+    
+    findSphereIntersection(ray);
+    findTriangleIntersection(ray, t);
+}
+
+
+void Image::findPlaneIntersection(Ray &ray, Vector3 point, Vector3 normal) {
+    ray.intersection.t = -1 * (dot(ray.origin, normal) - dot(point, normal)) / dot(ray.direction, normal);
+}
+
+
+void Image::findTriangleIntersection(Ray &ray, float t) {
+    
+}
+
 
 # pragma mark - Intersections
-void Image::findIntersection(Ray &ray) {
+void Image::findSphereIntersection(Ray &ray) {
     float t = 9e99;    // set to some really big value so the first calculated t is always less
     
     for (int i = 0; i < spheres_.size(); i++) {
@@ -287,7 +305,7 @@ Color Image::calculateLight(Ray ray, int index) {
     
     for (int i = 0; i < pointLights_.size(); i++) {
         Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
-        findIntersection(shadowRay);
+        findSphereIntersection(shadowRay);
         
         // TODO: remaining shadow code
         
@@ -349,7 +367,7 @@ Color Image::calculateLight(Ray ray, int index) {
 
 
 Color Image::evaluateRayTree(Ray ray, int index) {
-    findIntersection(ray);
+    findSphereIntersection(ray);
     
     // need to make sure infinite recursion is avoided by checking the depth
     if (ray.intersection.hasIntersection && index < maxDepth_) {
