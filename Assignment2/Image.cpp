@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <cmath>
 
 
 Image::Image() {
@@ -29,11 +30,6 @@ Image::Image() {
     maxDepth_ = DEFAULT_MAX_DEPTH;
     
     setUpCameraValues();
-    
-    // set all points in the image to the background color
-    /*for (int i = 0; i < width_ * height_; i++) {
-        data_.push_back(DEFAULT_BACKGROUND_COLOR);
-    }*/
 }
 
 
@@ -65,11 +61,6 @@ Image::Image(Camera camera,
     maxDepth_ = maxDepth;
     
     setUpCameraValues();
-    
-    // set all points in the image to the background color
-    /*for (int i = 0; i < width * height; i++) {
-        data_.push_back(background);
-    }*/
 }
 
 
@@ -98,6 +89,7 @@ Ray Image::generateRay(const int &xPosition, const int &yPosition) {
 }
 
 
+# pragma mark - Intersections
 void Image::findIntersection(Ray &ray) {
     float t = 9e99;    // set to some really big value so the first calculated t is always less
     
@@ -152,6 +144,21 @@ void Image::findIntersection(Ray &ray) {
             }
         }
     }
+}
+
+
+
+bool Image::triangleSameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b) {
+    Vector3 cp1 = cross(b - a, p1 - a);
+    Vector3 cp2 = cross(b - a, p2 - a);
+    return dot(cp1, cp2) >= 0;
+}
+
+
+bool Image::pointInTriangle(Vector3 p, Triangle triangle) {
+   return triangleSameSide(p, triangle.vertex1.location, triangle.vertex2.location, triangle.vertex3.location)
+    && triangleSameSide(p, triangle.vertex2.location, triangle.vertex1.location, triangle.vertex3.location)
+    && triangleSameSide(p, triangle.vertex3.location, triangle.vertex1.location, triangle.vertex2.location);
 }
 
 
@@ -213,6 +220,16 @@ Vector3 Image::reflect(Ray ray) {
     return 2 * dot(N, v) * N - v;
 }
 
+Vector3 Image::refract(Ray ray, float currentIOR, Vector3 lightDirection) {
+    
+    // need to break this up by x/y passed into the parameter (x and y separate params) - but then, what about z?
+    /*float thetaI = atan2(lightDirection, ray.intersection.normal);
+    float thetaR = asin(currentIOR * sin(currentIOR) / ray.intersection.material.indexOfRefraction);
+    
+    return (currentIOR / ray.intersection.material.indexOfRefraction * cos(thetaI) - cos(thetaR)) * ray.intersection.normal - currentIOR / ray.intersection.material.indexOfRefraction * lightDirection;*/
+    
+    return {0,0,0};
+}
 
 # pragma mark - Actual Calculation
 Color Image::calculatePhong(Ray ray) {

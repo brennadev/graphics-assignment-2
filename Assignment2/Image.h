@@ -54,6 +54,10 @@ private:
     /// Precondition: make sure ray's direction vector is normalized
     void findIntersection(Ray &ray);
     
+    bool triangleSameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b);
+    bool pointInTriangle(Vector3 p, Triangle triangle);
+    
+    
     # pragma mark - Color Generation
     /// Calculate the color for a given pixel in the raster image
     Color getColor(const Vector3 &location);
@@ -65,6 +69,7 @@ private:
     Color specular(Ray ray, DirectionalLight light);
     
     Vector3 reflect(Ray ray);
+    Vector3 refract(Ray ray, float currentIOR, Vector3 lightDirection);
     
     // TODO: remove eventually
     Color calculatePhong(Ray ray);

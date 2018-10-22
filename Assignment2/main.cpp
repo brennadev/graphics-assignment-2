@@ -179,9 +179,7 @@ int main(int argc, const char * argv[]) {
         }
     }
     
-    // TODO: make triangle stuff available to Image instance - not sure what all will be needed
-    
-    // this will be initialized with default values if they haven't been set in the
+    // this will be initialized with default values if they haven't been set in the input file
     image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, triangles, maxDepth);
     
     image.performRayTrace();
