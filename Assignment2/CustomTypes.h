@@ -29,6 +29,11 @@ struct Vector3 {
     float z;
 };
 
+
+// 3d vector comparison
+bool operator==(const Vector3 &leftVector, const Vector3 &rightVector);
+
+
 // 3d vector math
 Vector3 operator+(const Vector3 &leftVector, const Vector3 &rightVector);
 Vector3 operator-(const Vector3 &leftVector, const Vector3 &rightVector);

@@ -58,10 +58,10 @@ private:
     void findSphereIntersection(Ray &ray);
     
     /// Intersection between ray and plane
-    void findPlaneIntersection(Ray &ray, Vector3 point, Vector3 normal);
+    void findPlaneIntersection(Ray &ray, Vector3 point);
     
     /// Intersection between ray and triangle
-    void findTriangleIntersection(Ray &ray, float t);
+    bool findTriangleIntersection(Ray &ray, float t);
     
     bool triangleSameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b);
     bool pointInTriangle(Vector3 p, Triangle triangle);

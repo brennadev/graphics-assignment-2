@@ -97,13 +97,29 @@ void Image::findIntersectionAllObjects(Ray &ray) {
 }
 
 
-void Image::findPlaneIntersection(Ray &ray, Vector3 point, Vector3 normal) {
-    ray.intersection.t = -1 * (dot(ray.origin, normal) - dot(point, normal)) / dot(ray.direction, normal);
+void Image::findPlaneIntersection(Ray &ray, Vector3 point) {
+    ray.intersection.t = -1 * (dot(ray.origin, ray.intersection.normal) - dot(point, ray.intersection.normal)) / dot(ray.direction, ray.intersection.normal);
 }
 
 
-void Image::findTriangleIntersection(Ray &ray, float t) {
-    
+bool Image::findTriangleIntersection(Ray &ray, float t) {
+    // must go through all triangles
+    for (int i = 0; i < triangles_.size(); i++) {
+        
+        
+        // the normal hasn't been set, so it needs to be set
+        if (ray.intersection.normal == DEFAULT_NORMAL) {
+            
+        }
+        
+        // TODO: fill in remainder of this call once value for point is known
+        //findPlaneIntersection(ray, <#Vector3 point#>);
+        
+        if (ray.intersection.hasIntersection) {
+            return pointInTriangle(<#Vector3 p#>, triangles_.at(i));
+        }
+    }
+    return false;
 }
 
 

@@ -32,5 +32,6 @@ const Color DEFAULT_AMBIENT_LIGHT = {0, 0, 0};
 const int DEFAULT_MAX_DEPTH = 5;
 
 const Color BLACK_COLOR = {0, 0, 0};
+const Vector3 DEFAULT_NORMAL = {0, 0, 0};
 
 #endif
