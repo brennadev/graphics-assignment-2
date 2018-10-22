@@ -323,8 +323,6 @@ Color Image::calculateLight(Ray ray, int index) {
         Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
         findSphereIntersection(shadowRay);
         
-        // TODO: remaining shadow code
-        
         //cout << "hasIntersection: " << shadowRay.intersection.hasIntersection << endl;
         //cout << "ray direction: " << ray.direction << endl;
         //cout << "shadow ray intersection t: " << shadowRay.intersection.t << endl;
@@ -333,21 +331,7 @@ Color Image::calculateLight(Ray ray, int index) {
             //cout << "shadow ray location: " << shadowRay.origin << endl;
             //cout << "ray intersection location: " << ray.intersection.location << endl;
             
-            
-            // shadow ray origin (location) looks correct
-            // this appears to always be returning false
-            /*if (shadowRay.intersection.hasIntersection) {
-                isInShadow = true;
-            }*/
-        
-        /*if (!shadowRay.intersection.hasIntersection && shadowRay.intersection.t >= length(pointLights_.at(i).location - ray.intersection.location)) {
-            
-            cout << "no intersection" << endl;*/
-           // total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
-            //cout << "not in shadow" << endl << endl;
-        /*} else {
-            cout << "is in intersection" << endl;
-        }*/
+
         
         cout << "t: " << shadowRay.intersection.t << endl;
         
@@ -358,16 +342,6 @@ Color Image::calculateLight(Ray ray, int index) {
             total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
             //cout << "not in shadow" << endl;
         }
-        
-        
-       /* if (isInShadow) {
-            data_.at(i) = BLACK_COLOR;
-        } else {
-            data_.at(i) = calculatePhong(ray);
-        }
-        
-        
-        total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));*/
         
     }
     
@@ -383,6 +357,8 @@ Color Image::calculateLight(Ray ray, int index) {
 
 
 Color Image::evaluateRayTree(Ray ray, int index) {
+    // TODO: eventually swap the findIntersection call used
+    //findIntersectionAllObjects(ray);
     findSphereIntersection(ray);
     
     // need to make sure infinite recursion is avoided by checking the depth

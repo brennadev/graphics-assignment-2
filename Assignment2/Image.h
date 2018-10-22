@@ -50,6 +50,8 @@ private:
     /// Create the ray that goes to a given pixel in the raster image
     Ray generateRay(const int &xPosition, const int &yPosition);
     
+    /// Checks all object types for an intersection with the passed-in ray and finds the closest object that intersects if one exists
+    /// Postcondition: ray.intersection.hasIntersection will be true if an intersection is found. ray.intersection contains all necessary information about the intersection for later determining the color at the position.
     void findIntersectionAllObjects(Ray &ray);
     
     // TODO: get t in param
@@ -77,14 +79,19 @@ private:
     Color specular(Ray ray, PointLight light);
     Color specular(Ray ray, DirectionalLight light);
     
+    /// Get reflection direction for the passed in ray's intersection
     Vector3 reflect(Ray ray);
+    
+    /// Get refraction direction for the passed in ray's intersection
     Vector3 refract(Ray ray, float currentIOR, Vector3 lightDirection);
     
     // TODO: remove eventually
     Color calculatePhong(Ray ray);
     
+    /// Handles all lighting calculations
     Color calculateLight(Ray ray, int index);
     
+    /// Recursive part of the ray tracer
     Color evaluateRayTree(Ray ray, int index);
     
     /// Final output of the image to an image file
