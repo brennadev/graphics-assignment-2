@@ -92,8 +92,8 @@ void Image::findIntersectionAllObjects(Ray &ray) {
     // t value that's used across all intersection checks as there are different object types that must be checked differently
     float t = 9e99;
     
-    findSphereIntersection(ray);
-    findTriangleIntersection(ray, t);
+    findSphereIntersection(ray, t);
+    //findTriangleIntersection(ray, t);
 }
 
 
@@ -116,7 +116,7 @@ bool Image::findTriangleIntersection(Ray &ray, float t) {
         //findPlaneIntersection(ray, <#Vector3 point#>);
         
         if (ray.intersection.hasIntersection) {
-            return pointInTriangle(<#Vector3 p#>, triangles_.at(i));
+            //return pointInTriangle(<#Vector3 p#>, triangles_.at(i));
         }
     }
     return false;
@@ -124,8 +124,8 @@ bool Image::findTriangleIntersection(Ray &ray, float t) {
 
 
 # pragma mark - Intersections
-void Image::findSphereIntersection(Ray &ray) {
-    float t = 9e99;    // set to some really big value so the first calculated t is always less
+void Image::findSphereIntersection(Ray &ray, float t) {
+    //float t = 9e99;    // set to some really big value so the first calculated t is always less
     
     for (int i = 0; i < spheres_.size(); i++) {
         // use the discriminant to determine if there's an intersection
@@ -321,8 +321,8 @@ Color Image::calculateLight(Ray ray, int index) {
     
     for (int i = 0; i < pointLights_.size(); i++) {
         Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
-        findSphereIntersection(shadowRay);
-        
+        //findSphereIntersection(shadowRay);
+        findIntersectionAllObjects(shadowRay);
         //cout << "hasIntersection: " << shadowRay.intersection.hasIntersection << endl;
         //cout << "ray direction: " << ray.direction << endl;
         //cout << "shadow ray intersection t: " << shadowRay.intersection.t << endl;
@@ -358,8 +358,8 @@ Color Image::calculateLight(Ray ray, int index) {
 
 Color Image::evaluateRayTree(Ray ray, int index) {
     // TODO: eventually swap the findIntersection call used
-    //findIntersectionAllObjects(ray);
-    findSphereIntersection(ray);
+    findIntersectionAllObjects(ray);
+    //findSphereIntersection(ray);
     
     // need to make sure infinite recursion is avoided by checking the depth
     if (ray.intersection.hasIntersection && index < maxDepth_) {

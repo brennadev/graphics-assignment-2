@@ -57,7 +57,7 @@ private:
     // TODO: get t in param
     /// Intersection between ray and sphere
     /// Precondition: make sure ray's direction vector is normalized
-    void findSphereIntersection(Ray &ray);
+    void findSphereIntersection(Ray &ray, float t);
     
     /// Intersection between ray and plane
     void findPlaneIntersection(Ray &ray, Vector3 point);
