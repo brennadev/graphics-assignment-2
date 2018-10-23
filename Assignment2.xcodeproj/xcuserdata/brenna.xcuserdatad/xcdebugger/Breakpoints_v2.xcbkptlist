@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "562020139.526334"
+            timestampString = "562024597.5235389"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "408"
-            endingLineNumber = "408"
-            landmarkName = "Image::writeImageToFile()"
+            startingLineNumber = "395"
+            endingLineNumber = "395"
+            landmarkName = "Image::performRayTrace()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,29 +26,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "562020139.527061"
+            timestampString = "562024597.523892"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "351"
-            endingLineNumber = "351"
-            landmarkName = "Image::calculateLight(Ray ray, int index)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Assignment2/Image.cpp"
-            timestampString = "562020139.527401"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "352"
-            endingLineNumber = "352"
-            landmarkName = "Image::calculateLight(Ray ray, int index)"
-            landmarkType = "7">
+            startingLineNumber = "336"
+            endingLineNumber = "336"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -58,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "562020139.528304"
+            timestampString = "562024597.52396"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "355"
-            endingLineNumber = "355"
+            startingLineNumber = "339"
+            endingLineNumber = "339"
             landmarkName = "Image::calculateLight(Ray ray, int index)"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "562020139.528597"
+            timestampString = "562024597.524018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
             landmarkName = "Image::findSphereIntersection(Ray &amp;ray, float &amp;t)"
             landmarkType = "7">
          </BreakpointContent>
@@ -90,7 +74,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "562020139.529277"
+            timestampString = "562024597.524071"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "150"

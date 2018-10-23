@@ -88,7 +88,7 @@ private:
     Vector3 refract(Ray ray, float currentIOR);
     
     // TODO: remove eventually
-    Color calculatePhong(Ray ray);
+    //Color calculatePhong(Ray ray);
     
     /// Handles all lighting calculations
     Color calculateLight(Ray ray, int index);

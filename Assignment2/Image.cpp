@@ -284,7 +284,7 @@ Vector3 Image::refract(Ray ray, float currentIOR) {
 
 
 # pragma mark - Main Steps
-Color Image::calculatePhong(Ray ray) {
+/*Color Image::calculatePhong(Ray ray) {
     // as each light's diffuse and specular needs to be added together, accumulate a total
     Color totalDiffuseSpecular = {0, 0, 0};
     
@@ -331,7 +331,7 @@ Color Image::calculatePhong(Ray ray) {
     }
     
     return ray.intersection.material.ambient * ambientLights_.at(0) + totalDiffuseSpecular;
-}
+}*/
 
 
 Color Image::calculateLight(Ray ray, int index) {
@@ -344,13 +344,27 @@ Color Image::calculateLight(Ray ray, int index) {
         findIntersectionAllObjects(shadowRay);
 
         if (shadowRay.intersection.hasIntersection && shadowRay.intersection.t < length(pointLights_.at(i).location - ray.intersection.location)) {
-            //cout << "is in shadow" << endl;
             continue;
         } else {
             total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
-            //cout << "not in shadow" << endl;
         }
         
+        total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
+    }
+    
+    
+    for (int i = 0; i < directionalLights_.size(); i++) {
+        Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
+        
+        findIntersectionAllObjects(shadowRay);
+        
+        if (shadowRay.intersection.hasIntersection && shadowRay.intersection.t < length(pointLights_.at(i).location - ray.intersection.location)) {
+            continue;
+        } else {
+            total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
+        }
+        
+        total = total + diffuse(ray, directionalLights_.at(i)) + specular(ray, directionalLights_.at(i));
     }
     
     Vector3 mirrorDirection = reflect(ray);
