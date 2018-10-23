@@ -19,9 +19,6 @@ int main(int argc, const char * argv[]) {
     /// The image used throughout the program
     Image image;
     
-    cout << cross({1, 2, 0}, {2, 0, 0}) << endl;
-    cout << cross({2, 0, 0}, {1, 2, 0}) << endl;
-    
     // make sure we have the correct number of arguments before anything is done
     if (argc != 2) {
         cout << "Incorrect number of arguments passed" << endl;
@@ -167,7 +164,8 @@ int main(int argc, const char * argv[]) {
             
             triangles.push_back({{vertices.at(currentTriangleVertex1), {0, 0, 0}},
                 {vertices.at(currentTriangleVertex2), {0, 0, 0}},
-                {vertices.at(currentTriangleVertex3), {0, 0, 0}}});
+                {vertices.at(currentTriangleVertex3), {0, 0, 0}},
+                &currentMaterial});
             
         } else if (command == "normal_triangle") {
             // TODO: fill in once I know if vertices/normals are all read in first
@@ -175,7 +173,8 @@ int main(int argc, const char * argv[]) {
             
             triangles.push_back({{vertices.at(currentTriangleVertex1), normals.at(currentTriangleNormal1)},
                                  {vertices.at(currentTriangleVertex2), normals.at(currentTriangleNormal2)},
-                                 {vertices.at(currentTriangleVertex3), normals.at(currentTriangleNormal3)}});
+                                 {vertices.at(currentTriangleVertex3), normals.at(currentTriangleNormal3)},
+                &currentMaterial});
         } else {
             cout << "Command not recognized" << endl;
         }

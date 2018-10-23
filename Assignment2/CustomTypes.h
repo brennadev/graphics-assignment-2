@@ -13,6 +13,7 @@
 #include <iostream>
 using namespace std;
 
+
 # pragma mark - Vectors and Vector Operations
 /// Point/vector in 3d space
 struct Vector3 {
@@ -37,6 +38,7 @@ Vector3 cross(const Vector3 &firstVector, const Vector3 &secondVector);
 float length(const Vector3 &vector);
 Vector3 normalize(const Vector3 &vector);
 float clamp(const float &value);
+
 
 # pragma mark - Color and Color Operations
 /// RGB-based color - all stored as floats from 0 to 1 to prevent math errors
@@ -144,6 +146,7 @@ struct Triangle {
     TriangleVertex vertex1;
     TriangleVertex vertex2;
     TriangleVertex vertex3;
+    Material *material;
 };
 
 
