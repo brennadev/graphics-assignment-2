@@ -83,7 +83,7 @@ private:
     Vector3 reflect(Ray ray);
     
     /// Get refraction direction for the passed in ray's intersection
-    Vector3 refract(Ray ray, float currentIOR, Vector3 lightDirection);
+    Vector3 refract(Ray ray, float currentIOR);
     
     // TODO: remove eventually
     Color calculatePhong(Ray ray);

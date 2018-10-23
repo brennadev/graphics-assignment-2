@@ -95,7 +95,7 @@ void Image::findIntersectionAllObjects(Ray &ray) {
     float t = 9e99;
     
     findSphereIntersection(ray, t);
-    //findTriangleIntersection(ray, t);
+    findTriangleIntersection(ray, t);
 }
 
 
@@ -139,7 +139,9 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
         // when that's the case, check if it's inside the triangle
         if (ray.intersection.hasIntersection) {
             // if it's not inside the triangle, then there isn't actually an intersection with the triangle
-            if (!pointInTriangle(defaultPoint, triangles_.at(i))) {
+            if (pointInTriangle(ray.origin + ray.intersection.t * ray.direction, triangles_.at(i))) {
+                ray.intersection.normal = triangles_.at(i).vertex1.normal;
+            } else {
                 ray.intersection.hasIntersection = false;
             }
         }
@@ -277,16 +279,16 @@ Vector3 Image::reflect(Ray ray) {
     return 2 * dot(N, v) * N - v;
 }
 
-Vector3 Image::refract(Ray ray, float currentIOR, Vector3 lightDirection) {
+
+Vector3 Image::refract(Ray ray, float currentIOR) {
+    Vector3 negativeDirection = -1 * ray.direction;
     
-    // need to break this up by x/y passed into the parameter (x and y separate params) - but then, what about z?
-    /*float thetaI = atan2(lightDirection, ray.intersection.normal);
+    float thetaI = acos(dot(negativeDirection, ray.intersection.normal));
     float thetaR = asin(currentIOR * sin(currentIOR) / ray.intersection.material.indexOfRefraction);
     
-    return (currentIOR / ray.intersection.material.indexOfRefraction * cos(thetaI) - cos(thetaR)) * ray.intersection.normal - currentIOR / ray.intersection.material.indexOfRefraction * lightDirection;*/
-    
-    return {0,0,0};
+    return normalize((currentIOR / ray.intersection.material.indexOfRefraction * cos(thetaI) - cos(thetaR)) * ray.intersection.normal - currentIOR / ray.intersection.material.indexOfRefraction * negativeDirection);
 }
+
 
 # pragma mark - Actual Calculation
 Color Image::calculatePhong(Ray ray) {
@@ -342,6 +344,7 @@ Color Image::calculatePhong(Ray ray) {
 Color Image::calculateLight(Ray ray, int index) {
     Color total = ambient(ray.intersection.material.ambient);
     
+    // TODO: directinoal lights (see calculatePhong implementation)c
     for (int i = 0; i < pointLights_.size(); i++) {
         Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
         //findSphereIntersection(shadowRay);
@@ -373,7 +376,7 @@ Color Image::calculateLight(Ray ray, int index) {
     total = total + ray.intersection.material.specular * evaluateRayTree(mirrorRay, index + 1);
     
     // TODO: refraction
-    
+    //Vector3 refractionDirection = refract(<#Ray ray#>, <#float currentIOR#>, <#Vector3 lightDirection#>)
     
     return total;
 }
