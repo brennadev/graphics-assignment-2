@@ -149,9 +149,16 @@ void Image::findSphereIntersection(Ray &ray, float &t) {
     for (int i = 0; i < spheres_.size(); i++) {
         // use the discriminant to determine if there's an intersection
         
+        float a = 1;
+        float b = 2 * dot(ray.direction, ray.origin - spheres_.at(i).center);
+        float c = pow(length(ray.origin - spheres_.at(i).center), 2) - pow(spheres_.at(i).radius, 2);
+        
+        float discriminant = pow(b, 2) - 4 * a * c;
+        //cout << "discriminantNew: " << discriminantNew << endl;
+        
         // camera position (and therefore ray origin) is correct
         // normalizing is weird
-        float discriminant = pow(dot(ray.direction, ray.origin - spheres_.at(i).center), 2) - dot(ray.direction, ray.direction) *
+        float discriminantOld = pow(dot(ray.direction, ray.origin - spheres_.at(i).center), 2) - dot(ray.direction, ray.direction) *
         (dot(camera_.position - spheres_.at(i).center, ray.direction - spheres_.at(i).center) - pow(spheres_.at(i).radius, 2));
         
         //cout << "discriminant: " << discriminant << endl;
@@ -163,8 +170,11 @@ void Image::findSphereIntersection(Ray &ray, float &t) {
         // intersection occurs with current sphere
         } else {
             // want min of t > 0
-            float firstT = dot(-1 * ray.direction, ray.origin - spheres_.at(i).center) + sqrt(discriminant);
-            float secondT = dot(-1 * ray.direction, ray.origin - spheres_.at(i).center) - sqrt(discriminant);
+            float firstTOld = dot(-1 * ray.direction, ray.origin - spheres_.at(i).center) + sqrt(discriminant);
+            float secondTOld = dot(-1 * ray.direction, ray.origin - spheres_.at(i).center) - sqrt(discriminant);
+            
+            float firstT = (-1 * b + sqrt(discriminant)) / (2 * a);
+            float secondT = (-1 * b - sqrt(discriminant)) / (2 * a);
             
             // keep track so we know if the other values of the intersection need to be updated
             float oldT = t;
@@ -187,6 +197,8 @@ void Image::findSphereIntersection(Ray &ray, float &t) {
             } else {
                 continue;
             }
+            
+            
             
             //cout << "t in findIntersection: " << t << endl;
             // all the other values associated with the intersection need updating if t has changed
@@ -395,9 +407,7 @@ void Image::performRayTrace() {
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
         //cout << "i: " << i << endl;
-        
-        // 229680
-        
+
         // always start the recursion tree at 0
         data_.push_back(evaluateRayTree(ray, 0));
     }
