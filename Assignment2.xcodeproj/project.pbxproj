@@ -27,7 +27,6 @@
 /* Begin PBXFileReference section */
 		65099EF9216644B700F2BA05 /* Assignment2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Assignment2; sourceTree = BUILT_PRODUCTS_DIR; };
 		65099EFC216644B700F2BA05 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		65099F032166459900F2BA05 /* stb_image_write.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_write.h; sourceTree = "<group>"; };
 		65099F052166530500F2BA05 /* Image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		65099F062166531000F2BA05 /* Image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Image.cpp; sourceTree = "<group>"; };
 		65099F0821667A6500F2BA05 /* CustomTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomTypes.h; sourceTree = "<group>"; };
@@ -71,7 +70,6 @@
 				65099EFC216644B700F2BA05 /* main.cpp */,
 				65099F052166530500F2BA05 /* Image.h */,
 				65099F062166531000F2BA05 /* Image.cpp */,
-				65099F032166459900F2BA05 /* stb_image_write.h */,
 			);
 			path = Assignment2;
 			sourceTree = "<group>";

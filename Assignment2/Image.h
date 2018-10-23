@@ -29,6 +29,8 @@ private:
     
     Camera camera_;
     float imagePlaneDistance;
+    
+    /// All spheres in scene
     vector<Sphere> spheres_;
     
     

@@ -8,20 +8,12 @@
 
 // Many types used throughout the ray tracer program
 
-
 #ifndef CustomTypes_h
 #define CustomTypes_h
 #include <iostream>
 using namespace std;
 
 # pragma mark - Vectors and Vector Operations
-// TODO: remove if not used
-struct Vector2 {
-    float x;
-    float y;
-};
-
-
 /// Point/vector in 3d space
 struct Vector3 {
     float x;

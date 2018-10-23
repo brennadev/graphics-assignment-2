@@ -7,14 +7,13 @@
 //
 
 #include "Image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <cmath>
 
 
+# pragma mark - Setup
 Image::Image() {
     camera_ = DEFAULT_CAMERA;
     width_ = DEFAULT_WIDTH;
@@ -108,7 +107,6 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
     // must go through all triangles
     for (int i = 0; i < triangles_.size(); i++) {
         
-        
         // the normal hasn't been set, so it needs to be set
         if (ray.intersection.normal == DEFAULT_NORMAL) {
             Vector3 side1 = triangles_.at(i).vertex2.location - triangles_.at(i).vertex1.location;
@@ -131,10 +129,8 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
         }
         
         
-        Vector3 defaultPoint = triangles_.at(i).vertex1.location;
-        
         // first calculation step: make sure the ray intersects the plane the triangle is in
-        findPlaneIntersection(ray, defaultPoint);
+        findPlaneIntersection(ray, triangles_.at(i).vertex1.location);
         
         // when that's the case, check if it's inside the triangle
         if (ray.intersection.hasIntersection) {
@@ -150,12 +146,13 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
 
 
 void Image::findSphereIntersection(Ray &ray, float &t) {
-    //float t = 9e99;    // set to some really big value so the first calculated t is always less
-    
     for (int i = 0; i < spheres_.size(); i++) {
         // use the discriminant to determine if there's an intersection
-        float discriminant = pow(dot(ray.direction, camera_.position - spheres_.at(i).center), 2) - dot(ray.direction, ray.direction) *
-        (dot(camera_.position - spheres_.at(i).center, camera_.position - spheres_.at(i).center) - pow(spheres_.at(i).radius, 2));
+        
+        // camera position (and therefore ray origin) is correct
+        // normalizing is weird
+        float discriminant = pow(dot(ray.direction, ray.origin - spheres_.at(i).center), 2) - dot(ray.direction, ray.direction) *
+        (dot(camera_.position - spheres_.at(i).center, ray.direction - spheres_.at(i).center) - pow(spheres_.at(i).radius, 2));
         
         //cout << "discriminant: " << discriminant << endl;
         
@@ -166,8 +163,8 @@ void Image::findSphereIntersection(Ray &ray, float &t) {
         // intersection occurs with current sphere
         } else {
             // want min of t > 0
-            float firstT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) + sqrt(discriminant);
-            float secondT = dot(-1 * ray.direction, camera_.position - spheres_.at(i).center) - sqrt(discriminant);
+            float firstT = dot(-1 * ray.direction, ray.origin - spheres_.at(i).center) + sqrt(discriminant);
+            float secondT = dot(-1 * ray.direction, ray.origin - spheres_.at(i).center) - sqrt(discriminant);
             
             // keep track so we know if the other values of the intersection need to be updated
             float oldT = t;
@@ -176,7 +173,6 @@ void Image::findSphereIntersection(Ray &ray, float &t) {
             if (firstT > 0.001) {
                 // both the first and second t values are positive
                 if (secondT > 0.001) {
-             
                     t = min(min(firstT, secondT), t);
                     
                 // only the first t value is positive
@@ -221,7 +217,7 @@ bool Image::pointInTriangle(Vector3 p, Triangle triangle) {
 }
 
 
-# pragma mark - Light Calculations
+# pragma mark - Phong Light Calculations
 Color Image::ambient(Color coefficient) {
     return coefficient * ambientLights_.at(0);
 }
@@ -271,6 +267,7 @@ Color Image::specular(Ray ray, DirectionalLight light) {
 }
 
 
+# pragma mark - Other Light Calculations
 Vector3 Image::reflect(Ray ray) {
     Vector3 N = ray.intersection.normal;
     Vector3 d = ray.direction;
@@ -290,7 +287,7 @@ Vector3 Image::refract(Ray ray, float currentIOR) {
 }
 
 
-# pragma mark - Actual Calculation
+# pragma mark - Main Steps
 Color Image::calculatePhong(Ray ray) {
     // as each light's diffuse and specular needs to be added together, accumulate a total
     Color totalDiffuseSpecular = {0, 0, 0};
@@ -344,10 +341,10 @@ Color Image::calculatePhong(Ray ray) {
 Color Image::calculateLight(Ray ray, int index) {
     Color total = ambient(ray.intersection.material.ambient);
     
-    // TODO: directinoal lights (see calculatePhong implementation)c
+    // TODO: directional lights (see calculatePhong implementation)c
     for (int i = 0; i < pointLights_.size(); i++) {
         Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
-        //findSphereIntersection(shadowRay);
+
         findIntersectionAllObjects(shadowRay);
         //cout << "hasIntersection: " << shadowRay.intersection.hasIntersection << endl;
         //cout << "ray direction: " << ray.direction << endl;
@@ -376,7 +373,7 @@ Color Image::calculateLight(Ray ray, int index) {
     total = total + ray.intersection.material.specular * evaluateRayTree(mirrorRay, index + 1);
     
     // TODO: refraction
-    //Vector3 refractionDirection = refract(<#Ray ray#>, <#float currentIOR#>, <#Vector3 lightDirection#>)
+    //Vector3 refractionDirection = refract(<#Ray ray#>, <#float currentIOR#>)
     
     return total;
 }
@@ -392,55 +389,23 @@ Color Image::evaluateRayTree(Ray ray, int index) {
     return backgroundColor_;
 }
 
+
 void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
         //cout << "i: " << i << endl;
         
+        // 229680
+        
         // always start the recursion tree at 0
         data_.push_back(evaluateRayTree(ray, 0));
-        
-        
-        // TODO: old non-recursive code; remove eventually
-        /*findIntersection(ray);
-        
-        if (ray.intersection.hasIntersection) {
-            
-            bool isInShadow = false;
-            
-            // check if a shadow is necessary
-            for (int i = 0; i < pointLights_.size() && !isInShadow; i++) {
-                Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
-                findIntersection(shadowRay);
-                //cout << "shadow ray intersection location: " << shadowRay.intersection.location << endl;
-                //cout << "shadow ray direction: " << shadowRay.direction << endl;
-                //cout << "shadow ray location: " << shadowRay.origin << endl;
-                //cout << "ray intersection location: " << ray.intersection.location << endl;
-                
-                
-                // shadow ray origin (location) looks correct
-                // this appears to always be returning false
-                if (shadowRay.intersection.hasIntersection) {
-                    isInShadow = true;
-                }
-            }
-            
-            // isInShadow is still always false
-            cout << "isInShadow: " << isInShadow << endl;
-            
-            if (isInShadow) {
-                data_.at(i) = BLACK_COLOR;
-            } else {
-                data_.at(i) = calculatePhong(ray);
-            }
-        }*/
-        // do nothing if not hit since it's already on the background color
     }
     writeImageToFile();
 }
 
 
+# pragma mark - Output
 void Image::writeImageToFile() {
     ofstream outputfile(outputFileName_);
     
