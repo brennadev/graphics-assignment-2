@@ -57,13 +57,13 @@ private:
     // TODO: get t in param
     /// Intersection between ray and sphere
     /// Precondition: make sure ray's direction vector is normalized
-    void findSphereIntersection(Ray &ray, float t);
+    void findSphereIntersection(Ray &ray, float &t);
     
     /// Intersection between ray and plane
     void findPlaneIntersection(Ray &ray, Vector3 point);
     
     /// Intersection between ray and triangle
-    bool findTriangleIntersection(Ray &ray, float t);
+    void findTriangleIntersection(Ray &ray, float &t);
     
     bool triangleSameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b);
     bool pointInTriangle(Vector3 p, Triangle triangle);

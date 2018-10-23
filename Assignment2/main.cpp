@@ -19,6 +19,8 @@ int main(int argc, const char * argv[]) {
     /// The image used throughout the program
     Image image;
     
+    cout << cross({1, 2, 0}, {2, 0, 0}) << endl;
+    cout << cross({2, 0, 0}, {1, 2, 0}) << endl;
     
     // make sure we have the correct number of arguments before anything is done
     if (argc != 2) {

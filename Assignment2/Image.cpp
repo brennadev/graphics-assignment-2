@@ -88,6 +88,8 @@ Ray Image::generateRay(const int &xPosition, const int &yPosition) {
         normalize(imagePlaneDistance * camera_.viewingDirection + u * camera_.right - v * camera_.up), {false, {0,0,0}, {0,0,0}, DEFAULT_MATERIAL}};
 }
 
+
+# pragma mark - Intersections
 void Image::findIntersectionAllObjects(Ray &ray) {
     // t value that's used across all intersection checks as there are different object types that must be checked differently
     float t = 9e99;
@@ -102,29 +104,50 @@ void Image::findPlaneIntersection(Ray &ray, Vector3 point) {
 }
 
 
-bool Image::findTriangleIntersection(Ray &ray, float t) {
+void Image::findTriangleIntersection(Ray &ray, float &t) {
     // must go through all triangles
     for (int i = 0; i < triangles_.size(); i++) {
         
         
         // the normal hasn't been set, so it needs to be set
         if (ray.intersection.normal == DEFAULT_NORMAL) {
+            Vector3 side1 = triangles_.at(i).vertex2.location - triangles_.at(i).vertex1.location;
+            Vector3 side2 = triangles_.at(i).vertex3.location - triangles_.at(i).vertex1.location;
             
+            Vector3 cross1 = cross(side1, side2);
+            Vector3 cross2 = cross(side2, side1);
+            
+            Vector3 normalized;
+            
+            if (dot(cross1, camera_.viewingDirection) >= 0) {
+                normalized = normalize(cross1);
+            } else {
+                normalized = normalize(cross2);
+            }
+            
+            triangles_.at(i).vertex1.normal = normalized;
+            triangles_.at(i).vertex2.normal = normalized;
+            triangles_.at(i).vertex3.normal = normalized;
         }
         
-        // TODO: fill in remainder of this call once value for point is known
-        //findPlaneIntersection(ray, <#Vector3 point#>);
         
+        Vector3 defaultPoint = triangles_.at(i).vertex1.location;
+        
+        // first calculation step: make sure the ray intersects the plane the triangle is in
+        findPlaneIntersection(ray, defaultPoint);
+        
+        // when that's the case, check if it's inside the triangle
         if (ray.intersection.hasIntersection) {
-            //return pointInTriangle(<#Vector3 p#>, triangles_.at(i));
+            // if it's not inside the triangle, then there isn't actually an intersection with the triangle
+            if (!pointInTriangle(defaultPoint, triangles_.at(i))) {
+                ray.intersection.hasIntersection = false;
+            }
         }
     }
-    return false;
 }
 
 
-# pragma mark - Intersections
-void Image::findSphereIntersection(Ray &ray, float t) {
+void Image::findSphereIntersection(Ray &ray, float &t) {
     //float t = 9e99;    // set to some really big value so the first calculated t is always less
     
     for (int i = 0; i < spheres_.size(); i++) {
@@ -333,7 +356,7 @@ Color Image::calculateLight(Ray ray, int index) {
             
 
         
-        cout << "t: " << shadowRay.intersection.t << endl;
+        //cout << "t: " << shadowRay.intersection.t << endl;
         
         if (shadowRay.intersection.hasIntersection && shadowRay.intersection.t < length(pointLights_.at(i).location - ray.intersection.location)) {
             //cout << "is in shadow" << endl;
@@ -357,9 +380,7 @@ Color Image::calculateLight(Ray ray, int index) {
 
 
 Color Image::evaluateRayTree(Ray ray, int index) {
-    // TODO: eventually swap the findIntersection call used
     findIntersectionAllObjects(ray);
-    //findSphereIntersection(ray);
     
     // need to make sure infinite recursion is avoided by checking the depth
     if (ray.intersection.hasIntersection && index < maxDepth_) {
@@ -378,6 +399,7 @@ void Image::performRayTrace() {
         data_.push_back(evaluateRayTree(ray, 0));
         
         
+        // TODO: old non-recursive code; remove eventually
         /*findIntersection(ray);
         
         if (ray.intersection.hasIntersection) {
