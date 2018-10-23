@@ -148,20 +148,10 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
 void Image::findSphereIntersection(Ray &ray, float &t) {
     for (int i = 0; i < spheres_.size(); i++) {
         // use the discriminant to determine if there's an intersection
-        
         float a = 1;
         float b = 2 * dot(ray.direction, ray.origin - spheres_.at(i).center);
         float c = pow(length(ray.origin - spheres_.at(i).center), 2) - pow(spheres_.at(i).radius, 2);
-        
         float discriminant = pow(b, 2) - 4 * a * c;
-        //cout << "discriminantNew: " << discriminantNew << endl;
-        
-        // camera position (and therefore ray origin) is correct
-        // normalizing is weird
-        float discriminantOld = pow(dot(ray.direction, ray.origin - spheres_.at(i).center), 2) - dot(ray.direction, ray.direction) *
-        (dot(camera_.position - spheres_.at(i).center, ray.direction - spheres_.at(i).center) - pow(spheres_.at(i).radius, 2));
-        
-        //cout << "discriminant: " << discriminant << endl;
         
         // no intersection occurs with current sphere
         if (discriminant < 0) {
@@ -170,9 +160,6 @@ void Image::findSphereIntersection(Ray &ray, float &t) {
         // intersection occurs with current sphere
         } else {
             // want min of t > 0
-            float firstTOld = dot(-1 * ray.direction, ray.origin - spheres_.at(i).center) + sqrt(discriminant);
-            float secondTOld = dot(-1 * ray.direction, ray.origin - spheres_.at(i).center) - sqrt(discriminant);
-            
             float firstT = (-1 * b + sqrt(discriminant)) / (2 * a);
             float secondT = (-1 * b - sqrt(discriminant)) / (2 * a);
             
@@ -198,9 +185,6 @@ void Image::findSphereIntersection(Ray &ray, float &t) {
                 continue;
             }
             
-            
-            
-            //cout << "t in findIntersection: " << t << endl;
             // all the other values associated with the intersection need updating if t has changed
             if (t < oldT) {
                 ray.intersection.hasIntersection = true;
@@ -353,23 +337,12 @@ Color Image::calculatePhong(Ray ray) {
 Color Image::calculateLight(Ray ray, int index) {
     Color total = ambient(ray.intersection.material.ambient);
     
-    // TODO: directional lights (see calculatePhong implementation)c
+    // TODO: directional lights (see calculatePhong implementation)
     for (int i = 0; i < pointLights_.size(); i++) {
         Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
 
         findIntersectionAllObjects(shadowRay);
-        //cout << "hasIntersection: " << shadowRay.intersection.hasIntersection << endl;
-        //cout << "ray direction: " << ray.direction << endl;
-        //cout << "shadow ray intersection t: " << shadowRay.intersection.t << endl;
-            //cout << "shadow ray intersection location: " << shadowRay.intersection.location << endl;
-            //cout << "shadow ray direction: " << shadowRay.direction << endl;
-            //cout << "shadow ray location: " << shadowRay.origin << endl;
-            //cout << "ray intersection location: " << ray.intersection.location << endl;
-            
 
-        
-        //cout << "t: " << shadowRay.intersection.t << endl;
-        
         if (shadowRay.intersection.hasIntersection && shadowRay.intersection.t < length(pointLights_.at(i).location - ray.intersection.location)) {
             //cout << "is in shadow" << endl;
             continue;
