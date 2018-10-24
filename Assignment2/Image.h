@@ -87,10 +87,10 @@ private:
     Vector3 refract(Ray ray, float currentIOR);
     
     /// Handles all lighting calculations
-    Color calculateLight(Ray ray, int index);
+    Color calculateLight(Ray ray, int index, float currentIOR);
     
     /// Recursive part of the ray tracer
-    Color evaluateRayTree(Ray ray, int index);
+    Color evaluateRayTree(Ray ray, int index, float currentIOR);
     
     /// Final output of the image to an image file
     void writeImageToFile();

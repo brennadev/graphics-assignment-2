@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "562096963.960803"
+            timestampString = "562102426.626821"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "210"
-            endingLineNumber = "210"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
             landmarkName = "Image::findSphereIntersection(Ray &amp;ray, float &amp;t)"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "562096963.9617471"
+            timestampString = "562102426.627869"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "205"
-            endingLineNumber = "205"
+            startingLineNumber = "163"
+            endingLineNumber = "163"
             landmarkName = "Image::findSphereIntersection(Ray &amp;ray, float &amp;t)"
             landmarkType = "7">
          </BreakpointContent>

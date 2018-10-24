@@ -114,6 +114,13 @@ struct Sphere {
 };
 
 
+struct Plane {
+    Vector3 point;
+    Vector3 normal;
+    Material material;
+};
+
+
 # pragma mark - Lights
 struct DirectionalLight {
     Color color;

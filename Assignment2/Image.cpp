@@ -124,7 +124,7 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
             Vector3 cross1 = cross(side1, side2);
             Vector3 cross2 = cross(side2, side1);
             
-            if (dot(cross1, camera_.viewingDirection) <= 0) {
+            if (dot(cross1, camera_.viewingDirection) < 0) {
                 normalized = normalize(cross1);
             } else {
                 normalized = normalize(cross2);
@@ -145,6 +145,7 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
             // if it's not inside the triangle, then there isn't actually an intersection with the triangle
             if (pointInTriangle(ray.origin + ray.intersection.t * ray.direction, triangles_.at(i))) {
                 ray.intersection.normal = triangles_.at(i).vertex1.normal;
+                cout << "normal: " << ray.intersection.normal << endl;
                 ray.intersection.location = ray.origin + ray.intersection.t * ray.direction;
                 ray.intersection.material = *(triangles_.at(i).material);
                 t = ray.intersection.t;
@@ -244,7 +245,7 @@ Color Image::diffuse(Ray ray, PointLight light) {
 
 Color Image::diffuse(Ray ray, DirectionalLight light) {
     Vector3 N = ray.intersection.normal;
-    Vector3 l = normalize(light.direction);
+    Vector3 l = normalize(-1 * light.direction);
     Color kd = ray.intersection.material.diffuse;
     Color I = light.color;
     
@@ -266,7 +267,7 @@ Color Image::specular(Ray ray, PointLight light) {
 
 Color Image::specular(Ray ray, DirectionalLight light) {
     float n = ray.intersection.material.phongCosinePower;
-    Vector3 l = normalize(light.direction);
+    Vector3 l = normalize(-1 * light.direction);
     Vector3 r = reflect(ray);
     Color ks = ray.intersection.material.specular;
     Color I = light.color;
@@ -296,7 +297,7 @@ Vector3 Image::refract(Ray ray, float currentIOR) {
 
 
 # pragma mark - Main Steps
-Color Image::calculateLight(Ray ray, int index) {
+Color Image::calculateLight(Ray ray, int index, float currentIOR) {
     Color total = ambient(ray.intersection.material.ambient);
     //cout << "hasIntersection: " << ray.intersection.hasIntersection << endl;
 
@@ -316,11 +317,11 @@ Color Image::calculateLight(Ray ray, int index) {
     
     
     for (int i = 0; i < directionalLights_.size(); i++) {
-        Ray shadowRay = {ray.intersection.location, normalize(directionalLights_.at(i).direction), DEFAULT_INTERSECTION};
+        Ray shadowRay = {ray.intersection.location, normalize(-1 * directionalLights_.at(i).direction), DEFAULT_INTERSECTION};
         
         findIntersectionAllObjects(shadowRay);
         
-        if (shadowRay.intersection.hasIntersection && shadowRay.intersection.t < length(directionalLights_.at(i).direction)) {
+        if (shadowRay.intersection.hasIntersection && shadowRay.intersection.t < length(-1 * directionalLights_.at(i).direction)) {
             continue;
         } else {
             total = total + diffuse(ray, directionalLights_.at(i)) + specular(ray, directionalLights_.at(i));
@@ -329,24 +330,27 @@ Color Image::calculateLight(Ray ray, int index) {
         total = total + diffuse(ray, directionalLights_.at(i)) + specular(ray, directionalLights_.at(i));
     }
     
+    // reflection
     Vector3 mirrorDirection = reflect(ray);
     Ray mirrorRay = {ray.intersection.location, normalize(mirrorDirection), DEFAULT_INTERSECTION};
-    total = total + ray.intersection.material.specular * evaluateRayTree(mirrorRay, index + 1);
+    total = total + ray.intersection.material.specular * evaluateRayTree(mirrorRay, index + 1, currentIOR);
     
-    // TODO: refraction
-    //Vector3 refractionDirection = refract(<#Ray ray#>, <#float currentIOR#>)
+    // refraction
+    Vector3 refractionDirection = refract(ray, currentIOR);
+    Ray refractionRay = {ray.intersection.location, normalize(refractionDirection), DEFAULT_INTERSECTION};
+    total = total + ray.intersection.material.transmissive * evaluateRayTree(refractionRay, index + 1, ray.intersection.material.indexOfRefraction);
     
     return total;
 }
 
 
-Color Image::evaluateRayTree(Ray ray, int index) {
+Color Image::evaluateRayTree(Ray ray, int index, float currentIOR) {
     findIntersectionAllObjects(ray);
     //cout << "hasIntersection: " << ray.intersection.hasIntersection << endl;
     
     // need to make sure infinite recursion is avoided by checking the depth
     if (ray.intersection.hasIntersection && index < maxDepth_) {
-        return calculateLight(ray, index);
+        return calculateLight(ray, index, currentIOR);
     }
     return backgroundColor_;
 }
@@ -358,7 +362,7 @@ void Image::performRayTrace() {
         Ray ray = generateRay(i % width_, i / width_);
 
         // always start the recursion tree at 0
-        data_.push_back(evaluateRayTree(ray, 0));
+        data_.push_back(evaluateRayTree(ray, 0, 1));
     }
     writeImageToFile();
 }

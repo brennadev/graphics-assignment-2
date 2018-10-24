@@ -54,8 +54,8 @@ int main(int argc, const char * argv[]) {
     int maxDepth = DEFAULT_MAX_DEPTH;
     // material is a state - the same value will get used until the input file reading hits a line that changes the material values, thereby changing the values in this variable
     Material currentMaterial = DEFAULT_MATERIAL;
-    
-    
+    vector<Plane> planes = vector<Plane>();
+    Plane currentPlane;
     
     // triangle-related values
     /// total possible vertices; -1 indicates a value hasn't been set
@@ -168,6 +168,12 @@ int main(int argc, const char * argv[]) {
                                  {vertices.at(currentTriangleVertex2), normals.at(currentTriangleNormal2)},
                                  {vertices.at(currentTriangleVertex3), normals.at(currentTriangleNormal3)},
                 &currentMaterial});
+        } else if (command == "plane") {
+            sceneInputFile >> currentPlane.point.x >> currentPlane.point.y >> currentPlane.point.z >> currentPlane.normal.x >> currentPlane.normal.y >> currentPlane.normal.z;
+            normalize(currentPlane.normal);
+            currentPlane.material = currentMaterial;
+            planes.push_back(currentPlane);
+        
         } else {
             cout << "Command not recognized" << endl;
         }
