@@ -114,47 +114,15 @@ void Image::findPlaneIntersection(Ray &ray, Vector3 point) {
 void Image::findTriangleIntersection(Ray &ray, float &t) {
     // must go through all triangles
     for (int i = 0; i < triangles_.size(); i++) {
-        Vector3 zero = {0, 0, 0};
         // the normal hasn't been set, so it needs to be set
         Vector3 normalized;
-        // shouldn't I be checking if the triangle normal is the default or not? nothing shows up after checking if the triangle normal is being checked
+        // want to make sure the ray normal is set before setting the triangle normals
         if (ray.intersection.normal == DEFAULT_NORMAL) {
-            //cout << "ray.intersection.normal is default" << endl;
-            //if (triangles_.at(i).vertex1.normal == DEFAULT_NORMAL) {
-            /*if (triangles_.at(i).vertex1.location != zero) {
-            cout << "vertex1 location: " << triangles_.at(i).vertex1.location << endl;
-            }
-            if(triangles_.at(i).vertex2.location != zero) {
-            cout << "vertex2 location: " << triangles_.at(i).vertex2.location << endl;
-            }
-            
-            if (triangles_.at(i).vertex3.location != zero){
-            cout << "vertex3 location: " << triangles_.at(i).vertex3.location << endl;
-            }*/
-            
             Vector3 side1 = triangles_.at(i).vertex2.location - triangles_.at(i).vertex1.location;
             Vector3 side2 = triangles_.at(i).vertex3.location - triangles_.at(i).vertex1.location;
             
-            /*if (side1 != zero) {
-            cout << "side1: " << side1 << endl;
-            }
-            if (side2 != zero) {
-            cout << "side2: " << side2 << endl;
-            }*/
-            
             Vector3 cross1 = cross(side1, side2);
             Vector3 cross2 = cross(side2, side1);
-            
-            /*if (cross1 != zero) {
-                cout << "cross1: " << cross1 << endl;
-            }
-            
-            if (cross2 != zero) {
-                cout << "cross2: " << cross2 << endl;
-            }*/
-            //Vector3 normalized;
-            
-            //cout << camera_.viewingDirection << endl;
             
             if (dot(cross1, camera_.viewingDirection) <= 0) {
                 normalized = normalize(cross1);
@@ -162,11 +130,7 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
                 normalized = normalize(cross2);
             }
             
-            
             ray.intersection.normal = normalized;
-            //cout << "normal: " << normalized << endl;
-        } else {
-            //cout << "ray.intersection.normal isn't default" << endl;
         }
         
         triangles_.at(i).vertex1.normal = normalized;
@@ -175,28 +139,21 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
         
         // first calculation step: make sure the ray intersects the plane the triangle is in
         findPlaneIntersection(ray, triangles_.at(i).vertex1.location);
-        //cout << "plane intersection t: " << ray.intersection.t << endl;
-        //cout << "plane intersection: " << ray.intersection.hasIntersection << endl;
+
         // when that's the case, check if it's inside the triangle
         if (ray.intersection.t > 0.001 && ray.intersection.t < t) {
             // if it's not inside the triangle, then there isn't actually an intersection with the triangle
-            //cout << "has plane intersection" << endl;
             if (pointInTriangle(ray.origin + ray.intersection.t * ray.direction, triangles_.at(i))) {
                 ray.intersection.normal = triangles_.at(i).vertex1.normal;
-                //cout << "normal: " << ray.intersection.normal << endl;
                 ray.intersection.location = ray.origin + ray.intersection.t * ray.direction;
                 ray.intersection.material = *(triangles_.at(i).material);
                 t = ray.intersection.t;
-                //cout << "hasIntersection true" << endl;
                 ray.intersection.hasIntersection = true;
             } else {
-                //cout << "hasIntersection false" << endl;
                 ray.intersection.hasIntersection = false;
             }
         }
     }
-    
-   // cout << endl << endl;
 }
 
 
