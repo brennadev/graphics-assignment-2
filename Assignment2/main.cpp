@@ -49,7 +49,8 @@ int main(int argc, const char * argv[]) {
     vector<DirectionalLight> directionalLights;
     vector<PointLight> pointLights;
     vector<SpotLight> spotLights;
-    vector<Color> ambientLights;
+    // vector<Color> ambientLights;
+    Color ambientLight;
     int maxDepth = DEFAULT_MAX_DEPTH;
     // material is a state - the same value will get used until the input file reading hits a line that changes the material values, thereby changing the values in this variable
     Material currentMaterial = DEFAULT_MATERIAL;
@@ -64,9 +65,9 @@ int main(int argc, const char * argv[]) {
     int maxNormals = -1;
     
     /// All vertices taken as inputs; vector will be initialized to maxVertices once a value for maxVertices has been read in
-    vector<Vector3> vertices;
+    vector<Vector3> vertices = vector<Vector3>();
     // All normals taken as inputs; vector will be initialized to maxNormals once a value for maxNormals has been read in
-    vector<Vector3> normals;
+    vector<Vector3> normals = vector<Vector3>();
     vector<Triangle> triangles = vector<Triangle>();
     
     
@@ -134,21 +135,26 @@ int main(int argc, const char * argv[]) {
             
         } else if (command == "ambient_light") {
             
-            Color newLight;
-            sceneInputFile >> newLight.red >> newLight.green >> newLight.blue;
+            //Color newLight;
+            sceneInputFile >> ambientLight.red >> ambientLight.green >> ambientLight.blue;
             
-            ambientLights.push_back(newLight);
+            //ambientLights.push_back(newLight);
             
         } else if (command == "max_depth") {
             sceneInputFile >> maxDepth;
             
         } else if (command == "max_vertices") {
             sceneInputFile >> maxVertices;
-            vertices = vector<Vector3>(maxVertices);
+            //vertices = vector<Vector3>(maxVertices);
+            
+            cout << "max vertices: " << maxVertices << endl;
+            cout << "vertices capacity: " << vertices.capacity() << endl;
+            cout << "vertices size: " << vertices.size() << endl;
+            
             
         } else if (command == "max_normals") {
             sceneInputFile >> maxNormals;
-            normals = vector<Vector3>(maxNormals);
+            //normals = vector<Vector3>(maxNormals);
             
         } else if (command == "vertex") {
             sceneInputFile >> currentVertex.x >> currentVertex.y >> currentVertex.z;
@@ -159,7 +165,6 @@ int main(int argc, const char * argv[]) {
             normals.push_back(currentNormal);
             
         } else if (command == "triangle") {
-            // TODO: fill in once I know if vertices/normals are all read in first
             sceneInputFile >> currentTriangleVertex1 >> currentTriangleVertex2 >> currentTriangleVertex3;
             
             triangles.push_back({{vertices.at(currentTriangleVertex1), {0, 0, 0}},
@@ -168,7 +173,6 @@ int main(int argc, const char * argv[]) {
                 &currentMaterial});
             
         } else if (command == "normal_triangle") {
-            // TODO: fill in once I know if vertices/normals are all read in first
             sceneInputFile >> currentTriangleVertex1 >> currentTriangleVertex2 >> currentTriangleVertex3 >> currentTriangleNormal1 >> currentTriangleNormal2 >> currentTriangleNormal3;
             
             triangles.push_back({{vertices.at(currentTriangleVertex1), normals.at(currentTriangleNormal1)},
@@ -180,8 +184,12 @@ int main(int argc, const char * argv[]) {
         }
     }
     
+    for (int i = 0; i < vertices.size(); i++) {
+        cout << "vertex " << vertices.at(i) << endl;
+    }
+    
     // this will be initialized with default values if they haven't been set in the input file
-    image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, triangles, maxDepth);
+    image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLight, triangles, maxDepth);
     
     image.performRayTrace();
     

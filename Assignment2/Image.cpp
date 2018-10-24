@@ -24,7 +24,7 @@ Image::Image() {
     directionalLights_ = vector<DirectionalLight>();
     pointLights_ = vector<PointLight>();
     spotLights_ = vector<SpotLight>();
-    ambientLights_ = vector<Color>();
+    ambientLight_ = DEFAULT_AMBIENT_LIGHT;
     triangles_ = vector<Triangle>();
     maxDepth_ = DEFAULT_MAX_DEPTH;
     
@@ -41,7 +41,7 @@ Image::Image(Camera camera,
       vector<DirectionalLight> directionalLights,
       vector<PointLight> pointLights,
       vector<SpotLight> spotLights,
-      vector<Color> ambientLights,
+      Color ambientLight,
       vector<Triangle> triangles,
       int maxDepth) {
     
@@ -55,11 +55,13 @@ Image::Image(Camera camera,
     directionalLights_ = directionalLights;
     pointLights_ = pointLights;
     spotLights_ = spotLights;
-    ambientLights_ = ambientLights;
+    ambientLight_ = ambientLight;
     triangles_ = triangles;
     maxDepth_ = maxDepth;
     
     setUpCameraValues();
+    
+    cout << "number of triangles: " << triangles_.size() << endl;
 }
 
 
@@ -106,18 +108,45 @@ void Image::findPlaneIntersection(Ray &ray, Vector3 point) {
 void Image::findTriangleIntersection(Ray &ray, float &t) {
     // must go through all triangles
     for (int i = 0; i < triangles_.size(); i++) {
-        
+        Vector3 zero = {0, 0, 0};
         // the normal hasn't been set, so it needs to be set
         if (ray.intersection.normal == DEFAULT_NORMAL) {
+            /*if (triangles_.at(i).vertex1.location != zero) {
+            cout << "vertex1 location: " << triangles_.at(i).vertex1.location << endl;
+            }
+            if(triangles_.at(i).vertex2.location != zero) {
+            cout << "vertex2 location: " << triangles_.at(i).vertex2.location << endl;
+            }
+            
+            if (triangles_.at(i).vertex3.location != zero){
+            cout << "vertex3 location: " << triangles_.at(i).vertex3.location << endl;
+            }*/
+            
             Vector3 side1 = triangles_.at(i).vertex2.location - triangles_.at(i).vertex1.location;
             Vector3 side2 = triangles_.at(i).vertex3.location - triangles_.at(i).vertex1.location;
             
+            /*if (side1 != zero) {
+            cout << "side1: " << side1 << endl;
+            }
+            if (side2 != zero) {
+            cout << "side2: " << side2 << endl;
+            }*/
+            // TODO: look at cross product values more closely (since those aren't NAN like everything else after)
             Vector3 cross1 = cross(side1, side2);
             Vector3 cross2 = cross(side2, side1);
             
+            /*if (cross1 != zero) {
+                cout << "cross1: " << cross1 << endl;
+            }
+            
+            if (cross2 != zero) {
+                cout << "cross2: " << cross2 << endl;
+            }*/
             Vector3 normalized;
             
-            if (dot(cross1, camera_.viewingDirection) >= 0) {
+            //cout << camera_.viewingDirection << endl;
+            
+            if (dot(cross1, camera_.viewingDirection) <= 0) {
                 normalized = normalize(cross1);
             } else {
                 normalized = normalize(cross2);
@@ -126,18 +155,27 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
             triangles_.at(i).vertex1.normal = normalized;
             triangles_.at(i).vertex2.normal = normalized;
             triangles_.at(i).vertex3.normal = normalized;
+            ray.intersection.normal = normalized;
+            //cout << "normal: " << normalized << endl;
         }
         
         
         // first calculation step: make sure the ray intersects the plane the triangle is in
         findPlaneIntersection(ray, triangles_.at(i).vertex1.location);
-        
+        //cout << "plane intersection t: " << ray.intersection.t << endl;
+        //cout << "plane intersection: " << ray.intersection.hasIntersection << endl;
         // when that's the case, check if it's inside the triangle
-        if (ray.intersection.hasIntersection) {
+        if (ray.intersection.t > 0.001) {
             // if it's not inside the triangle, then there isn't actually an intersection with the triangle
+            //cout << "has plane intersection" << endl;
             if (pointInTriangle(ray.origin + ray.intersection.t * ray.direction, triangles_.at(i))) {
                 ray.intersection.normal = triangles_.at(i).vertex1.normal;
+                ray.intersection.location = ray.origin + ray.intersection.t * ray.direction;
+                ray.intersection.material = *(triangles_.at(i).material);
+                //cout << "hasIntersection true" << endl;
+                ray.intersection.hasIntersection = true;
             } else {
+                //cout << "hasIntersection false" << endl;
                 ray.intersection.hasIntersection = false;
             }
         }
@@ -215,7 +253,7 @@ bool Image::pointInTriangle(Vector3 p, Triangle triangle) {
 
 # pragma mark - Phong Light Calculations
 Color Image::ambient(Color coefficient) {
-    return coefficient * ambientLights_.at(0);
+    return coefficient * ambientLight_;
 }
 
 
@@ -284,60 +322,10 @@ Vector3 Image::refract(Ray ray, float currentIOR) {
 
 
 # pragma mark - Main Steps
-/*Color Image::calculatePhong(Ray ray) {
-    // as each light's diffuse and specular needs to be added together, accumulate a total
-    Color totalDiffuseSpecular = {0, 0, 0};
-    
-    // point lights
-    for (int i = 0; i < pointLights_.size(); i++) {
-        float attenuation = 1.0 / pow(length(pointLights_.at(i).location - ray.intersection.location), 2);
-        
-        // both
-        Vector3 N = ray.intersection.normal;
-        
-        // diffuse
-        Color kd = ray.intersection.material.diffuse;
-        Vector3 l = normalize(pointLights_.at(i).location - ray.intersection.location);
-        
-        // specular
-        float n = ray.intersection.material.phongCosinePower;
-        Color ks = ray.intersection.material.specular;
-        
-        Vector3 d = ray.direction;
-        Color I = pointLights_.at(i).color;
-        
-        
-        Vector3 v = -1 * d;
-        // either v or l
-        
-        // reflected view vector
-        Vector3 r = 2 * dot(N, v) * N - v;
-        // the only thing I'm wondering about is if any direction vectors are flipped
-        
-        // calculation with attenuation (but causes non-ambient stuff to be really dim)
-        totalDiffuseSpecular = totalDiffuseSpecular
-        // diffuse
-        + kd * (I * attenuation) * max((float)0.0, dot(N, l))
-        // specular
-        + ks * pow(clamp(dot(l, r)), n) * (I * attenuation);
-    }
-    
-    
-    
-    // directional lights
-    for (int i = 0; i < directionalLights_.size(); i++) {
-        totalDiffuseSpecular = totalDiffuseSpecular + ray.intersection.material.diffuse * directionalLights_.at(i).color * max((float)0.0, dot(ray.intersection.normal, normalize(directionalLights_.at(i).direction)))
-        + ray.intersection.material.specular * pow(dot(camera_.viewingDirection, 2 * dot(ray.intersection.normal, ray.direction * -1) * ray.intersection.normal + ray.direction), ray.intersection.material.phongCosinePower) * directionalLights_.at(i).color;
-    }
-    
-    return ray.intersection.material.ambient * ambientLights_.at(0) + totalDiffuseSpecular;
-}*/
-
-
 Color Image::calculateLight(Ray ray, int index) {
     Color total = ambient(ray.intersection.material.ambient);
-    
-    // TODO: directional lights (see calculatePhong implementation)
+    //cout << "hasIntersection: " << ray.intersection.hasIntersection << endl;
+
     for (int i = 0; i < pointLights_.size(); i++) {
         Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
 
@@ -354,14 +342,14 @@ Color Image::calculateLight(Ray ray, int index) {
     
     
     for (int i = 0; i < directionalLights_.size(); i++) {
-        Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
+        Ray shadowRay = {ray.intersection.location, normalize(directionalLights_.at(i).direction), DEFAULT_INTERSECTION};
         
         findIntersectionAllObjects(shadowRay);
         
-        if (shadowRay.intersection.hasIntersection && shadowRay.intersection.t < length(pointLights_.at(i).location - ray.intersection.location)) {
+        if (shadowRay.intersection.hasIntersection && shadowRay.intersection.t < length(directionalLights_.at(i).direction)) {
             continue;
         } else {
-            total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
+            total = total + diffuse(ray, directionalLights_.at(i)) + specular(ray, directionalLights_.at(i));
         }
         
         total = total + diffuse(ray, directionalLights_.at(i)) + specular(ray, directionalLights_.at(i));
@@ -380,6 +368,7 @@ Color Image::calculateLight(Ray ray, int index) {
 
 Color Image::evaluateRayTree(Ray ray, int index) {
     findIntersectionAllObjects(ray);
+    //cout << "hasIntersection: " << ray.intersection.hasIntersection << endl;
     
     // need to make sure infinite recursion is avoided by checking the depth
     if (ray.intersection.hasIntersection && index < maxDepth_) {
@@ -393,7 +382,6 @@ void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-        //cout << "i: " << i << endl;
 
         // always start the recursion tree at 0
         data_.push_back(evaluateRayTree(ray, 0));

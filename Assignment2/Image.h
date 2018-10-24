@@ -42,7 +42,7 @@ private:
     vector<Color> ambientLights_;
     vector<Triangle> triangles_;
     
-    
+    Color ambientLight_;
     # pragma mark - Setup
     /// Camera vector setup used in constructors
     void setUpCameraValues();
@@ -56,7 +56,6 @@ private:
     /// Postcondition: ray.intersection.hasIntersection will be true if an intersection is found. ray.intersection contains all necessary information about the intersection for later determining the color at the position.
     void findIntersectionAllObjects(Ray &ray);
     
-    // TODO: get t in param
     /// Intersection between ray and sphere
     /// Precondition: make sure ray's direction vector is normalized
     void findSphereIntersection(Ray &ray, float &t);
@@ -87,9 +86,6 @@ private:
     /// Get refraction direction for the passed in ray's intersection
     Vector3 refract(Ray ray, float currentIOR);
     
-    // TODO: remove eventually
-    //Color calculatePhong(Ray ray);
-    
     /// Handles all lighting calculations
     Color calculateLight(Ray ray, int index);
     
@@ -113,7 +109,7 @@ public:
           vector<DirectionalLight> directionalLights,
           vector<PointLight> pointLights,
           vector<SpotLight> spotLights,
-          vector<Color> ambientLights,
+          Color ambientLight,
           vector<Triangle> triangles,
           int maxDepth);
     

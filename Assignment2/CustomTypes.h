@@ -25,6 +25,7 @@ struct Vector3 {
 
 // 3d vector comparison
 bool operator==(const Vector3 &leftVector, const Vector3 &rightVector);
+bool operator!=(const Vector3 &leftVector, const Vector3 &rightVector);
 
 
 // 3d vector math

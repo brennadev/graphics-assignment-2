@@ -19,6 +19,9 @@ bool operator==(const Vector3 &leftVector, const Vector3 &rightVector) {
         && leftVector.z == rightVector.z;
 }
 
+bool operator!=(const Vector3 &leftVector, const Vector3 &rightVector) {
+    return !(leftVector == rightVector);
+}
 
 #pragma mark - Vector Operations
 Vector3 operator+(const Vector3 &leftVector, const Vector3 &rightVector) {
