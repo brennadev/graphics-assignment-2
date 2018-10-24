@@ -61,7 +61,13 @@ Image::Image(Camera camera,
     
     setUpCameraValues();
     
-    cout << "number of triangles: " << triangles_.size() << endl;
+   cout << "number of triangles: " << triangles_.size() << endl;
+    
+    for(int i = 0; i < triangles_.size(); i++) {
+        cout << "triangle vertex1 location: " << triangles_.at(i).vertex1.location << endl;
+        cout << "triangle vertex2 location: " << triangles_.at(i).vertex2.location << endl;
+        cout << "triangle vertex3 location: " << triangles_.at(i).vertex3.location << endl;
+    }
 }
 
 
@@ -110,7 +116,11 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
     for (int i = 0; i < triangles_.size(); i++) {
         Vector3 zero = {0, 0, 0};
         // the normal hasn't been set, so it needs to be set
+        Vector3 normalized;
+        // shouldn't I be checking if the triangle normal is the default or not? nothing shows up after checking if the triangle normal is being checked
         if (ray.intersection.normal == DEFAULT_NORMAL) {
+            //cout << "ray.intersection.normal is default" << endl;
+            //if (triangles_.at(i).vertex1.normal == DEFAULT_NORMAL) {
             /*if (triangles_.at(i).vertex1.location != zero) {
             cout << "vertex1 location: " << triangles_.at(i).vertex1.location << endl;
             }
@@ -131,7 +141,7 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
             if (side2 != zero) {
             cout << "side2: " << side2 << endl;
             }*/
-            // TODO: look at cross product values more closely (since those aren't NAN like everything else after)
+            
             Vector3 cross1 = cross(side1, side2);
             Vector3 cross2 = cross(side2, side1);
             
@@ -142,7 +152,7 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
             if (cross2 != zero) {
                 cout << "cross2: " << cross2 << endl;
             }*/
-            Vector3 normalized;
+            //Vector3 normalized;
             
             //cout << camera_.viewingDirection << endl;
             
@@ -152,26 +162,31 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
                 normalized = normalize(cross2);
             }
             
-            triangles_.at(i).vertex1.normal = normalized;
-            triangles_.at(i).vertex2.normal = normalized;
-            triangles_.at(i).vertex3.normal = normalized;
+            
             ray.intersection.normal = normalized;
             //cout << "normal: " << normalized << endl;
+        } else {
+            //cout << "ray.intersection.normal isn't default" << endl;
         }
         
+        triangles_.at(i).vertex1.normal = normalized;
+        triangles_.at(i).vertex2.normal = normalized;
+        triangles_.at(i).vertex3.normal = normalized;
         
         // first calculation step: make sure the ray intersects the plane the triangle is in
         findPlaneIntersection(ray, triangles_.at(i).vertex1.location);
         //cout << "plane intersection t: " << ray.intersection.t << endl;
         //cout << "plane intersection: " << ray.intersection.hasIntersection << endl;
         // when that's the case, check if it's inside the triangle
-        if (ray.intersection.t > 0.001) {
+        if (ray.intersection.t > 0.001 && ray.intersection.t < t) {
             // if it's not inside the triangle, then there isn't actually an intersection with the triangle
             //cout << "has plane intersection" << endl;
             if (pointInTriangle(ray.origin + ray.intersection.t * ray.direction, triangles_.at(i))) {
                 ray.intersection.normal = triangles_.at(i).vertex1.normal;
+                //cout << "normal: " << ray.intersection.normal << endl;
                 ray.intersection.location = ray.origin + ray.intersection.t * ray.direction;
                 ray.intersection.material = *(triangles_.at(i).material);
+                t = ray.intersection.t;
                 //cout << "hasIntersection true" << endl;
                 ray.intersection.hasIntersection = true;
             } else {
@@ -180,6 +195,8 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
             }
         }
     }
+    
+   // cout << endl << endl;
 }
 
 

@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "562089671.058269"
+            timestampString = "562096963.960803"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "193"
-            endingLineNumber = "193"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
             landmarkName = "Image::findSphereIntersection(Ray &amp;ray, float &amp;t)"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "562089671.05931"
+            timestampString = "562096963.9617471"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "Image::findSphereIntersection(Ray &amp;ray, float &amp;t)"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Assignment2/Image.cpp"
-            timestampString = "562089671.061147"
+            timestampString = "562096963.962891"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
+            startingLineNumber = "190"
+            endingLineNumber = "190"
             landmarkName = "Image::findTriangleIntersection(Ray &amp;ray, float &amp;t)"
             landmarkType = "7">
          </BreakpointContent>
