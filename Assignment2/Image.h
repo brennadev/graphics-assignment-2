@@ -19,6 +19,8 @@ private:
     int width_;
     int height_;
     
+    Color backgroundColor_;
+    
     /// Maximum number of times rays bounce back and forth
     int maxDepth_;
     
@@ -27,6 +29,8 @@ private:
     
     Camera camera_;
     float imagePlaneDistance;
+    
+    /// All spheres in scene
     vector<Sphere> spheres_;
     
     
@@ -36,8 +40,10 @@ private:
     vector<PointLight> pointLights_;
     vector<SpotLight> spotLights_;
     vector<Color> ambientLights_;
+    vector<Triangle> triangles_;
+    vector<Plane> planes_;
     
-    
+    Color ambientLight_;
     # pragma mark - Setup
     /// Camera vector setup used in constructors
     void setUpCameraValues();
@@ -47,21 +53,47 @@ private:
     /// Create the ray that goes to a given pixel in the raster image
     Ray generateRay(const int &xPosition, const int &yPosition);
     
+    /// Checks all object types for an intersection with the passed-in ray and finds the closest object that intersects if one exists
+    /// Postcondition: ray.intersection.hasIntersection will be true if an intersection is found. ray.intersection contains all necessary information about the intersection for later determining the color at the position.
+    void findIntersectionAllObjects(Ray &ray);
+    
     /// Intersection between ray and sphere
     /// Precondition: make sure ray's direction vector is normalized
-    void findIntersection(Ray &ray);
+    void findSphereIntersection(Ray &ray, float &t);
+    
+    /// Intersection between ray and plane
+    void findPlaneIntersection(Ray &ray, Vector3 point);
+    
+    /// Intersection between ray and triangle
+    void findTriangleIntersection(Ray &ray, float &t);
+    
+    void findPlaneIntersectionAllPlanes(Ray &ray, float &t);
+    
+    bool triangleSameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b);
+    bool pointInTriangle(Vector3 p, Triangle triangle);
+    
     
     # pragma mark - Color Generation
     /// Calculate the color for a given pixel in the raster image
     Color getColor(const Vector3 &location);
     
-    /// Diffuse color for a point light
-    Color calculateDiffuse(Sphere sphere, Ray ray, PointLight light);
+    Color ambient(Color coefficient);
+    Color diffuse(Ray ray, PointLight light);
+    Color diffuse(Ray ray, DirectionalLight light);
+    Color specular(Ray ray, PointLight light);
+    Color specular(Ray ray, DirectionalLight light);
     
-    Color calculatePhong(Ray ray, Sphere sphere, PointLight light, Color ambientLight);
+    /// Get reflection direction for the passed in ray's intersection
+    Vector3 reflect(Ray ray);
     
+    /// Get refraction direction for the passed in ray's intersection
+    Vector3 refract(Ray ray, float currentIOR);
     
-    Color calculatePhong(Ray ray);
+    /// Handles all lighting calculations
+    Color calculateLight(Ray ray, int index, float currentIOR);
+    
+    /// Recursive part of the ray tracer
+    Color evaluateRayTree(Ray ray, int index, float currentIOR);
     
     /// Final output of the image to an image file
     void writeImageToFile();
@@ -80,7 +112,9 @@ public:
           vector<DirectionalLight> directionalLights,
           vector<PointLight> pointLights,
           vector<SpotLight> spotLights,
-          vector<Color> ambientLights,
+          Color ambientLight,
+          vector<Triangle> triangles,
+          vector<Plane> planes,
           int maxDepth);
     
     /// Does all the work of the actual ray tracing and outputs it to an image file

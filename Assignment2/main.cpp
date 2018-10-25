@@ -19,7 +19,6 @@ int main(int argc, const char * argv[]) {
     /// The image used throughout the program
     Image image;
     
-    
     // make sure we have the correct number of arguments before anything is done
     if (argc != 2) {
         cout << "Incorrect number of arguments passed" << endl;
@@ -50,10 +49,40 @@ int main(int argc, const char * argv[]) {
     vector<DirectionalLight> directionalLights;
     vector<PointLight> pointLights;
     vector<SpotLight> spotLights;
-    vector<Color> ambientLights;
+    // vector<Color> ambientLights;
+    Color ambientLight;
     int maxDepth = DEFAULT_MAX_DEPTH;
     // material is a state - the same value will get used until the input file reading hits a line that changes the material values, thereby changing the values in this variable
     Material currentMaterial = DEFAULT_MATERIAL;
+    vector<Plane> planes = vector<Plane>();
+    Plane currentPlane;
+    
+    // triangle-related values
+    /// total possible vertices; -1 indicates a value hasn't been set
+    int maxVertices = -1;
+    
+    /// total possible normals; -1 indicates a value hasn't been set
+    int maxNormals = -1;
+    
+    /// All vertices taken as inputs; vector will be initialized to maxVertices once a value for maxVertices has been read in
+    vector<Vector3> vertices = vector<Vector3>();
+    // All normals taken as inputs; vector will be initialized to maxNormals once a value for maxNormals has been read in
+    vector<Vector3> normals = vector<Vector3>();
+    vector<Triangle> triangles = vector<Triangle>();
+    
+    
+    // only used for appending to vectors (thus why they aren't initialized to anything
+    Vector3 currentVertex;
+    Vector3 currentNormal;
+    
+    
+    // temp variables to hold triangle values inputted
+    int currentTriangleVertex1;
+    int currentTriangleVertex2;
+    int currentTriangleVertex3;
+    int currentTriangleNormal1;
+    int currentTriangleNormal2;
+    int currentTriangleNormal3;
     
     
     while (sceneInputFile >> command) {
@@ -84,7 +113,6 @@ int main(int argc, const char * argv[]) {
             
         } else if (command == "material") {
             // we just need to store the current material somewhere so it's ready for use when the next sphere is read in
-            // TODO: material needs to be fixed to somehow take in or ignore the values not needed for assignment 2 (as that's how it's specified in the files)
             sceneInputFile >> currentMaterial.ambient.red >> currentMaterial.ambient.green >> currentMaterial.ambient.blue >> currentMaterial.diffuse.red >> currentMaterial.diffuse.green >> currentMaterial.diffuse.blue >> currentMaterial.specular.red >> currentMaterial.specular.green >> currentMaterial.specular.blue >> currentMaterial.phongCosinePower >> currentMaterial.transmissive.red >> currentMaterial.transmissive.green >> currentMaterial.transmissive.blue >> currentMaterial.indexOfRefraction;
             
         } else if (command == "directional_light") {
@@ -106,21 +134,54 @@ int main(int argc, const char * argv[]) {
             spotLights.push_back(newLight);
             
         } else if (command == "ambient_light") {
-            
-            Color newLight;
-            sceneInputFile >> newLight.red >> newLight.green >> newLight.blue;
-            
-            ambientLights.push_back(newLight);
+            sceneInputFile >> ambientLight.red >> ambientLight.green >> ambientLight.blue;
             
         } else if (command == "max_depth") {
             sceneInputFile >> maxDepth;
+            
+        } else if (command == "max_vertices") {
+            sceneInputFile >> maxVertices;
+            
+        } else if (command == "max_normals") {
+            sceneInputFile >> maxNormals;
+            
+        } else if (command == "vertex") {
+            sceneInputFile >> currentVertex.x >> currentVertex.y >> currentVertex.z;
+            vertices.push_back(currentVertex);
+            
+        } else if (command == "normal") {
+            sceneInputFile >> currentNormal.x >> currentNormal.y >> currentNormal.z;
+            normals.push_back(currentNormal);
+            
+        } else if (command == "triangle") {
+            sceneInputFile >> currentTriangleVertex1 >> currentTriangleVertex2 >> currentTriangleVertex3;
+            
+            triangles.push_back({{vertices.at(currentTriangleVertex1), {0, 0, 0}},
+                {vertices.at(currentTriangleVertex2), {0, 0, 0}},
+                {vertices.at(currentTriangleVertex3), {0, 0, 0}},
+                &currentMaterial});
+            
+        } else if (command == "normal_triangle") {
+            sceneInputFile >> currentTriangleVertex1 >> currentTriangleVertex2 >> currentTriangleVertex3 >> currentTriangleNormal1 >> currentTriangleNormal2 >> currentTriangleNormal3;
+            
+            triangles.push_back({{vertices.at(currentTriangleVertex1), normals.at(currentTriangleNormal1)},
+                                 {vertices.at(currentTriangleVertex2), normals.at(currentTriangleNormal2)},
+                                 {vertices.at(currentTriangleVertex3), normals.at(currentTriangleNormal3)},
+                &currentMaterial});
+        } else if (command == "plane") {
+            sceneInputFile >> currentPlane.point.x >> currentPlane.point.y >> currentPlane.point.z >> currentPlane.normal.x >> currentPlane.normal.y >> currentPlane.normal.z;
+            normalize(currentPlane.normal);
+            currentPlane.material = currentMaterial;
+            planes.push_back(currentPlane);
+        
         } else {
             cout << "Command not recognized" << endl;
         }
     }
     
-    // this will be initialized with default values if they haven't been set in the
-    image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLights, maxDepth);
+
+    // this will be initialized with default values if they haven't been set in the input file
+    image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLight, triangles, planes, maxDepth);
     
     image.performRayTrace();
     

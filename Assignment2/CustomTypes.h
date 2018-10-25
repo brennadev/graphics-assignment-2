@@ -8,24 +8,25 @@
 
 // Many types used throughout the ray tracer program
 
-
 #ifndef CustomTypes_h
 #define CustomTypes_h
+#include <iostream>
+using namespace std;
+
 
 # pragma mark - Vectors and Vector Operations
-// TODO: remove if not used
-struct Vector2 {
-    float x;
-    float y;
-};
-
-
 /// Point/vector in 3d space
 struct Vector3 {
     float x;
     float y;
     float z;
 };
+
+
+// 3d vector comparison
+bool operator==(const Vector3 &leftVector, const Vector3 &rightVector);
+bool operator!=(const Vector3 &leftVector, const Vector3 &rightVector);
+
 
 // 3d vector math
 Vector3 operator+(const Vector3 &leftVector, const Vector3 &rightVector);
@@ -37,6 +38,7 @@ float dot(const Vector3 &firstVector, const Vector3 &secondVector);
 Vector3 cross(const Vector3 &firstVector, const Vector3 &secondVector);
 float length(const Vector3 &vector);
 Vector3 normalize(const Vector3 &vector);
+float clamp(const float &value);
 
 
 # pragma mark - Color and Color Operations
@@ -80,6 +82,7 @@ struct Intersection {
     Vector3 normal;
     /// Material of the object at the intersection (only valid if hasIntersection is true)
     Material material;
+    float t;
 };
 
 
@@ -111,6 +114,13 @@ struct Sphere {
 };
 
 
+struct Plane {
+    Vector3 point;
+    Vector3 normal;
+    Material material;
+};
+
+
 # pragma mark - Lights
 struct DirectionalLight {
     Color color;
@@ -132,5 +142,23 @@ struct SpotLight {
     float angle2;
 };
 
+
+# pragma mark - Triangles
+
+struct TriangleVertex {
+    Vector3 location;
+    Vector3 normal;
+};
+
+struct Triangle {
+    TriangleVertex vertex1;
+    TriangleVertex vertex2;
+    TriangleVertex vertex3;
+    Material *material;
+};
+
+
+# pragma mark - ostream overloads
+ostream &operator<<(ostream &output, Vector3 value);
 
 #endif /* CustomTypes_h */

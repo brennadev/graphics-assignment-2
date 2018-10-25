@@ -21,6 +21,7 @@ sphere 3 1.5 0 1.25
 #white overhad light
 point_light 10 10 10 0 5 0
 ambient_light .25 .25 .25
+directional_light 1 1 1 0 -1 0
 background .05 .05 .05
 
 max_depth 5

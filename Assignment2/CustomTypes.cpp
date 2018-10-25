@@ -11,30 +11,48 @@
 #include "CustomTypes.h"
 #include <cmath>
 
+
+# pragma mark - Vector Comparison
+bool operator==(const Vector3 &leftVector, const Vector3 &rightVector) {
+    return leftVector.x == rightVector.x
+        && leftVector.y == rightVector.y
+        && leftVector.z == rightVector.z;
+}
+
+bool operator!=(const Vector3 &leftVector, const Vector3 &rightVector) {
+    return !(leftVector == rightVector);
+}
+
 #pragma mark - Vector Operations
 Vector3 operator+(const Vector3 &leftVector, const Vector3 &rightVector) {
     return {leftVector.x + rightVector.x, leftVector.y + rightVector.y, leftVector.z + rightVector.z};
 }
 
+
 Vector3 operator-(const Vector3 &leftVector, const Vector3 &rightVector) {
     return {leftVector.x - rightVector.x, leftVector.y - rightVector.y, leftVector.z - rightVector.z};
 }
+
 
 Vector3 operator*(const float &constant, const Vector3 &vector) {
     return {constant * vector.x, constant * vector.y, constant * vector.z};
 }
 
+
 Vector3 operator*(const Vector3 &vector, const float &constant) {
     return {constant * vector.x, constant * vector.y, constant * vector.z};
 }
+
 
 Vector3 operator/(const Vector3 &vector, const float &constant) {
     return {vector.x / constant, vector.y / constant, vector.z / constant};
 }
 
+
 float dot(const Vector3 &firstVector, const Vector3 &secondVector) {
     return firstVector.x * secondVector.x + firstVector.y * secondVector.y + firstVector.z * secondVector.z;
 }
+
 
 Vector3 cross(const Vector3 &firstVector, const Vector3 &secondVector) {
     return {firstVector.y * secondVector.z - firstVector.z * secondVector.y,
@@ -46,6 +64,7 @@ Vector3 cross(const Vector3 &firstVector, const Vector3 &secondVector) {
 float length(const Vector3 &vector) {
     return sqrt(dot(vector, vector));
 }
+
 
 Vector3 normalize(const Vector3 &vector) {
     return vector / length(vector);
@@ -77,9 +96,11 @@ Color operator*(const Color &color, const float &constant) {
             clamp(color.blue * constant)};
 }
 
+
 Color operator*(const float &constant, const Color &color) {
     return color * constant;
 }
+
 
 Color operator+(const Color &firstColor, const Color &secondColor) {
     return {clamp(firstColor.red + secondColor.red),
@@ -87,6 +108,13 @@ Color operator+(const Color &firstColor, const Color &secondColor) {
             clamp(firstColor.blue + secondColor.blue)};
 }
 
+
 Color operator+=(const Color &firstColor, const Color &secondColor) {
     return firstColor + secondColor;
+}
+
+
+ostream &operator<<(ostream &output, Vector3 value) {
+    output << "(" << value.x << ", " << value.y << ", " << value.z << ")";
+    return output;
 }
