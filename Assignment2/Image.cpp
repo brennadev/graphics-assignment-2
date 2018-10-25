@@ -153,9 +153,7 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
         
         // first calculation step: make sure the ray intersects the plane the triangle is in
         findPlaneIntersection(ray, triangles_.at(i).vertex1.location);
-        if (ray.intersection.t > 0.001 && ray.intersection.t < t) {
-            //cout << "t: " << ray.intersection.t << endl;
-        }
+
         // when that's the case, check if it's inside the triangle
         if (ray.intersection.t > 0.001 && ray.intersection.t < t) {
             // if it's not inside the triangle, then there isn't actually an intersection with the triangle
@@ -169,6 +167,7 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
         }
     }
     
+    // so that a sphere or plane normal is still used when no triangles are intersected
     if (t == oldT) {
         ray.intersection.normal = oldNormal;
     }
@@ -349,9 +348,9 @@ Color Image::calculateLight(Ray ray, int index, float currentIOR) {
     
     // refraction
     // Note: If you want to test without the broken refraction, comment out the 3 lines below
-    //Vector3 refractionDirection = refract(ray, currentIOR);
-    //Ray refractionRay = {ray.intersection.location, normalize(refractionDirection), DEFAULT_INTERSECTION};
-    //total = total + ray.intersection.material.transmissive * evaluateRayTree(refractionRay, index + 1, ray.intersection.material.indexOfRefraction);
+    Vector3 refractionDirection = refract(ray, currentIOR);
+    Ray refractionRay = {ray.intersection.location, normalize(refractionDirection), DEFAULT_INTERSECTION};
+    total = total + ray.intersection.material.transmissive * evaluateRayTree(refractionRay, index + 1, ray.intersection.material.indexOfRefraction);
     
     return total;
 }
@@ -372,15 +371,10 @@ void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-        //cout << "i: " << i << endl;
-        // 132496
-        //48048
-        //31536
-        //275664
+
         // always start the recursion tree at 0
         data_.push_back(evaluateRayTree(ray, 0, 1));
     }
-    //data_.at(0) = {1, 1, 1};
     writeImageToFile();
 }
 
