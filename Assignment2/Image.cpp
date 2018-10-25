@@ -26,6 +26,7 @@ Image::Image() {
     spotLights_ = vector<SpotLight>();
     ambientLight_ = DEFAULT_AMBIENT_LIGHT;
     triangles_ = vector<Triangle>();
+    planes_ = vector<Plane>();
     maxDepth_ = DEFAULT_MAX_DEPTH;
     
     setUpCameraValues();
@@ -33,17 +34,18 @@ Image::Image() {
 
 
 Image::Image(Camera camera,
-      int width,
-      int height,
-      string outputFileName,
-      vector<Sphere> spheres,
-      Color background,
-      vector<DirectionalLight> directionalLights,
-      vector<PointLight> pointLights,
-      vector<SpotLight> spotLights,
-      Color ambientLight,
-      vector<Triangle> triangles,
-      int maxDepth) {
+             int width,
+             int height,
+             string outputFileName,
+             vector<Sphere> spheres,
+             Color background,
+             vector<DirectionalLight> directionalLights,
+             vector<PointLight> pointLights,
+             vector<SpotLight> spotLights,
+             Color ambientLight,
+             vector<Triangle> triangles,
+             vector<Plane> planes,
+             int maxDepth) {
     
     // set all values
     camera_ = camera;
@@ -57,17 +59,10 @@ Image::Image(Camera camera,
     spotLights_ = spotLights;
     ambientLight_ = ambientLight;
     triangles_ = triangles;
+    planes_ = planes;
     maxDepth_ = maxDepth;
     
     setUpCameraValues();
-    
-   cout << "number of triangles: " << triangles_.size() << endl;
-    
-    for(int i = 0; i < triangles_.size(); i++) {
-        cout << "triangle vertex1 location: " << triangles_.at(i).vertex1.location << endl;
-        cout << "triangle vertex2 location: " << triangles_.at(i).vertex2.location << endl;
-        cout << "triangle vertex3 location: " << triangles_.at(i).vertex3.location << endl;
-    }
 }
 
 
@@ -103,8 +98,24 @@ void Image::findIntersectionAllObjects(Ray &ray) {
     
     findSphereIntersection(ray, t);
     findTriangleIntersection(ray, t);
+    findPlaneIntersectionAllPlanes(ray, t);
 }
 
+
+void Image::findPlaneIntersectionAllPlanes(Ray &ray, float &t) {
+    for (int i = 0; i < planes_.size(); i++) {
+        findPlaneIntersection(ray, planes_.at(i).point);
+        
+        if (ray.intersection.t > 0.001 && ray.intersection.t < t) {
+            ray.intersection.hasIntersection = true;
+            ray.intersection.normal = planes_.at(i).normal;
+            ray.intersection.location = ray.origin + ray.intersection.t * ray.direction;
+            ray.intersection.material = planes_.at(i).material;
+            t = ray.intersection.t;
+            
+        }
+    }
+}
 
 void Image::findPlaneIntersection(Ray &ray, Vector3 point) {
     ray.intersection.t = -1 * (dot(ray.origin, ray.intersection.normal) - dot(point, ray.intersection.normal)) / dot(ray.direction, ray.intersection.normal);
@@ -112,12 +123,15 @@ void Image::findPlaneIntersection(Ray &ray, Vector3 point) {
 
 
 void Image::findTriangleIntersection(Ray &ray, float &t) {
+    Vector3 oldNormal = ray.intersection.normal;
+    float oldT = t;
+    
     // must go through all triangles
     for (int i = 0; i < triangles_.size(); i++) {
         // the normal hasn't been set, so it needs to be set
         Vector3 normalized;
         // want to make sure the ray normal is set before setting the triangle normals
-        if (ray.intersection.normal == DEFAULT_NORMAL) {
+        if (i == 0) {
             Vector3 side1 = triangles_.at(i).vertex2.location - triangles_.at(i).vertex1.location;
             Vector3 side2 = triangles_.at(i).vertex3.location - triangles_.at(i).vertex1.location;
             
@@ -139,21 +153,24 @@ void Image::findTriangleIntersection(Ray &ray, float &t) {
         
         // first calculation step: make sure the ray intersects the plane the triangle is in
         findPlaneIntersection(ray, triangles_.at(i).vertex1.location);
-
+        if (ray.intersection.t > 0.001 && ray.intersection.t < t) {
+            //cout << "t: " << ray.intersection.t << endl;
+        }
         // when that's the case, check if it's inside the triangle
         if (ray.intersection.t > 0.001 && ray.intersection.t < t) {
             // if it's not inside the triangle, then there isn't actually an intersection with the triangle
             if (pointInTriangle(ray.origin + ray.intersection.t * ray.direction, triangles_.at(i))) {
                 ray.intersection.normal = triangles_.at(i).vertex1.normal;
-                cout << "normal: " << ray.intersection.normal << endl;
                 ray.intersection.location = ray.origin + ray.intersection.t * ray.direction;
                 ray.intersection.material = *(triangles_.at(i).material);
                 t = ray.intersection.t;
                 ray.intersection.hasIntersection = true;
-            } else {
-                ray.intersection.hasIntersection = false;
             }
         }
+    }
+    
+    if (t == oldT) {
+        ray.intersection.normal = oldNormal;
     }
 }
 
@@ -177,21 +194,21 @@ void Image::findSphereIntersection(Ray &ray, float &t) {
             float secondT = (-1 * b - sqrt(discriminant)) / (2 * a);
             
             // keep track so we know if the other values of the intersection need to be updated
-            float oldT = t;
+            float newT;
             
             // the first and possibly the second t values are positive
             if (firstT > 0.001) {
                 // both the first and second t values are positive
                 if (secondT > 0.001) {
-                    t = min(min(firstT, secondT), t);
+                    newT = min(min(firstT, secondT), t);
                     
                 // only the first t value is positive
                 } else {
-                    t = min(t, firstT);
+                    newT = min(t, firstT);
                 }
             // only the second t value is positive
             } else if (secondT > 0.001) {
-                t = min(t, secondT);
+                newT = min(t, secondT);
                 
             // t is 0
             } else {
@@ -199,7 +216,8 @@ void Image::findSphereIntersection(Ray &ray, float &t) {
             }
             
             // all the other values associated with the intersection need updating if t has changed
-            if (t < oldT) {
+            if (newT < t) {
+                t = newT;
                 ray.intersection.hasIntersection = true;
                 ray.intersection.location = ray.origin + t * ray.direction;
                 ray.intersection.normal = normalize(ray.intersection.location - spheres_.at(i).center);
@@ -209,7 +227,6 @@ void Image::findSphereIntersection(Ray &ray, float &t) {
         }
     }
 }
-
 
 
 bool Image::triangleSameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b) {
@@ -299,7 +316,6 @@ Vector3 Image::refract(Ray ray, float currentIOR) {
 # pragma mark - Main Steps
 Color Image::calculateLight(Ray ray, int index, float currentIOR) {
     Color total = ambient(ray.intersection.material.ambient);
-    //cout << "hasIntersection: " << ray.intersection.hasIntersection << endl;
 
     for (int i = 0; i < pointLights_.size(); i++) {
         Ray shadowRay = {ray.intersection.location, normalize(pointLights_.at(i).location - ray.intersection.location), DEFAULT_INTERSECTION};
@@ -311,8 +327,6 @@ Color Image::calculateLight(Ray ray, int index, float currentIOR) {
         } else {
             total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
         }
-        
-        total = total + diffuse(ray, pointLights_.at(i)) + specular(ray, pointLights_.at(i));
     }
     
     
@@ -326,8 +340,6 @@ Color Image::calculateLight(Ray ray, int index, float currentIOR) {
         } else {
             total = total + diffuse(ray, directionalLights_.at(i)) + specular(ray, directionalLights_.at(i));
         }
-        
-        total = total + diffuse(ray, directionalLights_.at(i)) + specular(ray, directionalLights_.at(i));
     }
     
     // reflection
@@ -336,9 +348,10 @@ Color Image::calculateLight(Ray ray, int index, float currentIOR) {
     total = total + ray.intersection.material.specular * evaluateRayTree(mirrorRay, index + 1, currentIOR);
     
     // refraction
-    Vector3 refractionDirection = refract(ray, currentIOR);
-    Ray refractionRay = {ray.intersection.location, normalize(refractionDirection), DEFAULT_INTERSECTION};
-    total = total + ray.intersection.material.transmissive * evaluateRayTree(refractionRay, index + 1, ray.intersection.material.indexOfRefraction);
+    // Note: If you want to test without the broken refraction, comment out the 3 lines below
+    //Vector3 refractionDirection = refract(ray, currentIOR);
+    //Ray refractionRay = {ray.intersection.location, normalize(refractionDirection), DEFAULT_INTERSECTION};
+    //total = total + ray.intersection.material.transmissive * evaluateRayTree(refractionRay, index + 1, ray.intersection.material.indexOfRefraction);
     
     return total;
 }
@@ -346,7 +359,6 @@ Color Image::calculateLight(Ray ray, int index, float currentIOR) {
 
 Color Image::evaluateRayTree(Ray ray, int index, float currentIOR) {
     findIntersectionAllObjects(ray);
-    //cout << "hasIntersection: " << ray.intersection.hasIntersection << endl;
     
     // need to make sure infinite recursion is avoided by checking the depth
     if (ray.intersection.hasIntersection && index < maxDepth_) {
@@ -360,10 +372,15 @@ void Image::performRayTrace() {
     // go through each pixel
     for (int i = 0; i < width_ * height_; i++) {
         Ray ray = generateRay(i % width_, i / width_);
-
+        //cout << "i: " << i << endl;
+        // 132496
+        //48048
+        //31536
+        //275664
         // always start the recursion tree at 0
         data_.push_back(evaluateRayTree(ray, 0, 1));
     }
+    //data_.at(0) = {1, 1, 1};
     writeImageToFile();
 }
 

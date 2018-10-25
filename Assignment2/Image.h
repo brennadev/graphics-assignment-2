@@ -41,6 +41,7 @@ private:
     vector<SpotLight> spotLights_;
     vector<Color> ambientLights_;
     vector<Triangle> triangles_;
+    vector<Plane> planes_;
     
     Color ambientLight_;
     # pragma mark - Setup
@@ -65,6 +66,8 @@ private:
     
     /// Intersection between ray and triangle
     void findTriangleIntersection(Ray &ray, float &t);
+    
+    void findPlaneIntersectionAllPlanes(Ray &ray, float &t);
     
     bool triangleSameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b);
     bool pointInTriangle(Vector3 p, Triangle triangle);
@@ -111,6 +114,7 @@ public:
           vector<SpotLight> spotLights,
           Color ambientLight,
           vector<Triangle> triangles,
+          vector<Plane> planes,
           int maxDepth);
     
     /// Does all the work of the actual ray tracing and outputs it to an image file

@@ -179,12 +179,9 @@ int main(int argc, const char * argv[]) {
         }
     }
     
-    /*for (int i = 0; i < vertices.size(); i++) {
-        cout << "vertex " << vertices.at(i) << endl;
-    }*/
-    
+
     // this will be initialized with default values if they haven't been set in the input file
-    image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLight, triangles, maxDepth);
+    image = Image(camera, width, height, outputFileName, spheres, background, directionalLights, pointLights, spotLights, ambientLight, triangles, planes, maxDepth);
     
     image.performRayTrace();
     
